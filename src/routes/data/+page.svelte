@@ -1,8 +1,9 @@
 <script>
     import { onMount } from 'svelte';
     import { writable } from 'svelte/store';
-    import { Input, Label, Checkbox, Button, A } from 'flowbite-svelte';
-
+    import { Input, Label, Button, Card, P } from 'flowbite-svelte';
+    import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, TableSearch } from 'flowbite-svelte';
+    import { Alert } from 'flowbite-svelte';
 
     let voters = [];
     let uniqueBuildings = [];
@@ -18,7 +19,8 @@
     let relativeName = '';
     let phoneNo = '';
     let buildingId = '';
-
+    let successAlert = '';
+    
     const selectedBuildingStore = writable(selectedBuilding);
 
     async function fetchVoters(buildingName = '') {
@@ -71,7 +73,7 @@
 
             const result = await response.json();
             if (response.ok) {
-                console.log(`New voter added with the following id: ${result.insertedId}`);
+                successAlert= `New voter added with the following id: ${result.insertedId}`;
                 // Clear form fields
                 flatNo = '';
                 epicNo = '';
@@ -90,6 +92,13 @@
     }
 
     onMount(() => fetchVoters()); // Fetch all voters initially
+
+    function deselectBuilding() {
+        selectedBuilding = '';
+        selectedBuildingStore.set('');
+        fetchVoters();
+    }
+
 </script>
 
 <main>
@@ -102,114 +111,96 @@
     {/if}
 
     {#if !loading && !error}
-        <section>
-            <h2 class="text-xl font-bold mb-4">Select a Building</h2>
-            <div class="mb-8">
+        <Card class="mx-auto max-w-full bg-gray-100 border-2">
+            <P class="text-xl font-bold mb-4">Select a Building</P>
+            <div class="grid gap-1 md:grid-cols-6">
                 {#each uniqueBuildings as building}
-                    <button 
-                        class="bg-blue-500 text-white px-4 py-2 rounded mr-2 mb-2"
+                    <Button 
+                        class="bg-gray-500 text-white px-4 py-2 rounded"
                         on:click={() => handleBuildingClick(building)}
                     >
                         {building}
-                    </button>
+                    </Button>
                 {/each}
-                <button 
-                    class="bg-gray-500 text-white px-4 py-2 rounded mb-2"
-                    on:click={() => fetchVoters()}
+                <Button 
+                    class="bg-gray-500 text-white px-4 py-2 rounded"
+                    on:click={deselectBuilding}
                 >
                     Show All
-                </button>
+                </Button>
             </div>
+        </Card>
 
-            <h2 class="text-xl font-bold mb-4">Residents of {selectedBuilding || 'All Buildings'}</h2>
-            <table class="table-auto w-full text-left">
-                <thead>
-                    <tr>
-                        <th class="px-4 py-2">Flat No</th>
-                        <th class="px-4 py-2">Epic No</th>
-                        <th class="px-4 py-2">Name</th>
-                        <th class="px-4 py-2">Age</th>
-                        <th class="px-4 py-2">Relative Name</th>
-                        <th class="px-4 py-2">Phone No</th>
-                        <th class="px-4 py-2">Building Name</th>
-                        <th class="px-4 py-2">Building ID</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <Card class="mx-auto max-w-full bg-gray-100 border-2">
+            <P class="text-xl font-bold mb-4">Residents of {selectedBuilding || 'All Buildings'}</P>
+            <Table shadow class="table-auto w-full text-left">
+                <TableHead>
+                        <TableHeadCell class="px-4 py-2">Flat No</TableHeadCell>
+                        <TableHeadCell class="px-4 py-2">Epic No</TableHeadCell>
+                        <TableHeadCell class="px-4 py-2">Name</TableHeadCell>
+                        <TableHeadCell class="px-4 py-2">Age</TableHeadCell>
+                        <TableHeadCell class="px-4 py-2">Relative Name</TableHeadCell>
+                        <TableHeadCell class="px-4 py-2">Phone No</TableHeadCell>
+                        <TableHeadCell class="px-4 py-2">Building Name</TableHeadCell>
+                        <TableHeadCell class="px-4 py-2">Building ID</TableHeadCell>
+                </TableHead>
+                <TableBody>
                     {#each voters as voter}
-                        <tr>
-                            <td class="border px-4 py-2">{voter.flatNo}</td>
-                            <td class="border px-4 py-2">{voter.epicNo}</td>
-                            <td class="border px-4 py-2">{voter.name}</td>
-                            <td class="border px-4 py-2">{voter.age}</td>
-                            <td class="border px-4 py-2">{voter.relativeName}</td>
-                            <td class="border px-4 py-2">{voter.phoneNo}</td>
-                            <td class="border px-4 py-2">{voter.buildingName}</td>
-                            <td class="border px-4 py-2">{voter.buildingId}</td>
-                        </tr>
+                        <TableBodyRow>
+                            <TableBodyCell class="border px-4 py-2">{voter.flatNo}</TableBodyCell>
+                            <TableBodyCell class="border px-4 py-2">{voter.epicNo}</TableBodyCell>
+                            <TableBodyCell class="border px-4 py-2">{voter.name}</TableBodyCell>
+                            <TableBodyCell class="border px-4 py-2">{voter.age}</TableBodyCell>
+                            <TableBodyCell class="border px-4 py-2">{voter.relativeName}</TableBodyCell>
+                            <TableBodyCell class="border px-4 py-2">{voter.phoneNo}</TableBodyCell>
+                            <TableBodyCell class="border px-4 py-2">{voter.buildingName}</TableBodyCell>
+                            <TableBodyCell class="border px-4 py-2">{voter.buildingId}</TableBodyCell>
+                        </TableBodyRow>
                     {/each}
-                </tbody>
-            </table>
-        </section>
+                </TableBody>
+            </Table>
+        </Card>
 
         {#if selectedBuilding}
-            <section>
-                <h2 class="text-xl font-bold mt-8 mb-4">Add Resident to {selectedBuilding}</h2>
+            <Card class="mx-auto max-w-full bg-gray-100 border-2">
+                <P class="text-xl font-bold mb-4">Add Resident to {selectedBuilding}</P>
+                {#if successAlert.length>0}
+                    <Alert color="green" class="font-medium">{successAlert}</Alert>
+                {/if}
                 <form on:submit|preventDefault={addVoter} class="space-y-4">
-                    <div class="grid gap-6 mb-6 md:grid-cols-2">
+                    <div class="grid gap-4 md:grid-cols-3">
                     <div>
                         <Label for="flatNo" class="block mb-2">Flat No</Label>
-                        <Input type="number" id="flatNo" bind:value={flatNo} class="border px-3 py-2 w-full" required />
+                        <Input type="number" id="flatNo" bind:value={flatNo} class="border w-full" required />
                     </div>
                     <div>
                         <Label for="epicNo" class="block mb-2">Epic No</Label>
-                        <Input type="text" id="epicNo" bind:value={epicNo} class="border px-3 py-2 w-full" required />
+                        <Input type="text" id="epicNo" bind:value={epicNo} class="border w-full" required />
                     </div>
                     <div>
                         <Label for="name" class="block mb-2">Name</Label>
-                        <Input type="text" id="name" bind:value={name} class="border px-3 py-2 w-full" required />
+                        <Input type="text" id="name" bind:value={name} class="border w-full" required />
                     </div>
                     <div>
                         <Label for="age" class="block mb-2">Age</Label>
-                        <Input type="number" id="age" bind:value={age} class="border px-3 py-2 w-full" required />
+                        <Input type="number" id="age" bind:value={age} class="border w-full" required />
                     </div>
                     <div>
                         <Label for="relativeName" class="block mb-2">Relative Name</Label>
-                        <Input type="text" id="relativeName" bind:value={relativeName} class="border px-3 py-2 w-full" required />
+                        <Input type="text" id="relativeName" bind:value={relativeName} class="border w-full" required />
                     </div>
                     <div>
                         <Label for="phoneNo" class="block mb-2">Phone No</Label>
-                        <Input type="tel" id="phoneNo" bind:value={phoneNo} class="border px-3 py-2 w-full" required />
+                        <Input type="tel" id="phoneNo" bind:value={phoneNo} class="border w-full" required />
                     </div>
                     <div>
                         <Label for="buildingId" class="block mb-2">Building ID</Label>
-                        <Input type="text" id="buildingId" bind:value={buildingId} class="border px-3 py-2 w-full" required />
+                        <Input type="text" id="buildingId" bind:value={buildingId} class="border w-full" required />
                     </div>
                     </div>
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Add Resident</button>
+                    <Button type="submit">Add Resident</Button>
                 </form>
-            </section>
+            </Card>
         {/if}
     {/if}
 </main>
-
-<style>
-    table {
-        border-collapse: collapse;
-        width: 100%;
-    }
-
-    th, td {
-        padding: 8px;
-        text-align: left;
-        border-bottom: 1px solid #ddd;
-    }
-
-    tr:hover {
-        background-color: #f5f5f5;
-    }
-
-    button {
-        cursor: pointer;
-    }
-</style>
