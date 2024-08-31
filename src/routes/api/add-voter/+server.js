@@ -1,25 +1,34 @@
 // src/routes/api/add-voter/+server.js
 import { MongoClient } from 'mongodb';
-import { json } from '@sveltejs/kit';
 
 export async function POST({ request }) {
 	const uri = 'mongodb+srv://abdurrahman19702:Abdur%402002@cluster0.kntzr.mongodb.net/';
-	const dbName = 'voterinfo';
-	const collectionName = 'voterinfo';
-
 	const client = new MongoClient(uri);
+	const { flatNo, epicNo, name, age, relativeName, phoneNo, buildingName, buildingId } =
+		await request.json();
 
 	try {
-		const voterData = await request.json();
 		await client.connect();
-		const database = client.db(dbName);
-		const collection = database.collection(collectionName);
+		const database = client.db('voterinfo');
+		const collection = database.collection('voterinfo');
 
-		const result = await collection.insertOne(voterData);
+		const result = await collection.insertOne({
+			flatNo,
+			epicNo,
+			name,
+			age,
+			relativeName,
+			phoneNo,
+			buildingName,
+			buildingId
+		});
 
-		return json({ message: 'New voter added', insertedId: result.insertedId });
+		return new Response(JSON.stringify({ insertedId: result.insertedId }), {
+			headers: { 'Content-Type': 'application/json' }
+		});
 	} catch (error) {
-		return json({ error: 'Error adding voter', details: error.message }, { status: 500 });
+		console.error('Error adding voter:', error);
+		return new Response(JSON.stringify({ error: 'Failed to add voter' }), { status: 500 });
 	} finally {
 		await client.close();
 	}
