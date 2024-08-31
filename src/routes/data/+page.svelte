@@ -18,7 +18,6 @@
     let age = '';
     let relativeName = '';
     let phoneNo = '';
-    let buildingId = '';
     let successAlert = '';
     
     const selectedBuildingStore = writable(selectedBuilding);
@@ -58,8 +57,7 @@
             age,
             relativeName,
             phoneNo,
-            buildingName: selectedBuilding,
-            buildingId
+            buildingName: selectedBuilding
         };
 
         try {
@@ -81,7 +79,6 @@
                 age = '';
                 relativeName = '';
                 phoneNo = '';
-                buildingId = '';
                 fetchVoters(selectedBuilding); // Refresh the voter list
             } else {
                 console.error(`Error adding voter: ${result.error}`);
@@ -142,7 +139,6 @@
                         <TableHeadCell class="px-4 py-2">Relative Name</TableHeadCell>
                         <TableHeadCell class="px-4 py-2">Phone No</TableHeadCell>
                         <TableHeadCell class="px-4 py-2">Building Name</TableHeadCell>
-                        <TableHeadCell class="px-4 py-2">Building ID</TableHeadCell>
                 </TableHead>
                 <TableBody>
                     {#each voters as voter}
@@ -154,7 +150,6 @@
                             <TableBodyCell class="border px-4 py-2">{voter.relativeName}</TableBodyCell>
                             <TableBodyCell class="border px-4 py-2">{voter.phoneNo}</TableBodyCell>
                             <TableBodyCell class="border px-4 py-2">{voter.buildingName}</TableBodyCell>
-                            <TableBodyCell class="border px-4 py-2">{voter.buildingId}</TableBodyCell>
                         </TableBodyRow>
                     {/each}
                 </TableBody>
@@ -169,34 +164,30 @@
                 {/if}
                 <form on:submit|preventDefault={addVoter} class="space-y-4">
                     <div class="grid gap-4 md:grid-cols-3">
-                    <div>
-                        <Label for="flatNo" class="block mb-2">Flat No</Label>
-                        <Input type="number" id="flatNo" bind:value={flatNo} class="border w-full" required />
-                    </div>
-                    <div>
-                        <Label for="epicNo" class="block mb-2">Epic No</Label>
-                        <Input type="text" id="epicNo" bind:value={epicNo} class="border w-full" required />
-                    </div>
-                    <div>
-                        <Label for="name" class="block mb-2">Name</Label>
-                        <Input type="text" id="name" bind:value={name} class="border w-full" required />
-                    </div>
-                    <div>
-                        <Label for="age" class="block mb-2">Age</Label>
-                        <Input type="number" id="age" bind:value={age} class="border w-full" required />
-                    </div>
-                    <div>
-                        <Label for="relativeName" class="block mb-2">Relative Name</Label>
-                        <Input type="text" id="relativeName" bind:value={relativeName} class="border w-full" required />
-                    </div>
-                    <div>
-                        <Label for="phoneNo" class="block mb-2">Phone No</Label>
-                        <Input type="tel" id="phoneNo" bind:value={phoneNo} class="border w-full" required />
-                    </div>
-                    <div>
-                        <Label for="buildingId" class="block mb-2">Building ID</Label>
-                        <Input type="text" id="buildingId" bind:value={buildingId} class="border w-full" required />
-                    </div>
+                        <div>
+                            <Label for="flatNo" class="block mb-2">Flat No</Label>
+                            <Input type="number" id="flatNo" bind:value={flatNo} class="border w-full" required />
+                        </div>
+                        <div>
+                            <Label for="epicNo" class="block mb-2">Epic No</Label>
+                            <Input type="text" id="epicNo" bind:value={epicNo} class="border w-full" required />
+                        </div>
+                        <div>
+                            <Label for="name" class="block mb-2">Name</Label>
+                            <Input type="text" id="name" bind:value={name} class="border w-full" required />
+                        </div>
+                        <div>
+                            <Label for="age" class="block mb-2">Age</Label>
+                            <Input type="number" id="age" bind:value={age} class="border w-full" required />
+                        </div>
+                        <div>
+                            <Label for="relativeName" class="block mb-2">Relative Name</Label>
+                            <Input type="text" id="relativeName" bind:value={relativeName} class="border w-full" required />
+                        </div>
+                        <div>
+                            <Label for="phoneNo" class="block mb-2">Phone No</Label>
+                            <Input type="tel" id="phoneNo" bind:value={phoneNo} class="border w-full" required />
+                        </div>
                     </div>
                     <Button type="submit">Add Resident</Button>
                 </form>

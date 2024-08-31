@@ -4,7 +4,7 @@ import { MongoClient } from 'mongodb';
 export async function POST({ request }) {
 	const uri = 'mongodb+srv://abdurrahman19702:Abdur%402002@cluster0.kntzr.mongodb.net/';
 	const client = new MongoClient(uri);
-	const { flatNo, epicNo, name, age, relativeName, phoneNo, buildingName, buildingId } =
+	const { flatNo, epicNo, name, age, relativeName, phoneNo, buildingName } =
 		await request.json();
 
 	try {
@@ -20,7 +20,6 @@ export async function POST({ request }) {
 			relativeName,
 			phoneNo,
 			buildingName,
-			buildingId
 		});
 
 		return new Response(JSON.stringify({ insertedId: result.insertedId }), {

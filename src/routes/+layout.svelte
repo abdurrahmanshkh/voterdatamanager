@@ -7,10 +7,10 @@
 <header class="border-2">
 	<Navbar>
 		<NavBrand href="/">
-			<span class="self-center whitespace-nowrap text-xl font-bold dark:text-white mr-2">
+			<span class="self-center whitespace-nowrap text-xl font-bold mr-2 text-primary-800">
 				Voter's Data -
 			</span>
-			<span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">
+			<span class="self-center whitespace-nowrap text-xl font-semibold text-primary-800">
 				Owe, Kharghar
 			</span>
 		</NavBrand>
