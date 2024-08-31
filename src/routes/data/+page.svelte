@@ -19,6 +19,7 @@
     let relativeName = '';
     let phoneNo = '';
     let successAlert = '';
+    let searchTerm = '';
     
     const selectedBuildingStore = writable(selectedBuilding);
 
@@ -96,6 +97,8 @@
         fetchVoters();
     }
 
+    $: filteredVoters = voters.filter((voter) => voter.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
+
 </script>
 
 <main>
@@ -129,7 +132,8 @@
         </Card>
 
         <Card class="mx-auto max-w-full bg-gray-100 border-2">
-            <P class="text-xl font-bold mb-4">Residents of {selectedBuilding || 'All Buildings'}</P>
+            <P class="text-xl font-bold mb-2">Residents of {selectedBuilding || 'All Buildings'}</P>
+            <TableSearch placeholder="Search by Voter Name" hoverable={true} bind:inputValue={searchTerm}/>
             <Table shadow class="table-auto w-full text-left">
                 <TableHead>
                         <TableHeadCell class="px-4 py-2">Flat No</TableHeadCell>
@@ -141,7 +145,7 @@
                         <TableHeadCell class="px-4 py-2">Building Name</TableHeadCell>
                 </TableHead>
                 <TableBody>
-                    {#each voters as voter}
+                    {#each filteredVoters as voter}
                         <TableBodyRow>
                             <TableBodyCell class="border px-4 py-2">{voter.flatNo}</TableBodyCell>
                             <TableBodyCell class="border px-4 py-2">{voter.epicNo}</TableBodyCell>
