@@ -1,8 +1,9 @@
-// src/routes/voters/+page.server.js
-export const load = async () => {
+export async function POST({ request }) {
 	const apiKey = 'otfYgrBDP88yH06F6Uo7oNB7bOmj4Txs6rF2pfdui8ofPCW1IIF88Jtb0pAbMYrG';
 	const endpoint =
-		'https://ap-south-1.aws.data.mongodb-api.com/app/data-mxiiynz/endpoint/data/v1/action/find';
+		'https://ap-south-1.aws.data.mongodb-api.com/app/data-mxiiynz/endpoint/data/v1/action/insertOne';
+
+	const formData = await request.json();
 
 	try {
 		const response = await fetch(endpoint, {
@@ -15,7 +16,7 @@ export const load = async () => {
 				dataSource: 'cluster0',
 				database: 'voterinfo',
 				collection: 'voterinfo',
-				filter: {}
+				document: formData
 			})
 		});
 
@@ -24,15 +25,9 @@ export const load = async () => {
 		}
 
 		const data = await response.json();
-
-		// Return the fetched data as props to the page
-		return {
-			voters: data.documents || []
-		};
+		return new Response(JSON.stringify(data), { status: 200 });
 	} catch (error) {
-		console.error('Error fetching data:', error);
-		return {
-			voters: []
-		};
+		console.error('Error inserting data:', error);
+		return new Response('Error inserting data', { status: 500 });
 	}
-};
+}

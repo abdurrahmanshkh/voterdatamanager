@@ -1,6 +1,6 @@
 <script>
 	import '../app.css';
-	import { Navbar, NavBrand, NavLi, NavUl, NavHamburger, Button, Input, Footer, FooterCopyright } from 'flowbite-svelte';
+	import { Navbar, NavBrand, NavHamburger, Button, Input, Footer, FooterCopyright } from 'flowbite-svelte';
   	import { SearchOutline } from 'flowbite-svelte-icons';
 </script>
 
@@ -26,11 +26,6 @@
 			</div>
 			<NavHamburger />
 		</div>
-		<!-- <NavUl>
-			<NavLi href="/" active={true}>Home</NavLi>
-			<NavLi href="/about">About</NavLi>
-			<NavLi href="/docs/components/navbar">Navbar</NavLi>
-		</NavUl> -->
 	</Navbar>
 </header>
 

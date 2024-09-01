@@ -1,201 +1,170 @@
 <script>
-    import { onMount } from 'svelte';
-    import { writable } from 'svelte/store';
-    import { Input, Label, Button, Card, P } from 'flowbite-svelte';
-    import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, TableSearch } from 'flowbite-svelte';
-    import { Alert } from 'flowbite-svelte';
+	import { Input, Label, Button, Card, P, Alert } from 'flowbite-svelte';
+	import {
+		Table,
+		TableBody,
+		TableBodyCell,
+		TableBodyRow,
+		TableHead,
+		TableHeadCell,
+	} from 'flowbite-svelte';
 
-    let voters = [];
-    let uniqueBuildings = [];
-    let selectedBuilding = '';
-    let loading = true;
-    let error = null;
+	export let data; // The fetched data is passed as props to the page component
 
-    // Form fields
-    let flatNo = '';
-    let epicNo = '';
-    let name = '';
-    let age = '';
-    let relativeName = '';
-    let phoneNo = '';
-    let successAlert = '';
-    let searchTerm = '';
-    
-    const selectedBuildingStore = writable(selectedBuilding);
+	let { voters } = data; // Destructure the voters from the data prop
 
-    async function fetchVoters(buildingName = '') {
-        try {
-            const response = await fetch(`/api/get-voters?buildingName=${encodeURIComponent(buildingName)}`);
-            if (!response.ok) {
-                throw new Error('Failed to fetch data');
-            }
-            const data = await response.json();
-            voters = data.voters;
-            uniqueBuildings = data.uniqueBuildings;
-        } catch (err) {
-            error = err.message;
-        } finally {
-            loading = false;
-        }
-    }
+	let uniqueBuildings = [...new Set(voters.map((voter) => voter.buildingName))]; // Get unique building names
+	let selectedBuilding = ''; // Store the selected building name
 
-    function handleBuildingClick(buildingName) {
-        selectedBuilding = buildingName;
-        selectedBuildingStore.set(buildingName);
-        fetchVoters(buildingName);
-    }
+	// Form fields
+	let flatNo = '';
+	let epicNo = '';
+	let name = '';
+	let age = '';
+	let relativeName = '';
+	let phoneNo = '';
+	let alert = '';
+	let searchTerm = '';
 
-    async function addVoter() {
-        if (!selectedBuilding) {
-            alert('Please select a building first.');
-            return;
-        }
+	// Reactive variable for filtered voters
+	$: filteredBuildings = selectedBuilding
+		? voters.filter((voter) => voter.buildingName === selectedBuilding)
+		: voters;
 
-        const voterData = {
-            flatNo,
-            epicNo,
-            name,
-            age,
-            relativeName,
-            phoneNo,
-            buildingName: selectedBuilding
-        };
+	// Function to handle button click
+	function filterByBuilding(buildingName) {
+		selectedBuilding = buildingName; // Set the selected building name
+	}
 
-        try {
-            const response = await fetch('/api/add-voter', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(voterData)
-            });
+	// Function to handle form submission
+	async function handleSubmit(event) {
+		event.preventDefault();
 
-            const result = await response.json();
-            if (response.ok) {
-                successAlert= `New voter added with the following id: ${result.insertedId}`;
-                // Clear form fields
-                flatNo = '';
-                epicNo = '';
-                name = '';
-                age = '';
-                relativeName = '';
-                phoneNo = '';
-                fetchVoters(selectedBuilding); // Refresh the voter list
-            } else {
-                console.error(`Error adding voter: ${result.error}`);
-            }
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
+		const formData = {
+			flatNo,
+			epicNo,
+			name,
+			age,
+			relativeName,
+			phoneNo,
+			buildingName: selectedBuilding
+		};
 
-    onMount(() => fetchVoters()); // Fetch all voters initially
+		try {
+			const response = await fetch('/api/add-voter', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(formData)
+			});
 
-    function deselectBuilding() {
-        selectedBuilding = '';
-        selectedBuildingStore.set('');
-        fetchVoters();
-    }
+			if (response.ok) {
+				const result = await response.json();
+				alert = 'Voter information added successfully!';
+				// Clear form fields
+				flatNo = '';
+				epicNo = '';
+				name = '';
+				age = '';
+				relativeName = '';
+				phoneNo = '';
+			} else {
+				alert = 'Failed to add voter information';
+			}
+		} catch (error) {
+			alert = 'An error occurred';
+		}
+	}
 
-    $: filteredVoters = voters.filter((voter) => voter.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
-
+	$: filteredVoters = filteredBuildings.filter(
+		(voter) => voter.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
+	);
+	
 </script>
 
 <main>
-    {#if loading}
-        <p>Loading...</p>
-    {/if}
+	<!-- Building Filter Buttons -->
+	<Card class="mx-auto max-w-full border-2 bg-gray-100">
+		<P class="mb-4 text-xl font-bold">Select a Building</P>
+		<div class="grid gap-1 md:grid-cols-6">
+			{#each uniqueBuildings as building}
+				<Button on:click={() => filterByBuilding(building)}>
+					{building}
+				</Button>
+			{/each}
+			<Button on:click={() => filterByBuilding('')}>Show All</Button>
+		</div>
+	</Card>
 
-    {#if error}
-        <p class="text-red-500">{error}</p>
-    {/if}
+	<!-- Render the table -->
+	<Card class="mx-auto max-w-full border-2 bg-gray-100">
+    <div class="grid grid-cols-3">
+		<P class="mt-2 text-xl font-bold col-span-2">Residents of {selectedBuilding || 'All Buildings'}</P>
+		<Input placeholder="Search by Voter Name" bind:value={searchTerm} class="mb-4"/>
+    </div>
+		<Table shadow class="w-full table-auto text-left">
+			<TableHead>
+				<TableHeadCell>Flat No</TableHeadCell>
+				<TableHeadCell>EPIC No</TableHeadCell>
+				<TableHeadCell>Name</TableHeadCell>
+				<TableHeadCell>Age</TableHeadCell>
+				<TableHeadCell>Relative Name</TableHeadCell>
+				<TableHeadCell>Phone No</TableHeadCell>
+				<TableHeadCell>Building Name</TableHeadCell>
+			</TableHead>
+			<TableBody>
+				{#each filteredVoters as voter}
+					<TableBodyRow>
+						<TableBodyCell>{voter.flatNo}</TableBodyCell>
+						<TableBodyCell>{voter.epicNo}</TableBodyCell>
+						<TableBodyCell>{voter.name}</TableBodyCell>
+						<TableBodyCell>{voter.age}</TableBodyCell>
+						<TableBodyCell>{voter.relativeName}</TableBodyCell>
+						<TableBodyCell>{voter.phoneNo}</TableBodyCell>
+						<TableBodyCell>{voter.buildingName}</TableBodyCell>
+					</TableBodyRow>
+				{/each}
+			</TableBody>
+		</Table>
+	</Card>
 
-    {#if !loading && !error}
-        <Card class="mx-auto max-w-full bg-gray-100 border-2">
-            <P class="text-xl font-bold mb-4">Select a Building</P>
-            <div class="grid gap-1 md:grid-cols-6">
-                {#each uniqueBuildings as building}
-                    <Button 
-                        class="bg-gray-500 text-white px-4 py-2 rounded"
-                        on:click={() => handleBuildingClick(building)}
-                    >
-                        {building}
-                    </Button>
-                {/each}
-                <Button 
-                    class="bg-gray-500 text-white px-4 py-2 rounded"
-                    on:click={deselectBuilding}
-                >
-                    Show All
-                </Button>
-            </div>
-        </Card>
-
-        <Card class="mx-auto max-w-full bg-gray-100 border-2">
-            <P class="text-xl font-bold mb-2">Residents of {selectedBuilding || 'All Buildings'}</P>
-            <TableSearch placeholder="Search by Voter Name" hoverable={true} bind:inputValue={searchTerm}/>
-            <Table shadow class="table-auto w-full text-left">
-                <TableHead>
-                        <TableHeadCell class="px-4 py-2">Flat No</TableHeadCell>
-                        <TableHeadCell class="px-4 py-2">Epic No</TableHeadCell>
-                        <TableHeadCell class="px-4 py-2">Name</TableHeadCell>
-                        <TableHeadCell class="px-4 py-2">Age</TableHeadCell>
-                        <TableHeadCell class="px-4 py-2">Relative Name</TableHeadCell>
-                        <TableHeadCell class="px-4 py-2">Phone No</TableHeadCell>
-                        <TableHeadCell class="px-4 py-2">Building Name</TableHeadCell>
-                </TableHead>
-                <TableBody>
-                    {#each filteredVoters as voter}
-                        <TableBodyRow>
-                            <TableBodyCell class="border px-4 py-2">{voter.flatNo}</TableBodyCell>
-                            <TableBodyCell class="border px-4 py-2">{voter.epicNo}</TableBodyCell>
-                            <TableBodyCell class="border px-4 py-2">{voter.name}</TableBodyCell>
-                            <TableBodyCell class="border px-4 py-2">{voter.age}</TableBodyCell>
-                            <TableBodyCell class="border px-4 py-2">{voter.relativeName}</TableBodyCell>
-                            <TableBodyCell class="border px-4 py-2">{voter.phoneNo}</TableBodyCell>
-                            <TableBodyCell class="border px-4 py-2">{voter.buildingName}</TableBodyCell>
-                        </TableBodyRow>
-                    {/each}
-                </TableBody>
-            </Table>
-        </Card>
-
-        {#if selectedBuilding}
-            <Card class="mx-auto max-w-full bg-gray-100 border-2">
-                <P class="text-xl font-bold mb-4">Add Resident to {selectedBuilding}</P>
-                {#if successAlert.length>0}
-                    <Alert color="green" class="font-medium">{successAlert}</Alert>
-                {/if}
-                <form on:submit|preventDefault={addVoter} class="space-y-4">
-                    <div class="grid gap-4 md:grid-cols-3">
-                        <div>
-                            <Label for="flatNo" class="block mb-2">Flat No</Label>
-                            <Input type="number" id="flatNo" bind:value={flatNo} class="border w-full" required />
-                        </div>
-                        <div>
-                            <Label for="epicNo" class="block mb-2">Epic No</Label>
-                            <Input type="text" id="epicNo" bind:value={epicNo} class="border w-full" required />
-                        </div>
-                        <div>
-                            <Label for="name" class="block mb-2">Name</Label>
-                            <Input type="text" id="name" bind:value={name} class="border w-full" required />
-                        </div>
-                        <div>
-                            <Label for="age" class="block mb-2">Age</Label>
-                            <Input type="number" id="age" bind:value={age} class="border w-full" required />
-                        </div>
-                        <div>
-                            <Label for="relativeName" class="block mb-2">Relative Name</Label>
-                            <Input type="text" id="relativeName" bind:value={relativeName} class="border w-full" required />
-                        </div>
-                        <div>
-                            <Label for="phoneNo" class="block mb-2">Phone No</Label>
-                            <Input type="tel" id="phoneNo" bind:value={phoneNo} class="border w-full" required />
-                        </div>
-                    </div>
-                    <Button type="submit">Add Resident</Button>
-                </form>
-            </Card>
-        {/if}
-    {/if}
+	<!-- Conditional Form Display -->
+	{#if selectedBuilding}
+		<Card class="mx-auto max-w-full border-2 bg-gray-100">
+			{#if alert}
+				<Alert color="green" class="font-medium">{alert}</Alert>
+			{/if}
+			<P class="mb-4 text-xl font-bold">Add Resident to {selectedBuilding}</P>
+			<form on:submit|preventDefault={handleSubmit}>
+				<div class="grid md:grid-cols-3 gap-4">
+					<Label>
+						Flat No:
+						<Input type="text" bind:value={flatNo} class="mt-2" required />
+					</Label>
+					<Label>
+						EPIC No:
+						<Input type="text" bind:value={epicNo} class="mt-2" required />
+					</Label>
+					<Label>
+						Name:
+						<Input type="text" bind:value={name} class="mt-2" required />
+					</Label>
+					<Label>
+						Age:
+						<Input type="text" bind:value={age} class="mt-2" required />
+					</Label>
+					<Label>
+						Relative Name:
+						<Input type="text" bind:value={relativeName} class="mt-2" required />
+					</Label>
+					<Label>
+						Phone No:
+						<Input type="text" bind:value={phoneNo} class="mt-2" required />
+					</Label>
+				</div>
+				<Button class="mt-6" type="submit">Add Voter</Button>
+			</form>
+		</Card>
+	{/if}
 </main>
