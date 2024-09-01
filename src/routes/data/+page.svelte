@@ -99,8 +99,8 @@
 
 	<!-- Render the table -->
 	<Card class="mx-auto max-w-full border-2 bg-gray-100">
-    <div class="grid grid-cols-3">
-		<P class="mt-2 text-xl font-bold col-span-2">Residents of {selectedBuilding || 'All Buildings'}</P>
+    <div class="grid md:grid-cols-3">
+		<P class="md:mt-2 text-xl font-bold md:col-span-2">Residents of {selectedBuilding || 'All Buildings'}</P>
 		<Input placeholder="Search by Voter Name" bind:value={searchTerm} class="mb-4"/>
     </div>
 		<Table shadow class="w-full table-auto text-left">

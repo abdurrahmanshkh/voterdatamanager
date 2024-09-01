@@ -26,11 +26,11 @@
     
 </script>
 
-<div class="py-10 px-72">
+<div class="py-10 md:px-72">
     <h1 class="text-3xl font-semibold text-gray-900 dark:text-white text-center pb-10">
         Welcome to Voter's Data Portal
     </h1>
-    <Card class="mx-auto max-w-full">
+    <Card class="max-w-full">
         <form class="flex flex-col space-y-6" action="/">
             <h3 class="text-xl font-medium text-gray-900 dark:text-white">
                 Login to Access Data
