@@ -43,8 +43,5 @@
 		"vitest": "^2.0.0",
 		"wrangler": "^3.72.2"
 	},
-	"type": "module",
-	"dependencies": {
-		"mongodb": "^6.8.0"
-	}
+	"type": "module"
 }
