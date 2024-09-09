@@ -1,7 +1,8 @@
+import { env } from '$env/dynamic/private';
+
 export const load = async () => {
-	const apiKey = 'otfYgrBDP88yH06F6Uo7oNB7bOmj4Txs6rF2pfdui8ofPCW1IIF88Jtb0pAbMYrG';
-	const endpoint =
-		'https://ap-south-1.aws.data.mongodb-api.com/app/data-mxiiynz/endpoint/data/v1/action/find';
+	const apiKey = env.API_KEY;
+	const endpoint = env.DATABASE_URL;
 
 	try {
 		const response = await fetch(endpoint, {
