@@ -2,6 +2,7 @@
 	import { Input, Label, Button, Card, P, Alert } from 'flowbite-svelte';
 	import { Table, TableBody, TableBodyCell } from 'flowbite-svelte';
 	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
+	import { PDFDocument, rgb } from 'pdf-lib';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 
@@ -131,6 +132,100 @@
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
 	}
+
+	async function downloadVoterSlips() {
+		const pdfDoc = await PDFDocument.create();
+		const pageWidth = 595.276; // A4 width in points
+		const pageHeight = 841.89; // A4 height in points
+		const slipWidth = pageWidth / 2; // Two columns
+		const slipHeight = pageHeight / 6 - 10; // Six rows
+
+		const margin = 10; // Adjusted margin
+		const slipMargin = 10; // Adjusted slip padding
+		const textSize = 14; // Adjusted text size
+		const titleHeight = 40; // Space for the title on top
+
+		// Draws a slip
+		function drawSlip(page, x, y, name, yadiNo, srNo) {
+			page.drawRectangle({
+				x,
+				y,
+				width: slipWidth - 2 * slipMargin,
+				height: slipHeight - 2 * slipMargin,
+				color: rgb(1, 1, 1),
+				borderColor: rgb(0, 0, 0),
+				borderWidth: 1
+			});
+			page.drawText(`Name: ${name}`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - textSize - 16,
+				size: textSize
+			});
+			page.drawText(`List No / Part No: ${yadiNo}`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - 2 * textSize - 22,
+				size: textSize
+			});
+			page.drawText(`SR No: ${srNo}`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - 3 * textSize - 28,
+				size: textSize
+			});
+			page.drawText(`Polling Station Address:`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - 4 * textSize - 34,
+				size: textSize
+			});
+			page.drawText(`Room No, Building, Plot No, Sector No`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - 5 * textSize - 40,
+				size: textSize
+			});
+		}
+
+		// Draws the title at the top of each page
+		function drawTitle(page) {
+			page.drawText(`Sajid Patel - Voter's Data - ${selectedBuilding} ${sectorName}`, {
+				x: margin,
+				y: pageHeight - margin - titleHeight / 2,
+				size: 16,
+				color: rgb(0, 0, 0)
+			});
+		}
+
+		for (let i = 0; i < filteredVoters.length; i++) {
+			const voter = filteredVoters[i];
+
+			// Add a new page if necessary (for every 12 voters)
+			if (i % 12 === 0) {
+				pdfDoc.addPage([pageWidth, pageHeight]);
+				const page = pdfDoc.getPage(pdfDoc.getPageCount() - 1);
+				drawTitle(page); // Add the title on each page
+			}
+
+			const page = pdfDoc.getPage(Math.floor(i / 12));
+
+			// Calculate the position for the slip on the page (6 rows, 2 columns)
+			const row = (i % 12) % 6;
+			const col = Math.floor((i % 12) / 6);
+			const x = col * slipWidth + margin;
+			const y = pageHeight - titleHeight - (row + 1) * slipHeight +10;
+
+			drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo);
+		}
+
+		// Save and download the PDF
+		const pdfBytes = await pdfDoc.save();
+		const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'voter_slips.pdf';
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}
 </script>
 
 <main>
@@ -145,6 +240,7 @@
 			{/each}
 			<Button on:click={() => filterByBuilding('')}>Show All</Button>
 			<Button on:click={downloadCSV} color="blue">Download Table</Button>
+			<Button on:click={downloadVoterSlips} color="red">Download Slips</Button>
 		</div>
 	</Card>
 
