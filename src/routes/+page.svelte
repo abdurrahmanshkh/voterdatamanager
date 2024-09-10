@@ -1,5 +1,13 @@
 <script>
+	import { goto } from '$app/navigation';
 	import { Card, Button, Input, Label, Hr, Alert, Spinner } from 'flowbite-svelte';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		if (localStorage.getItem('isAuthenticated') == 'true') {
+			goto('/data');
+		}
+	});
 
 	let username = 'Sajid Patel';
 	let verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
@@ -38,7 +46,8 @@
 
 	function handleSubmit() {
 		if (password == verificationCode) {
-			window.location.href = '/data';
+			localStorage.setItem('isAuthenticated', JSON.stringify(true));
+			goto('/data');
 		} else {
 			error = 'Incorrect Verification Code';
 		}

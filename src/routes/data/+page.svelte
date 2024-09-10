@@ -1,13 +1,15 @@
 <script>
 	import { Input, Label, Button, Card, P, Alert } from 'flowbite-svelte';
-	import {
-		Table,
-		TableBody,
-		TableBodyCell,
-		TableBodyRow,
-		TableHead,
-		TableHeadCell,
-	} from 'flowbite-svelte';
+	import { Table, TableBody, TableBodyCell } from 'flowbite-svelte';
+	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
+	import { goto } from '$app/navigation';
+	import { onMount } from 'svelte';
+
+	onMount(() => {
+		if (!localStorage.getItem('isAuthenticated')) {
+			goto('/');
+		}
+	});
 
 	export let data; // The fetched data is passed as props to the page component
 
@@ -80,7 +82,6 @@
 	$: filteredVoters = filteredBuildings.filter(
 		(voter) => voter.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
 	);
-	
 </script>
 
 <main>
@@ -99,10 +100,12 @@
 
 	<!-- Render the table -->
 	<Card class="mx-auto max-w-full border-2 bg-gray-100">
-    <div class="grid md:grid-cols-3">
-		<P class="md:mt-2 text-xl font-bold md:col-span-2">Residents of {selectedBuilding || 'All Buildings'}</P>
-		<Input placeholder="Search by Voter Name" bind:value={searchTerm} class="mb-4"/>
-    </div>
+		<div class="grid md:grid-cols-3">
+			<P class="text-xl font-bold md:col-span-2 md:mt-2"
+				>Residents of {selectedBuilding || 'All Buildings'}</P
+			>
+			<Input placeholder="Search by Voter Name" bind:value={searchTerm} class="mb-4" />
+		</div>
 		<Table shadow class="w-full table-auto text-left">
 			<TableHead>
 				<TableHeadCell>Flat No</TableHeadCell>
@@ -137,7 +140,7 @@
 			{/if}
 			<P class="mb-4 text-xl font-bold">Add Resident to {selectedBuilding}</P>
 			<form on:submit|preventDefault={handleSubmit}>
-				<div class="grid md:grid-cols-3 gap-4">
+				<div class="grid gap-4 md:grid-cols-3">
 					<Label>
 						Flat No:
 						<Input type="text" bind:value={flatNo} class="mt-2" required />
