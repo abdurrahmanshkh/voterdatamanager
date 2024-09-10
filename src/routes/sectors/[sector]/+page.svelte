@@ -86,6 +86,51 @@
 	$: filteredVoters = filteredBuildings.filter(
 		(voter) => voter.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
 	);
+
+	function downloadCSV() {
+		// Create CSV header
+		const header = [
+			'Flat No',
+			'Name',
+			'Phone No',
+			'Yadi No',
+			'SR No',
+			'RSC No',
+			'Building Name',
+			'Wing'
+		];
+
+		// Convert data to CSV format
+		const csvRows = [];
+		csvRows.push(header.join(',')); // Add header row
+
+		// Add data rows
+		filteredVoters.forEach((voter) => {
+			const row = [
+				voter.flatNo,
+				voter.name,
+				voter.phoneNo,
+				voter.yadiNo,
+				voter.srNo,
+				voter.rscNo,
+				voter.buildingName,
+				voter.wing
+			];
+			csvRows.push(row.join(','));
+		});
+
+		// Create a blob with CSV data and create a download link
+		const csvContent = csvRows.join('\n');
+		const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'voters.csv';
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}
 </script>
 
 <main>
@@ -99,6 +144,7 @@
 				</Button>
 			{/each}
 			<Button on:click={() => filterByBuilding('')}>Show All</Button>
+			<Button on:click={downloadCSV} color="blue">Download Table</Button>
 		</div>
 	</Card>
 
