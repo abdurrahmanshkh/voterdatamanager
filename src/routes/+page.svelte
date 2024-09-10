@@ -5,7 +5,7 @@
 
 	onMount(() => {
 		if (localStorage.getItem('isAuthenticated') == 'true') {
-			goto('/data');
+			goto('/sectors');
 		}
 	});
 

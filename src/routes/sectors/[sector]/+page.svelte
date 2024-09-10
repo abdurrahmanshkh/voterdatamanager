@@ -12,9 +12,7 @@
 	});
 
 	export let data; // The fetched data is passed as props to the page component
-
 	let { voters } = data; // Destructure the voters from the data prop
-
 	let uniqueBuildings = [...new Set(voters.map((voter) => voter.buildingName))]; // Get unique building names
 	let selectedBuilding = ''; // Store the selected building name
 
