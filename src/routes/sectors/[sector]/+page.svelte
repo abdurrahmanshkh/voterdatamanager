@@ -18,11 +18,14 @@
 
 	// Form fields
 	let flatNo = '';
-	let epicNo = '';
 	let name = '';
-	let age = '';
-	let relativeName = '';
 	let phoneNo = '';
+	let yadiNo = '';
+	let srNo = '';
+	let rscNo = '';
+	let wing = '';
+	let sectorName = voters[0].sectorName;
+
 	let alert = '';
 	let searchTerm = '';
 
@@ -42,12 +45,14 @@
 
 		const formData = {
 			flatNo,
-			epicNo,
 			name,
-			age,
-			relativeName,
 			phoneNo,
-			buildingName: selectedBuilding
+			yadiNo,
+			srNo,
+			rscNo,
+			buildingName: selectedBuilding,
+			wing,
+			sectorName
 		};
 
 		try {
@@ -64,11 +69,12 @@
 				alert = 'Voter information added successfully!';
 				// Clear form fields
 				flatNo = '';
-				epicNo = '';
 				name = '';
-				age = '';
-				relativeName = '';
 				phoneNo = '';
+				yadiNo = '';
+				srNo = '';
+				rscNo = '';
+				wing = '';
 			} else {
 				alert = 'Failed to add voter information';
 			}
@@ -107,23 +113,25 @@
 		<Table shadow class="w-full table-auto text-left">
 			<TableHead>
 				<TableHeadCell>Flat No</TableHeadCell>
-				<TableHeadCell>EPIC No</TableHeadCell>
 				<TableHeadCell>Name</TableHeadCell>
-				<TableHeadCell>Age</TableHeadCell>
-				<TableHeadCell>Relative Name</TableHeadCell>
 				<TableHeadCell>Phone No</TableHeadCell>
+				<TableHeadCell>Yadi No</TableHeadCell>
+				<TableHeadCell>Sr No</TableHeadCell>
+				<TableHeadCell>RSC No</TableHeadCell>
 				<TableHeadCell>Building Name</TableHeadCell>
+				<TableHeadCell>Wing</TableHeadCell>
 			</TableHead>
 			<TableBody>
 				{#each filteredVoters as voter}
 					<TableBodyRow>
 						<TableBodyCell>{voter.flatNo}</TableBodyCell>
-						<TableBodyCell>{voter.epicNo}</TableBodyCell>
 						<TableBodyCell>{voter.name}</TableBodyCell>
-						<TableBodyCell>{voter.age}</TableBodyCell>
-						<TableBodyCell>{voter.relativeName}</TableBodyCell>
 						<TableBodyCell>{voter.phoneNo}</TableBodyCell>
+						<TableBodyCell>{voter.yadiNo}</TableBodyCell>
+						<TableBodyCell>{voter.srNo}</TableBodyCell>
+						<TableBodyCell>{voter.rscNo}</TableBodyCell>
 						<TableBodyCell>{voter.buildingName}</TableBodyCell>
+						<TableBodyCell>{voter.wing}</TableBodyCell>
 					</TableBodyRow>
 				{/each}
 			</TableBody>
@@ -144,24 +152,36 @@
 						<Input type="text" bind:value={flatNo} class="mt-2" required />
 					</Label>
 					<Label>
-						EPIC No:
-						<Input type="text" bind:value={epicNo} class="mt-2" required />
-					</Label>
-					<Label>
 						Name:
 						<Input type="text" bind:value={name} class="mt-2" required />
 					</Label>
 					<Label>
-						Age:
-						<Input type="text" bind:value={age} class="mt-2" required />
-					</Label>
-					<Label>
-						Relative Name:
-						<Input type="text" bind:value={relativeName} class="mt-2" required />
-					</Label>
-					<Label>
 						Phone No:
 						<Input type="text" bind:value={phoneNo} class="mt-2" required />
+					</Label>
+					<Label>
+						Yadi No:
+						<Input type="text" bind:value={yadiNo} class="mt-2" required />
+					</Label>
+					<Label>
+						Sr No:
+						<Input type="text" bind:value={srNo} class="mt-2" required />
+					</Label>
+					<Label>
+						RSC No:
+						<Input type="text" bind:value={rscNo} class="mt-2" required />
+					</Label>
+					<Label>
+						Building Name:
+						<Input type="text" bind:value={selectedBuilding} class="mt-2" required disabled />
+					</Label>
+					<Label>
+						Wing:
+						<Input type="text" bind:value={wing} class="mt-2" required />
+					</Label>
+					<Label>
+						Sector:
+						<Input type="text" bind:value={sectorName} class="mt-2" required disabled />
 					</Label>
 				</div>
 				<Button class="mt-6" type="submit">Add Voter</Button>

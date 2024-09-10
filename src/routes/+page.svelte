@@ -47,7 +47,7 @@
 	function handleSubmit() {
 		if (password == verificationCode) {
 			localStorage.setItem('isAuthenticated', JSON.stringify(true));
-			goto('/data');
+			goto('/sectors');
 		} else {
 			error = 'Incorrect Verification Code';
 		}
