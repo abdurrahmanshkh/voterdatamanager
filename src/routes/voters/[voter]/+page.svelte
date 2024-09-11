@@ -113,7 +113,7 @@
 					Sector:
 					<Input type="text" bind:value={sectorName} class="mt-2" required />
 				</Label>
-				<Label>
+				<Label class="md:col-span-2">
 					Polling Station:
 					<Input type="text" bind:value={pollingStation} class="mt-2" />
 				</Label>
