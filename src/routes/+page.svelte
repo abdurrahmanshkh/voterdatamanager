@@ -54,11 +54,11 @@
 	}
 </script>
 
-<div class="py-10 md:px-72">
-	<h1 class="pb-10 text-center text-3xl font-semibold text-gray-900 dark:text-white">
+<div class="bg-primary-100 py-12 md:px-72 md:py-8">
+	<h1 class="pb-12 text-center text-2xl font-semibold text-orange-900 md:pb-8 md:text-3xl">
 		Welcome to Voter's Data Portal
 	</h1>
-	<Card class="max-w-full">
+	<Card class="max-w-full bg-orange-100 p-8" padding="none">
 		<form class="flex flex-col space-y-6" action="/">
 			{#if alert}
 				<Alert color={alertColor} class="text-green-900">{alert}</Alert>
@@ -66,8 +66,8 @@
 			{#if error}
 				<Alert class="text-red-800">{error}</Alert>
 			{/if}
-			<h3 class="text-xl font-medium text-gray-900 dark:text-white">Login to Access Data</h3>
-			<Hr classHr="my-8" />
+			<h3 class="text-center text-xl font-bold text-yellow-900">Login to Access Data</h3>
+			<Hr classHr="h-1 rounded bg-orange-200" class="m-0 p-0" />
 			<Label class="space-y-2">
 				<span>Full Name</span>
 				<Input type="text" name="name" placeholder="John" bind:value={username} disabled />
@@ -76,19 +76,21 @@
 				<span>Enter Verification Code</span>
 				<Input type="password" name="password" placeholder="•••••" bind:value={password} required />
 			</Label>
-			<div class="grid grid-cols-2 gap-3">
+			<div class="text-center">
 				{#if alert === 'Verification email sent successfully!'}
 					<Label>
-						<Button on:click={handleSubmit} class="w-full">Login to Portal</Button>
+						<Button on:click={handleSubmit} class="mt-1 w-64">Login to Portal</Button>
 					</Label>
 				{:else if sendingCode}
-					<Button disabled class="w-full">
+					<Button disabled class="mt-1 w-64">
 						<Spinner class="me-3" size="4" color="white" />
 						Sending Verification Code
 					</Button>
 				{:else}
 					<Label>
-						<Button on:click={sendVerificationEmail} class="w-full">Send Verification Code</Button>
+						<Button on:click={sendVerificationEmail} class="mt-1 w-64">
+							Send Verification Code
+						</Button>
 					</Label>
 				{/if}
 			</div>

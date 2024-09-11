@@ -10,28 +10,28 @@
 </script>
 
 <header class="border-2">
-	<Navbar>
-		<NavBrand href="/">
-			<span class="mr-2 self-center whitespace-nowrap text-xl font-bold text-primary-800">
+	<Navbar class="bg-primary-300">
+		<NavBrand class="text-center" href="/">
+			<span class="mr-2 self-center whitespace-nowrap font-bold text-primary-900 md:text-xl">
 				Voter's Data -
 			</span>
-			<span class="self-center whitespace-nowrap text-xl font-semibold text-primary-800">
+			<span class="self-center whitespace-nowrap font-semibold text-primary-900 md:text-xl">
 				Owe, Kharghar
 			</span>
 		</NavBrand>
-		<div class="flex items-center justify-end">
-			<Button on:click={logout}>Logout</Button>
-		</div>
+		<NavBrand class="">
+			<Button color="red" size="sm" on:click={logout}>Logout</Button>
+		</NavBrand>
 	</Navbar>
 </header>
 
-<main style="min-height: 81.5vh;">
+<main class="min-h-[85.5vh] bg-primary-100 md:min-h-[80.5vh]">
 	<slot />
 </main>
 
 <footer class="border-2">
-	<Navbar>
-		<Footer rounded color="form" class="flex w-full items-center justify-center text-center">
+	<Navbar class="bg-primary-300">
+		<Footer rounded color="form" class="flex w-full items-center justify-center p-1 text-center">
 			<FooterCopyright href="/" by="Voter's Data™" year={2024} />
 		</Footer>
 	</Navbar>
