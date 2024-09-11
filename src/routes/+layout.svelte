@@ -25,7 +25,7 @@
 	</Navbar>
 </header>
 
-<main class="min-h-[85.5vh] bg-primary-100 md:min-h-[80.5vh]">
+<main class="min-h-[86.5vh] bg-primary-100 md:min-h-[82vh]">
 	<slot />
 </main>
 
