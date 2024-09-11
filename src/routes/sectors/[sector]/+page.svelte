@@ -270,7 +270,7 @@
 			<Input placeholder="Search by Voter Name" bind:value={searchTerm} class="mb-4" />
 		</div>
 		<Table shadow class="w-full table-auto text-left">
-			<TableHead class="border-b bg-orange-100 border-orange-900">
+			<TableHead class="border-b border-orange-900 bg-orange-100">
 				<TableHeadCell>Flat No</TableHeadCell>
 				<TableHeadCell>Name</TableHeadCell>
 				<TableHeadCell>Phone No</TableHeadCell>
@@ -282,7 +282,8 @@
 			</TableHead>
 			<TableBody>
 				{#each filteredVoters as voter}
-					<TableBodyRow class="bg-orange-100 border-orange-900 hover:bg-orange-200"
+					<TableBodyRow
+						class="border-orange-900 bg-orange-100 hover:bg-orange-200"
 						on:click={() => goto(`/voters/${voter._id}`)}
 					>
 						<TableBodyCell>{voter.flatNo}</TableBodyCell>

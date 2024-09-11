@@ -18,7 +18,7 @@ export async function POST({ params, request }) {
 				dataSource: 'cluster0',
 				database: 'voterinfo',
 				collection: 'voterinfo',
-				filter: { yadiNo : params.booth },
+				filter: { yadiNo: params.booth },
 				update: { $set: formData }
 			})
 		});

@@ -70,7 +70,7 @@
 	<!-- Render the table -->
 	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
 		{#if alert}
-			<Alert color="green" class="font-semibold mb-4">{alert}</Alert>
+			<Alert color="green" class="mb-4 font-semibold">{alert}</Alert>
 		{/if}
 		<P class="mb-4 text-xl font-bold">Update Resident Information</P>
 		<form on:submit|preventDefault={handleSubmit}>

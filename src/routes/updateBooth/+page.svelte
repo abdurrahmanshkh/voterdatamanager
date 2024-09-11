@@ -60,7 +60,7 @@
 	}
 </script>
 
-<main class="bg-primary-100 md:py-[6%] py-[12%]">
+<main class="bg-primary-100 py-[12%] md:py-[6%]">
 	<!-- Render the table -->
 	<Card class="max-w-full border-2 border-primary-300 bg-orange-100 md:mx-auto md:max-w-[70%]">
 		{#if alert}

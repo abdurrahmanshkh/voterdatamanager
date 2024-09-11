@@ -16,7 +16,7 @@ export const load = async () => {
 				dataSource: 'cluster0',
 				database: 'voterinfo',
 				collection: 'voterinfo',
-				filter: { }
+				filter: {}
 			})
 		});
 
