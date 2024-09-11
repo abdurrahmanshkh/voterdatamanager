@@ -246,7 +246,7 @@
 
 <main class="bg-primary-300">
 	<!-- Building Filter Buttons -->
-	<Card class="mx-auto max-w-full border-2 bg-primary-100 border-primary-300">
+	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
 		<P class="mb-4 text-xl font-bold">Select a Building</P>
 		<div class="grid gap-1 md:grid-cols-6">
 			{#each uniqueBuildings as building}
@@ -261,7 +261,7 @@
 	</Card>
 
 	<!-- Render the table -->
-	<Card class="mx-auto max-w-full border-2 bg-primary-100 border-primary-300">
+	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
 		<div class="grid md:grid-cols-3">
 			<P class="text-xl font-bold md:col-span-2 md:mt-2"
 				>Residents of {selectedBuilding || 'All Buildings'}</P
@@ -269,7 +269,7 @@
 			<Input placeholder="Search by Voter Name" bind:value={searchTerm} class="mb-4" />
 		</div>
 		<Table shadow class="w-full table-auto text-left">
-			<TableHead class="border-b">
+			<TableHead class="border-b bg-orange-100 border-orange-900">
 				<TableHeadCell>Flat No</TableHeadCell>
 				<TableHeadCell>Name</TableHeadCell>
 				<TableHeadCell>Phone No</TableHeadCell>
@@ -281,7 +281,9 @@
 			</TableHead>
 			<TableBody>
 				{#each filteredVoters as voter}
-					<TableBodyRow>
+					<TableBodyRow class="bg-orange-100 border-orange-900 hover:bg-orange-200"
+						on:click={() => goto(`/voters/${voter._id}`)}
+					>
 						<TableBodyCell>{voter.flatNo}</TableBodyCell>
 						<TableBodyCell>{voter.name}</TableBodyCell>
 						<TableBodyCell>{voter.phoneNo}</TableBodyCell>
@@ -298,7 +300,7 @@
 
 	<!-- Conditional Form Display -->
 	{#if selectedBuilding}
-		<Card class="mx-auto max-w-full border-2 bg-primary-100 border-primary-300">
+		<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
 			{#if alert}
 				<Alert color="green" class="font-medium">{alert}</Alert>
 			{/if}
