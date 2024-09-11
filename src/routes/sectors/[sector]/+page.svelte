@@ -84,9 +84,25 @@
 		}
 	}
 
-	$: filteredVoters = filteredBuildings.filter(
-		(voter) => voter.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1
-	);
+	$: filteredVoters = filteredBuildings.filter((voter) => {
+		// Convert all int32 parameters to string for comparison
+		const flatNoStr = voter.flatNo.toString();
+		const phoneNoStr = voter.phoneNo.toString();
+		const yadiNoStr = voter.yadiNo.toString();
+		const srNoStr = voter.srNo.toString();
+		const rscNoStr = voter.rscNo.toString();
+
+		// Check if any of the search parameters match the searchTerm
+		return (
+			voter.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			flatNoStr.includes(searchTerm) ||
+			phoneNoStr.includes(searchTerm) ||
+			yadiNoStr.includes(searchTerm) ||
+			srNoStr.includes(searchTerm) ||
+			rscNoStr.includes(searchTerm) ||
+			voter.wing.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+	});
 
 	function downloadCSV() {
 		// Create CSV header
@@ -95,7 +111,7 @@
 			'Name',
 			'Phone No',
 			'Yadi No',
-			'SR No',
+			'Sr No',
 			'RSC No',
 			'Building Name',
 			'Wing'
@@ -166,7 +182,7 @@
 				y: y + slipHeight - slipMargin - 2 * textSize - 22,
 				size: textSize
 			});
-			page.drawText(`SR No: ${srNo}`, {
+			page.drawText(`Sr No: ${srNo}`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - 3 * textSize - 28,
 				size: textSize
@@ -209,7 +225,7 @@
 			const row = (i % 12) % 6;
 			const col = Math.floor((i % 12) / 6);
 			const x = col * slipWidth + margin;
-			const y = pageHeight - titleHeight - (row + 1) * slipHeight +10;
+			const y = pageHeight - titleHeight - (row + 1) * slipHeight + 10;
 
 			drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo);
 		}

@@ -43,7 +43,7 @@
 			'Name',
 			'Phone No',
 			'Yadi No',
-			'SR No',
+			'Sr No',
 			'RSC No',
 			'Building Name',
 			'Wing'
@@ -114,7 +114,7 @@
 				y: y + slipHeight - slipMargin - 2 * textSize - 22,
 				size: textSize
 			});
-			page.drawText(`SR No: ${srNo}`, {
+			page.drawText(`Sr No: ${srNo}`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - 3 * textSize - 28,
 				size: textSize
