@@ -1,5 +1,6 @@
 <script>
-	import { Alert, Button, Card, Input, Label, P } from 'flowbite-svelte';
+	//Sectors List Page
+	import { Alert, Button, ButtonGroup, Card, Input, InputAddon, Label, P } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { PDFDocument, rgb } from 'pdf-lib';
@@ -20,6 +21,8 @@
 	let buildingName = '';
 	let wing = '';
 	let sectorName = '';
+	let pollingStation = '';
+	let caste = '';
 	let alert = '';
 
 	export let data; // The fetched data is passed as props to the page component
@@ -200,7 +203,9 @@
 			rscNo,
 			buildingName,
 			wing,
-			sectorName
+			sectorName,
+			pollingStation,
+			caste
 		};
 
 		try {
@@ -214,17 +219,9 @@
 
 			if (response.ok) {
 				const result = await response.json();
-				alert = 'Voter information added successfully!';
-				// Clear form fields
-				flatNo = '';
-				name = '';
-				phoneNo = '';
-				yadiNo = '';
-				srNo = '';
-				rscNo = '';
-				wing = '';
+				alert = 'Sector added successfully!';
 			} else {
-				alert = 'Failed to add voter information';
+				alert = 'Failed to add sector';
 			}
 		} catch (error) {
 			alert = 'An error occurred';
@@ -241,56 +238,26 @@
 					{sector}
 				</Button>
 			{/each}
-			<Button on:click={downloadCSV} color="blue">Download Table</Button>
-			<Button on:click={downloadVoterSlips} color="red">Download Slips</Button>
 		</div>
+	</Card>
+	<Card
+		class="mx-auto grid max-w-full gap-2 border-2 border-primary-300 bg-primary-100 md:grid-cols-3"
+	>
+		<Button on:click={downloadCSV} color="blue">Download Table</Button>
+		<Button on:click={downloadVoterSlips} color="red">Download Slips</Button>
+		<Button on:click={() => goto('/updatebooth')} color="dark">Update Polling Booth</Button>
 	</Card>
 
 	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
 		{#if alert}
-			<Alert color="green" class="font-medium">{alert}</Alert>
+			<Alert color="green" class="font-bold mb-4">{alert}</Alert>
 		{/if}
-		<P class="mb-4 text-xl font-bold">Add New Resident</P>
 		<form on:submit|preventDefault={handleSubmit}>
-			<div class="grid gap-4 md:grid-cols-3">
-				<Label>
-					Flat No:
-					<Input type="text" bind:value={flatNo} class="mt-2" />
-				</Label>
-				<Label>
-					Name:
-					<Input type="text" bind:value={name} class="mt-2" required />
-				</Label>
-				<Label>
-					Phone No:
-					<Input type="text" bind:value={phoneNo} class="mt-2" />
-				</Label>
-				<Label>
-					Yadi No:
-					<Input type="text" bind:value={yadiNo} class="mt-2" />
-				</Label>
-				<Label>
-					Sr No:
-					<Input type="text" bind:value={srNo} class="mt-2" />
-				</Label>
-				<Label>
-					RSC No:
-					<Input type="text" bind:value={rscNo} class="mt-2" />
-				</Label>
-				<Label>
-					Building Name:
-					<Input type="text" bind:value={buildingName} class="mt-2" required />
-				</Label>
-				<Label>
-					Wing:
-					<Input type="text" bind:value={wing} class="mt-2" />
-				</Label>
-				<Label>
-					Sector:
-					<Input type="text" bind:value={sectorName} class="mt-2" required />
-				</Label>
-			</div>
-			<Button class="mt-6" type="submit">Add Voter</Button>
+			<P class="mb-4 text-xl font-bold">Add New Sector</P>
+			<ButtonGroup class="w-full">
+				<Input id="input-addon" type="text" bind:value={sectorName} required />
+				<Button type="submit" color="primary" class="min-w-64">Add Sector</Button>
+			</ButtonGroup>
 		</form>
 	</Card>
 </main>

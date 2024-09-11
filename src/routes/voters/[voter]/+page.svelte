@@ -1,8 +1,6 @@
 <script>
+	//Voter update form page
 	import { Input, Label, Button, Card, P, Alert } from 'flowbite-svelte';
-	import { Table, TableBody, TableBodyCell } from 'flowbite-svelte';
-	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
-	import { PDFDocument, rgb } from 'pdf-lib';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 

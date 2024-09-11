@@ -1,4 +1,5 @@
 <script>
+	// Update Booth Page
 	import { Input, Label, Button, Card, P, Alert } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';

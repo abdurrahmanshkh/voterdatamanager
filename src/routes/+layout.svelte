@@ -1,4 +1,5 @@
 <script>
+	// Layout Component
 	import '../app.css';
 	import { Navbar, NavBrand, Footer, FooterCopyright, Button } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
