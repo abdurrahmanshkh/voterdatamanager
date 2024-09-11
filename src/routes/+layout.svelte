@@ -1,7 +1,7 @@
 <script>
 	// Layout Component
 	import '../app.css';
-	import { Navbar, NavBrand, Footer, FooterCopyright, Button } from 'flowbite-svelte';
+	import { Navbar, NavBrand, Footer, FooterCopyright, Button, Avatar } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
 
 	function logout() {
@@ -13,15 +13,15 @@
 <header>
 	<Navbar class="bg-primary-300">
 		<NavBrand class="text-center" href="/">
-			<span class="mr-2 self-center whitespace-nowrap font-bold text-primary-900 md:text-xl">
-				Voter's Data -
-			</span>
-			<span class="self-center whitespace-nowrap font-semibold text-primary-900 md:text-xl">
-				Owe, Kharghar
-			</span>
+			<Avatar src="/favicon1.jpg" class="mr-4 w-20 h-12" rounded/>
 		</NavBrand>
+		<NavBrand class="flex-grow">
+			<span class="mr-2 self-center whitespace-nowrap font-bold text-primary-900 md:text-2xl text-xl">
+				Sajid Patel
+			</span>
+		</NavBrand>	
 		<NavBrand class="">
-			<Button color="red" size="sm" on:click={logout}>Logout</Button>
+			<Button class="self-center" color="red" size="sm" on:click={logout}>Logout</Button>
 		</NavBrand>
 	</Navbar>
 </header>
