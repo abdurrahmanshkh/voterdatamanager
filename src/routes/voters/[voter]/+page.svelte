@@ -1,8 +1,10 @@
 <script>
 	//Voter update form page
-	import { Input, Label, Button, Card, P, Alert } from 'flowbite-svelte';
+	import { Input, Label, Button, Card, P, Alert, Modal } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
+	let popupModal = false;
 
 	onMount(() => {
 		if (!localStorage.getItem('isAuthenticated')) {
@@ -57,8 +59,32 @@
 			if (response.ok) {
 				const result = await response.json();
 				alert = 'Voter information updated successfully!';
+				setTimeout(() => {
+					goto(`/sectors/${voter.sectorName}`);
+				}, 2000);
 			} else {
 				alert = 'Failed to update voter information';
+			}
+		} catch (error) {
+			alert = 'An error occurred';
+		}
+	}
+
+	// Function to delete voter data
+	async function handleDelete() {
+		try {
+			const response = await fetch(`/api/delete-voter/${voter._id}`, {
+				method: 'POST'
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				alert = 'Voter information deleted successfully!';
+				setTimeout(() => {
+					goto(`/sectors/${voter.sectorName}`);
+				}, 2000);
+			} else {
+				alert = 'Failed to delete voter information';
 			}
 		} catch (error) {
 			alert = 'An error occurred';
@@ -120,7 +146,24 @@
 					<Input type="text" bind:value={caste} class="mt-2" />
 				</Label>
 			</div>
-			<Button class="mt-6" type="submit">Update Information</Button>
+			<div class="grid gap-4 md:grid-cols-2">
+				<Button class="mt-6" type="submit">Update Information</Button>
+				<Button color="red" class="md:mt-6" on:click={() => (popupModal = true)}
+					>Delete Voter</Button
+				>
+			</div>
+			<Modal bind:open={popupModal} autoclose>
+				<div class="text-center">
+					<ExclamationCircleOutline
+						class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200"
+					/>
+					<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+						Are you sure you want to delete this voter?
+					</h3>
+					<Button on:click={handleDelete} color="red" class="me-2">Yes, I'm sure</Button>
+					<Button color="alternative">No, cancel</Button>
+				</div>
+			</Modal>
 		</form>
 	</Card>
 </main>
