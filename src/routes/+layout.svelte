@@ -9,7 +9,7 @@
 	}
 </script>
 
-<header class="border-2">
+<header>
 	<Navbar class="bg-primary-300">
 		<NavBrand class="text-center" href="/">
 			<span class="mr-2 self-center whitespace-nowrap font-bold text-primary-900 md:text-xl">
@@ -29,7 +29,7 @@
 	<slot />
 </main>
 
-<footer class="border-2">
+<footer>
 	<Navbar class="bg-primary-300">
 		<Footer rounded color="form" class="flex w-full items-center justify-center p-1 text-center">
 			<FooterCopyright href="/" by="Voter's Data™" year={2024} />

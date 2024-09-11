@@ -244,9 +244,9 @@
 	}
 </script>
 
-<main>
+<main class="bg-primary-300">
 	<!-- Building Filter Buttons -->
-	<Card class="mx-auto max-w-full border-2 bg-gray-100">
+	<Card class="mx-auto max-w-full border-2 bg-primary-100 border-primary-300">
 		<P class="mb-4 text-xl font-bold">Select a Building</P>
 		<div class="grid gap-1 md:grid-cols-6">
 			{#each uniqueBuildings as building}
@@ -261,7 +261,7 @@
 	</Card>
 
 	<!-- Render the table -->
-	<Card class="mx-auto max-w-full border-2 bg-gray-100">
+	<Card class="mx-auto max-w-full border-2 bg-primary-100 border-primary-300">
 		<div class="grid md:grid-cols-3">
 			<P class="text-xl font-bold md:col-span-2 md:mt-2"
 				>Residents of {selectedBuilding || 'All Buildings'}</P
@@ -269,7 +269,7 @@
 			<Input placeholder="Search by Voter Name" bind:value={searchTerm} class="mb-4" />
 		</div>
 		<Table shadow class="w-full table-auto text-left">
-			<TableHead>
+			<TableHead class="border-b">
 				<TableHeadCell>Flat No</TableHeadCell>
 				<TableHeadCell>Name</TableHeadCell>
 				<TableHeadCell>Phone No</TableHeadCell>
@@ -298,7 +298,7 @@
 
 	<!-- Conditional Form Display -->
 	{#if selectedBuilding}
-		<Card class="mx-auto max-w-full border-2 bg-gray-100">
+		<Card class="mx-auto max-w-full border-2 bg-primary-100 border-primary-300">
 			{#if alert}
 				<Alert color="green" class="font-medium">{alert}</Alert>
 			{/if}

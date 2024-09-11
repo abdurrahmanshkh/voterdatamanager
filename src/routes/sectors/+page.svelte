@@ -232,10 +232,10 @@
 	}
 </script>
 
-<div>
-	<Card class="mx-auto max-w-full border-2 bg-gray-100">
+<main class="bg-primary-300">
+	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
 		<P class="mb-4 text-xl font-bold">Select a Sector</P>
-		<div class="grid grid-cols-2 gap-3 md:grid-cols-3">
+		<div class="grid grid-cols-2 gap-2 md:grid-cols-5">
 			{#each uniqueSectors as sector}
 				<Button on:click={() => goto(`sectors/${sector}`)}>
 					{sector}
@@ -245,52 +245,52 @@
 			<Button on:click={downloadVoterSlips} color="red">Download Slips</Button>
 		</div>
 	</Card>
-</div>
 
-<Card class="mx-auto max-w-full border-2 bg-gray-100">
-	{#if alert}
-		<Alert color="green" class="font-medium">{alert}</Alert>
-	{/if}
-	<P class="mb-4 text-xl font-bold">Add New Resident</P>
-	<form on:submit|preventDefault={handleSubmit}>
-		<div class="grid gap-4 md:grid-cols-3">
-			<Label>
-				Flat No:
-				<Input type="text" bind:value={flatNo} class="mt-2" />
-			</Label>
-			<Label>
-				Name:
-				<Input type="text" bind:value={name} class="mt-2" required />
-			</Label>
-			<Label>
-				Phone No:
-				<Input type="text" bind:value={phoneNo} class="mt-2" />
-			</Label>
-			<Label>
-				Yadi No:
-				<Input type="text" bind:value={yadiNo} class="mt-2" />
-			</Label>
-			<Label>
-				Sr No:
-				<Input type="text" bind:value={srNo} class="mt-2" />
-			</Label>
-			<Label>
-				RSC No:
-				<Input type="text" bind:value={rscNo} class="mt-2" />
-			</Label>
-			<Label>
-				Building Name:
-				<Input type="text" bind:value={buildingName} class="mt-2" required />
-			</Label>
-			<Label>
-				Wing:
-				<Input type="text" bind:value={wing} class="mt-2" />
-			</Label>
-			<Label>
-				Sector:
-				<Input type="text" bind:value={sectorName} class="mt-2" required />
-			</Label>
-		</div>
-		<Button class="mt-6" type="submit">Add Voter</Button>
-	</form>
-</Card>
+	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
+		{#if alert}
+			<Alert color="green" class="font-medium">{alert}</Alert>
+		{/if}
+		<P class="mb-4 text-xl font-bold">Add New Resident</P>
+		<form on:submit|preventDefault={handleSubmit}>
+			<div class="grid gap-4 md:grid-cols-3">
+				<Label>
+					Flat No:
+					<Input type="text" bind:value={flatNo} class="mt-2" />
+				</Label>
+				<Label>
+					Name:
+					<Input type="text" bind:value={name} class="mt-2" required />
+				</Label>
+				<Label>
+					Phone No:
+					<Input type="text" bind:value={phoneNo} class="mt-2" />
+				</Label>
+				<Label>
+					Yadi No:
+					<Input type="text" bind:value={yadiNo} class="mt-2" />
+				</Label>
+				<Label>
+					Sr No:
+					<Input type="text" bind:value={srNo} class="mt-2" />
+				</Label>
+				<Label>
+					RSC No:
+					<Input type="text" bind:value={rscNo} class="mt-2" />
+				</Label>
+				<Label>
+					Building Name:
+					<Input type="text" bind:value={buildingName} class="mt-2" required />
+				</Label>
+				<Label>
+					Wing:
+					<Input type="text" bind:value={wing} class="mt-2" />
+				</Label>
+				<Label>
+					Sector:
+					<Input type="text" bind:value={sectorName} class="mt-2" required />
+				</Label>
+			</div>
+			<Button class="mt-6" type="submit">Add Voter</Button>
+		</form>
+	</Card>
+</main>

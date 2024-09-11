@@ -54,7 +54,8 @@
 	}
 </script>
 
-<div class="bg-primary-100 py-12 md:px-72 md:py-8">
+<main class="bg-primary-300">
+<Card class="bg-primary-100 py-12 md:px-72 md:py-8 min-w-full border-2 border-primary-300">
 	<h1 class="pb-12 text-center text-2xl font-semibold text-orange-900 md:pb-8 md:text-3xl">
 		Welcome to Voter's Data Portal
 	</h1>
@@ -96,4 +97,5 @@
 			</div>
 		</form>
 	</Card>
-</div>
+</Card>
+</main>
