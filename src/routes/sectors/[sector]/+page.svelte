@@ -25,8 +25,11 @@
 	let yadiNo = '';
 	let srNo = '';
 	let rscNo = '';
+	let buildingName = '';
 	let wing = '';
 	let sectorName = voters[0].sectorName;
+	let pollingStation = '';
+	let caste = '';
 
 	let alert = '';
 	let searchTerm = '';
@@ -52,9 +55,11 @@
 			yadiNo,
 			srNo,
 			rscNo,
-			buildingName: selectedBuilding,
+			buildingName: selectedBuilding || buildingName,
 			wing,
-			sectorName
+			sectorName,
+			pollingStation,
+			caste
 		};
 
 		try {
@@ -76,7 +81,10 @@
 				yadiNo = '';
 				srNo = '';
 				rscNo = '';
+				buildingName = '';
 				wing = '';
+				pollingStation = '';
+				caste = '';
 			} else {
 				alert = 'Failed to add voter information';
 			}
@@ -86,21 +94,14 @@
 	}
 
 	$: filteredVoters = filteredBuildings.filter((voter) => {
-		// Convert all int32 parameters to string for comparison
-		const flatNoStr = voter.flatNo.toString();
-		const phoneNoStr = voter.phoneNo.toString();
-		const yadiNoStr = voter.yadiNo.toString();
-		const srNoStr = voter.srNo.toString();
-		const rscNoStr = voter.rscNo.toString();
-
 		// Check if any of the search parameters match the searchTerm
 		return (
 			voter.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			flatNoStr.includes(searchTerm) ||
-			phoneNoStr.includes(searchTerm) ||
-			yadiNoStr.includes(searchTerm) ||
-			srNoStr.includes(searchTerm) ||
-			rscNoStr.includes(searchTerm) ||
+			voter.flatNo.includes(searchTerm) ||
+			voter.phoneNo.includes(searchTerm) ||
+			voter.yadiNo.includes(searchTerm) ||
+			voter.srNo.includes(searchTerm) ||
+			voter.rscNo.includes(searchTerm) ||
 			voter.wing.toLowerCase().includes(searchTerm.toLowerCase())
 		);
 	});
@@ -301,53 +302,66 @@
 	</Card>
 
 	<!-- Conditional Form Display -->
-	{#if selectedBuilding}
-		<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
-			{#if alert}
-				<Alert color="green" class="font-medium">{alert}</Alert>
-			{/if}
-			<P class="mb-4 text-xl font-bold">Add Resident to {selectedBuilding}</P>
-			<form on:submit|preventDefault={handleSubmit}>
-				<div class="grid gap-4 md:grid-cols-3">
-					<Label>
-						Flat No:
-						<Input type="text" bind:value={flatNo} class="mt-2" />
-					</Label>
-					<Label>
-						Name:
-						<Input type="text" bind:value={name} class="mt-2" required />
-					</Label>
-					<Label>
-						Phone No:
-						<Input type="text" bind:value={phoneNo} class="mt-2" />
-					</Label>
-					<Label>
-						Yadi No:
-						<Input type="text" bind:value={yadiNo} class="mt-2" />
-					</Label>
-					<Label>
-						Sr No:
-						<Input type="text" bind:value={srNo} class="mt-2" />
-					</Label>
-					<Label>
-						RSC No:
-						<Input type="text" bind:value={rscNo} class="mt-2" />
-					</Label>
+	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
+		{#if alert}
+			<Alert color="green" class="mb-4 font-bold">{alert}</Alert>
+		{/if}
+		<P class="mb-4 text-xl font-bold">Add Resident to {selectedBuilding || 'New Building'}</P>
+		<form on:submit|preventDefault={handleSubmit}>
+			<div class="grid gap-4 md:grid-cols-3">
+				<Label>
+					Flat No:
+					<Input type="text" bind:value={flatNo} class="mt-2" />
+				</Label>
+				<Label>
+					Name:
+					<Input type="text" bind:value={name} class="mt-2" required />
+				</Label>
+				<Label>
+					Phone No:
+					<Input type="text" bind:value={phoneNo} class="mt-2" />
+				</Label>
+				<Label>
+					Yadi No:
+					<Input type="text" bind:value={yadiNo} class="mt-2" />
+				</Label>
+				<Label>
+					Sr No:
+					<Input type="text" bind:value={srNo} class="mt-2" />
+				</Label>
+				<Label>
+					RSC No:
+					<Input type="text" bind:value={rscNo} class="mt-2" />
+				</Label>
+				{#if selectedBuilding}
 					<Label>
 						Building Name:
 						<Input type="text" bind:value={selectedBuilding} class="mt-2" required disabled />
 					</Label>
+				{:else}
 					<Label>
-						Wing:
-						<Input type="text" bind:value={wing} class="mt-2" />
+						Building Name:
+						<Input type="text" bind:value={buildingName} class="mt-2" required />
 					</Label>
-					<Label>
-						Sector:
-						<Input type="text" bind:value={sectorName} class="mt-2" required disabled />
-					</Label>
-				</div>
-				<Button class="mt-6" type="submit">Add Voter</Button>
-			</form>
-		</Card>
-	{/if}
+				{/if}
+				<Label>
+					Wing:
+					<Input type="text" bind:value={wing} class="mt-2" />
+				</Label>
+				<Label>
+					Sector:
+					<Input type="text" bind:value={sectorName} class="mt-2" required disabled />
+				</Label>
+				<Label class="md:col-span-2">
+					Polling Station:
+					<Input type="text" bind:value={pollingStation} class="mt-2" />
+				</Label>
+				<Label>
+					Caste:
+					<Input type="text" bind:value={caste} class="mt-2" />
+				</Label>
+			</div>
+			<Button class="mt-6 w-64" type="submit">Add New Voter</Button>
+		</form>
+	</Card>
 </main>
