@@ -307,7 +307,7 @@
 				<div class="grid gap-4 md:grid-cols-3">
 					<Label>
 						Flat No:
-						<Input type="text" bind:value={flatNo} class="mt-2" required />
+						<Input type="text" bind:value={flatNo} class="mt-2" />
 					</Label>
 					<Label>
 						Name:
@@ -315,19 +315,19 @@
 					</Label>
 					<Label>
 						Phone No:
-						<Input type="text" bind:value={phoneNo} class="mt-2" required />
+						<Input type="text" bind:value={phoneNo} class="mt-2" />
 					</Label>
 					<Label>
 						Yadi No:
-						<Input type="text" bind:value={yadiNo} class="mt-2" required />
+						<Input type="text" bind:value={yadiNo} class="mt-2" />
 					</Label>
 					<Label>
 						Sr No:
-						<Input type="text" bind:value={srNo} class="mt-2" required />
+						<Input type="text" bind:value={srNo} class="mt-2" />
 					</Label>
 					<Label>
 						RSC No:
-						<Input type="text" bind:value={rscNo} class="mt-2" required />
+						<Input type="text" bind:value={rscNo} class="mt-2" />
 					</Label>
 					<Label>
 						Building Name:
@@ -335,7 +335,7 @@
 					</Label>
 					<Label>
 						Wing:
-						<Input type="text" bind:value={wing} class="mt-2" required />
+						<Input type="text" bind:value={wing} class="mt-2" />
 					</Label>
 					<Label>
 						Sector:
