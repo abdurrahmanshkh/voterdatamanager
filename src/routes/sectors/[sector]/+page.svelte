@@ -194,7 +194,7 @@
 				y: y + slipHeight - slipMargin - 4 * textSize - 34,
 				size: textSize
 			});
-			page.drawText(`Room No, Building, Plot No, Sector No`, {
+			page.drawText(`${pollingStation}`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - 5 * textSize - 40,
 				size: textSize

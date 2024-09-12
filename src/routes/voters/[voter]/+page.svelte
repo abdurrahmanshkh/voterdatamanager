@@ -5,6 +5,7 @@
 	import { onMount } from 'svelte';
 	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
 	let popupModal = false;
+	import { PDFDocument, rgb } from 'pdf-lib';
 
 	onMount(() => {
 		if (!localStorage.getItem('isAuthenticated')) {
@@ -90,6 +91,90 @@
 			alert = 'An error occurred';
 		}
 	}
+
+	async function downloadSingleVoterSlip() {
+		const pdfDoc = await PDFDocument.create();
+		const pageWidth = 595.276; // A4 width in points
+		const pageHeight = 841.89; // A4 height in points
+		const slipWidth = pageWidth / 2; // Two columns
+		const slipHeight = pageHeight / 6 - 10; // Six rows
+
+		const margin = 10; // Adjusted margin
+		const slipMargin = 10; // Adjusted slip padding
+		const textSize = 14; // Adjusted text size
+		const titleHeight = 40; // Space for the title on top
+
+		// Draws a slip
+		function drawSlip(page, x, y, name, yadiNo, srNo) {
+			page.drawRectangle({
+				x,
+				y,
+				width: slipWidth - 2 * slipMargin,
+				height: slipHeight - 2 * slipMargin,
+				color: rgb(1, 1, 1),
+				borderColor: rgb(0, 0, 0),
+				borderWidth: 1
+			});
+			page.drawText(`Name: ${name}`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - textSize - 16,
+				size: textSize
+			});
+			page.drawText(`List No / Part No: ${yadiNo}`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - 2 * textSize - 22,
+				size: textSize
+			});
+			page.drawText(`Sr No: ${srNo}`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - 3 * textSize - 28,
+				size: textSize
+			});
+			page.drawText(`Polling Station Address:`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - 4 * textSize - 34,
+				size: textSize
+			});
+			page.drawText(`${pollingStation}`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - 5 * textSize - 40,
+				size: textSize
+			});
+		}
+
+		// Draws the title at the top of each page
+		function drawTitle(page) {
+			page.drawText(`Sajid Patel - Voter's Data`, {
+				x: margin,
+				y: pageHeight - margin - titleHeight / 2,
+				size: 16,
+				color: rgb(0, 0, 0)
+			});
+		}
+
+		// Add a new page for a single slip
+		const page = pdfDoc.addPage([pageWidth, pageHeight]);
+		drawTitle(page); // Add the title at the top
+
+		// Draw the slip in the center of the page
+		const x = margin; // Start from the left with margin
+		const y = pageHeight - titleHeight - slipHeight; // Adjust Y position after the title
+
+		// Assume we're drawing the first voter from filteredVoters (you can modify this to use any voter)
+		drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo);
+
+		// Save and download the PDF
+		const pdfBytes = await pdfDoc.save();
+		const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+		const url = URL.createObjectURL(blob);
+		const a = document.createElement('a');
+		a.href = url;
+		a.download = 'voter_slip.pdf';
+		document.body.appendChild(a);
+		a.click();
+		document.body.removeChild(a);
+		URL.revokeObjectURL(url);
+	}
 </script>
 
 <main class="bg-primary-300">
@@ -146,8 +231,11 @@
 					<Input type="text" bind:value={caste} class="mt-2" />
 				</Label>
 			</div>
-			<div class="grid gap-4 md:grid-cols-2">
+			<div class="grid gap-4 md:grid-cols-3">
 				<Button class="mt-6" type="submit">Update Information</Button>
+				<Button color="dark" class="md:mt-6" on:click={downloadSingleVoterSlip}>
+					Download Voter Slip
+				</Button>
 				<Button color="red" class="md:mt-6" on:click={() => (popupModal = true)}
 					>Delete Voter</Button
 				>
