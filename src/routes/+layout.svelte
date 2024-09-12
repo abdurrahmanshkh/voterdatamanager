@@ -13,16 +13,16 @@
 <header>
 	<Navbar class="bg-primary-300">
 		<NavBrand class="text-center" href="/">
-			<Avatar src="/favicon1.jpg" class="mr-4 w-20 h-12" rounded/>
+			<Avatar src="/favicon1.jpg" class="mr-4 h-12 w-20" rounded />
 		</NavBrand>
 		<NavBrand class="flex-grow">
-			<span class="mr-2 self-center whitespace-nowrap font-bold text-primary-900 md:text-2xl text-xl">
+			<span
+				class="mr-2 self-center whitespace-nowrap text-xl font-bold text-primary-900 md:text-2xl"
+			>
 				Sajid Patel
 			</span>
-		</NavBrand>	
-		<NavBrand class="">
-			<Button class="self-center" color="red" size="sm" on:click={logout}>Logout</Button>
 		</NavBrand>
+		<Button class="self-center" color="red" size="sm" on:click={logout}>Logout</Button>
 	</Navbar>
 </header>
 
