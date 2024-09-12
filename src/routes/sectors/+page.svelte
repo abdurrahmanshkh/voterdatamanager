@@ -220,11 +220,18 @@
 		</div>
 	</Card>
 	<Card
-		class="mx-auto grid max-w-full gap-2 border-2 border-primary-300 bg-primary-100 md:grid-cols-3"
+		class="mx-auto grid max-w-full gap-2 border-2 border-primary-300 bg-primary-100 md:grid-cols-4"
 	>
 		<Button on:click={downloadCSV} color="blue">Download Table</Button>
 		<Button on:click={downloadVoterSlips} color="red">Download Slips</Button>
 		<Button on:click={() => goto('/updateBooth')} color="dark">Update Polling Booth</Button>
+		<Button
+			href="https://docs.google.com/spreadsheets/d/1AHBuP9vZTG7B3wKJv_m_3UDqvLrGhMLH122X8P4k9_Y/edit?usp=sharing"
+			target="_blank"
+			rel="noopener noreferrer"
+		>
+			Open CSV Format
+		</Button>
 	</Card>
 
 	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
@@ -235,7 +242,7 @@
 			<P class="mb-4 text-xl font-bold">Add New Sector</P>
 			<ButtonGroup class="w-full">
 				<Input id="input-addon" type="text" bind:value={sectorName} required />
-				<Button type="submit" color="primary" class="min-w-64">Add Sector</Button>
+				<Button type="submit" color="primary" class="min-w-fit max-w-fit">Add Sector</Button>
 			</ButtonGroup>
 		</form>
 	</Card>

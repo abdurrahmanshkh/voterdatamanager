@@ -12,10 +12,10 @@
 
 <header>
 	<Navbar class="bg-primary-300">
-		<NavBrand class="text-center" href="/">
+		<NavBrand class="text-center" href="/sectors">
 			<Avatar src="/favicon.png" class="mr-4 h-12 w-12" />
 		</NavBrand>
-		<NavBrand class="flex-grow">
+		<NavBrand class="flex-grow" href="/sectors">
 			<span
 				class="mr-2 self-center whitespace-nowrap text-xl font-bold text-primary-900 md:text-2xl"
 			>
