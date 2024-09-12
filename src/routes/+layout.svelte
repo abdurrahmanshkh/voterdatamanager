@@ -13,7 +13,7 @@
 <header>
 	<Navbar class="bg-primary-300">
 		<NavBrand class="text-center" href="/">
-			<Avatar src="/favicon1.jpg" class="mr-4 h-12 w-20" rounded />
+			<Avatar src="/favicon.png" class="mr-4 h-12 w-12" />
 		</NavBrand>
 		<NavBrand class="flex-grow">
 			<span
