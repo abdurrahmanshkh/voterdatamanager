@@ -1,11 +1,13 @@
 <script>
 	//Building List Page
 	import { Input, Label, Button, Card, P, Alert } from 'flowbite-svelte';
-	import { Table, TableBody, TableBodyCell } from 'flowbite-svelte';
+	import { Table, TableBody, TableBodyCell, Modal } from 'flowbite-svelte';
 	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
 	import { PDFDocument, rgb } from 'pdf-lib';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
+	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
+	let popupModal = false;
 
 	onMount(() => {
 		if (!localStorage.getItem('isAuthenticated')) {
@@ -244,6 +246,27 @@
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
 	}
+
+	// Function to delete voter data
+	async function handleDelete() {
+		try {
+			const response = await fetch(`/api/delete-building/${selectedBuilding}`, {
+				method: 'POST'
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				alert = 'Building information deleted successfully!';
+				setTimeout(() => {
+					goto(`/sectors`);
+				}, 2000);
+			} else {
+				alert = 'Failed to delete building information';
+			}
+		} catch (error) {
+			alert = 'An error occurred';
+		}
+	}
 </script>
 
 <main class="bg-primary-300">
@@ -361,7 +384,26 @@
 					<Input type="text" bind:value={caste} class="mt-2" />
 				</Label>
 			</div>
-			<Button class="mt-6 w-64" type="submit">Add New Voter</Button>
+			<div class="grid md:grid-cols-4">
+				<Button class="mt-6" type="submit">Add New Voter</Button>
+				<div></div>
+				<div></div>
+				{#if selectedBuilding}
+					<Button color="red" class="mt-6" on:click={() => (popupModal = true)}
+						>Delete Building Data</Button
+					>
+				{/if}
+			</div>
 		</form>
 	</Card>
+	<Modal bind:open={popupModal} autoclose>
+		<div class="text-center">
+			<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
+			<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+				Are you sure you want to delete this building?
+			</h3>
+			<Button on:click={handleDelete} color="red" class="me-2">Yes, I'm sure</Button>
+			<Button color="alternative">No, cancel</Button>
+		</div>
+	</Modal>
 </main>
