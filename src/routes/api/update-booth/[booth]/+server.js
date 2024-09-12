@@ -16,8 +16,8 @@ export async function POST({ params, request }) {
 			},
 			body: JSON.stringify({
 				dataSource: 'cluster0',
-				database: 'voterinfo',
-				collection: 'voterinfo',
+				database: env.dbname,
+				collection: env.dbname,
 				filter: { yadiNo: params.booth },
 				update: { $set: formData }
 			})

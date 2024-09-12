@@ -14,8 +14,8 @@ export const load = async ({ params }) => {
 			},
 			body: JSON.stringify({
 				dataSource: 'cluster0',
-				database: 'voterinfo',
-				collection: 'voterinfo',
+				database: env.dbname,
+				collection: env.dbname,
 				filter: { sectorName: decodeURIComponent(params.sector), flatNo: { $ne: 'newsector' } }
 			})
 		});

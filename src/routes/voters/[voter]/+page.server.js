@@ -14,8 +14,8 @@ export const load = async ({ params }) => {
 			},
 			body: JSON.stringify({
 				dataSource: 'cluster0',
-				database: 'voterinfo',
-				collection: 'voterinfo',
+				database: env.dbname,
+				collection: env.dbname,
 				filter: { _id: { $oid: params.voter } }
 			})
 		});

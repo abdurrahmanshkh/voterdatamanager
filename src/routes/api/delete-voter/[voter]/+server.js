@@ -14,9 +14,9 @@ export async function POST({ params }) {
 			},
 			body: JSON.stringify({
 				dataSource: 'cluster0',
-				database: 'voterinfo',
-				collection: 'voterinfo',
-				filter: { _id: { $oid: params.voter } },
+				database: env.dbname,
+				collection: env.dbname,
+				filter: { _id: { $oid: params.voter } }
 			})
 		});
 

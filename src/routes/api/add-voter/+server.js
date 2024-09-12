@@ -16,8 +16,8 @@ export async function POST({ request }) {
 			},
 			body: JSON.stringify({
 				dataSource: 'cluster0',
-				database: 'voterinfo',
-				collection: 'voterinfo',
+				database: env.dbname,
+				collection: env.dbname,
 				document: formData
 			})
 		});
