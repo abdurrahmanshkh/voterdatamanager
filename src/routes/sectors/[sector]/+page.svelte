@@ -87,6 +87,8 @@
 				wing = '';
 				pollingStation = '';
 				caste = '';
+				//Refresh page to show new voter
+				location.reload();
 			} else {
 				alert = 'Failed to add voter information';
 			}
@@ -257,9 +259,8 @@
 			if (response.ok) {
 				const result = await response.json();
 				alert = 'Building information deleted successfully!';
-				setTimeout(() => {
-					goto(`/sectors`);
-				}, 2000);
+				// Refresh page
+				location.reload();
 			} else {
 				alert = 'Failed to delete building information';
 			}

@@ -62,7 +62,7 @@
 				alert = 'Voter information updated successfully!';
 				setTimeout(() => {
 					goto(`/sectors/${voter.sectorName}`);
-				}, 2000);
+				}, 1000);
 			} else {
 				alert = 'Failed to update voter information';
 			}
@@ -83,7 +83,7 @@
 				alert = 'Voter information deleted successfully!';
 				setTimeout(() => {
 					goto(`/sectors/${voter.sectorName}`);
-				}, 2000);
+				}, 1000);
 			} else {
 				alert = 'Failed to delete voter information';
 			}

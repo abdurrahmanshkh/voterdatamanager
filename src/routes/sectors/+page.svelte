@@ -199,6 +199,8 @@
 			if (response.ok) {
 				const result = await response.json();
 				alert = 'Sector added successfully!';
+				// Update the UI to reflect the new sector
+				uniqueSectors = [...new Set([...uniqueSectors, sectorName])];
 			} else {
 				alert = 'Failed to add sector';
 			}
