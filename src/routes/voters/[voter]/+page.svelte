@@ -178,6 +178,24 @@
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
 	}
+
+	// Define the phone number and the message
+	let message = `Dear ${name},\nYour voting details are as follows:\n- EPIC No: ${rscNo}\n- List No / Part No: ${yadiNo}\n- Sr No: ${srNo}\n- Polling Station Address: ${pollingStation}\nPlease keep this information handy for your upcoming vote. For any queries, feel free to contact us.`;
+
+	// Function to create the SMS link
+	function sendSMS() {
+		// Encode the message to be used in the SMS link
+		let smsLink = `sms:+91${phoneNo}?&body=${encodeURIComponent(message)}`;
+		// Redirect to the SMS app
+		window.location.href = smsLink;
+	}
+	// Function to create the WhatsApp link
+	function sendWhatsAppMessage() {
+		// Encode the message to be used in the WhatsApp link
+		let whatsappLink = `https://wa.me/+91${phoneNo}?text=${encodeURIComponent(message)}`;
+		// Open WhatsApp with the pre-filled message
+		window.location.href = whatsappLink;
+	}
 </script>
 
 <main class="bg-primary-300">
@@ -290,5 +308,11 @@
 				{/each}
 			</TableBody>
 		</Table>
+		<div class="mt-8 grid gap-4 md:grid-cols-2">
+			<Button color="blue" on:click={sendSMS}>Send details via SMS</Button>
+			<Button color="green" on:click={sendWhatsAppMessage}>
+				Send details via WhatsApp
+			</Button>
+		</div>
 	</Card>
 </main>
