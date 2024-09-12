@@ -18,9 +18,10 @@
 	let password = '';
 	let sendingCode = false;
 	let alertColor = 'green';
-	let otpSent = false;
+	let sendingOtp = false;
 
 	async function sendOtp() {
+		sendingOtp = true;
 		const response = await fetch('/api/send-otp', {
 			method: 'POST',
 			headers: { 'Content-Type': 'application/json' },
@@ -30,7 +31,7 @@
 		const data = await response.json();
 		if (data.success) {
 			alert = 'OTP sent successfully';
-			otpSent = true;
+			sendingOtp = false;
 		} else {
 			alert = 'Failed to send OTP.';
 			alertColor = 'red';
@@ -122,20 +123,25 @@
 					/>
 				</Label>
 				<div class="grid gap-2 text-center md:grid-cols-2">
-					{#if !otpSent}
-						<Button on:click={sendOtp} class="mt-1">Send OTP</Button>
-					{:else}
+					{#if alert === 'OTP sent successfully'}
 						<Button on:click={verifyOtp} class="mt-1">Verify OTP</Button>
+					{:else if sendingOtp}
+						<Button disabled class="mt-1">
+							<Spinner class="me-3" size="4" color="white" />
+							Sending OTP on SMS
+						</Button>
+					{:else}
+						<Button on:click={sendOtp} class="mt-1">Send OTP on SMS</Button>
 					{/if}
 					{#if alert === 'Verification email sent successfully!'}
-						<Button on:click={handleSubmit} class="mt-1">Login to Portal</Button>
+						<Button on:click={handleSubmit} class="mt-1">Verify OTP</Button>
 					{:else if sendingCode}
 						<Button disabled class="mt-1">
 							<Spinner class="me-3" size="4" color="white" />
-							Sending Verification Code
+							Sending OTP on Email
 						</Button>
 					{:else}
-						<Button on:click={sendVerificationEmail} class="mt-1">Send Verification Code</Button>
+						<Button on:click={sendVerificationEmail} class="mt-1">Send OTP on Email</Button>
 					{/if}
 				</div>
 			</form>
