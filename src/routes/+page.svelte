@@ -12,7 +12,7 @@
 
 	let username = 'Sajid Patel';
 	let verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
-	let phoneNumber = '+919653332540';
+	let phoneNumber = '+919821686840';
 	var error = '';
 	var alert = '';
 	let password = '';

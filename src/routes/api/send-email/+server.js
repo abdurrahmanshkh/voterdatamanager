@@ -22,7 +22,7 @@ export async function POST({ request }) {
 		// Define email options
 		const mailOptions = {
 			from: 'csmvschatbot@outlook.com',
-			to: 'abdurrahman19702@gmail.com',
+			to: 'sajidpatel810@gmail.com',
 			subject: "Your OTP to acess Voter's Data",
 			text: `Enter the following verification code to access our portal:\n\n${verificationCode}`
 		};
