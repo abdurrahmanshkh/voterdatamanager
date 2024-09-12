@@ -224,7 +224,7 @@
 	>
 		<Button on:click={downloadCSV} color="blue">Download Table</Button>
 		<Button on:click={downloadVoterSlips} color="red">Download Slips</Button>
-		<Button on:click={() => goto('/updatebooth')} color="dark">Update Polling Booth</Button>
+		<Button on:click={() => goto('/updateBooth')} color="dark">Update Polling Booth</Button>
 	</Card>
 
 	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
