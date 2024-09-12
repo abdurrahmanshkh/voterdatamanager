@@ -1,6 +1,8 @@
 <script>
 	//Voter update form page
 	import { Input, Label, Button, Card, P, Alert, Modal } from 'flowbite-svelte';
+	import { TableBody, TableBodyRow, TableBodyCell } from 'flowbite-svelte';
+	import { Table, TableHead, TableHeadCell } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
@@ -15,6 +17,7 @@
 
 	export let data; // The fetched data is passed as props to the page component
 	let { voter } = data; // Destructure the voters from the data prop
+	let { sharedResidents } = data;
 
 	// Form fields
 	let flatNo = voter.flatNo;
@@ -253,5 +256,39 @@
 				</div>
 			</Modal>
 		</form>
+	</Card>
+	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
+		<P class="mb-4 text-xl font-bold">
+			Residents of {voter.flatNo}, {voter.buildingName}
+		</P>
+		<Table shadow class="w-full table-auto text-left">
+			<TableHead class="border-b border-orange-900 bg-orange-100">
+				<TableHeadCell>Flat No</TableHeadCell>
+				<TableHeadCell>Name</TableHeadCell>
+				<TableHeadCell>Phone No</TableHeadCell>
+				<TableHeadCell>Yadi No</TableHeadCell>
+				<TableHeadCell>Sr No</TableHeadCell>
+				<TableHeadCell>RSC No</TableHeadCell>
+				<TableHeadCell>Building Name</TableHeadCell>
+				<TableHeadCell>Wing</TableHeadCell>
+			</TableHead>
+			<TableBody>
+				{#each sharedResidents as resident}
+					<TableBodyRow
+						class="border-orange-900 bg-orange-100 hover:bg-orange-200"
+						on:click={() => (window.location.href = `/voters/${resident._id}`)}
+					>
+						<TableBodyCell>{resident.flatNo}</TableBodyCell>
+						<TableBodyCell>{resident.name}</TableBodyCell>
+						<TableBodyCell>{resident.phoneNo}</TableBodyCell>
+						<TableBodyCell>{resident.yadiNo}</TableBodyCell>
+						<TableBodyCell>{resident.srNo}</TableBodyCell>
+						<TableBodyCell>{resident.rscNo}</TableBodyCell>
+						<TableBodyCell>{resident.buildingName}</TableBodyCell>
+						<TableBodyCell>{resident.wing}</TableBodyCell>
+					</TableBodyRow>
+				{/each}
+			</TableBody>
+		</Table>
 	</Card>
 </main>

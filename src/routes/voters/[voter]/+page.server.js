@@ -2,11 +2,14 @@ import { env } from '$env/dynamic/private';
 
 export const load = async ({ params }) => {
 	const apiKey = env.API_KEY;
-	const endpoint =
+	const findOneEndpoint =
 		'https://ap-south-1.aws.data.mongodb-api.com/app/data-mxiiynz/endpoint/data/v1/action/findOne';
+	const findManyEndpoint =
+		'https://ap-south-1.aws.data.mongodb-api.com/app/data-mxiiynz/endpoint/data/v1/action/find';
 
 	try {
-		const response = await fetch(endpoint, {
+		// Step 1: Get the voter using the _id from params
+		const voterResponse = await fetch(findOneEndpoint, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -20,20 +23,52 @@ export const load = async ({ params }) => {
 			})
 		});
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+		if (!voterResponse.ok) {
+			throw new Error(`HTTP error! status: ${voterResponse.status}`);
 		}
 
-		const data = await response.json();
+		const voterData = await voterResponse.json();
+		const voter = voterData.document;
 
-		// Return the fetched data as props to the page
+		if (!voter || !voter.flatNo) {
+			throw new Error('Voter or flatNo not found');
+		}
+
+		// Step 2: Get all persons sharing the same flatNo
+		const sharedResponse = await fetch(findManyEndpoint, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'api-key': apiKey
+			},
+			body: JSON.stringify({
+				dataSource: 'cluster0',
+				database: env.dbname,
+				collection: env.dbname,
+				filter: {
+					flatNo: voter.flatNo,
+					buildingName: voter.buildingName,
+					sectorName: voter.sectorName
+				}
+			})
+		});
+
+		if (!sharedResponse.ok) {
+			throw new Error(`HTTP error! status: ${sharedResponse.status}`);
+		}
+
+		const sharedData = await sharedResponse.json();
+
+		// Step 3: Return the original voter and others sharing the flatNo
 		return {
-			voter: data.document || null
+			voter: voter || null,
+			sharedResidents: sharedData.documents || []
 		};
 	} catch (error) {
 		console.error('Error fetching data:', error);
 		return {
-			voter: []
+			voter: null,
+			sharedResidents: []
 		};
 	}
 };
