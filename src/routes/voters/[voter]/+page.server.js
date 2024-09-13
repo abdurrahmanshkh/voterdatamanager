@@ -48,7 +48,8 @@ export const load = async ({ params }) => {
 				filter: {
 					flatNo: voter.flatNo,
 					buildingName: voter.buildingName,
-					sectorName: voter.sectorName
+					sectorName: voter.sectorName,
+					wing: voter.wing
 				}
 			})
 		});

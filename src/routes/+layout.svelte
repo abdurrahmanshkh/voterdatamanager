@@ -11,28 +11,26 @@
 </script>
 
 <header>
-	<Navbar class="bg-primary-300">
+	<Navbar class="bg-gray-900 text-white">
 		<NavBrand class="text-center" href="/sectors">
 			<Avatar src="/favicon.png" class="mr-4 h-12 w-12" />
 		</NavBrand>
 		<NavBrand class="flex-grow" href="/sectors">
-			<span
-				class="mr-2 self-center whitespace-nowrap text-xl font-bold text-primary-900 md:text-2xl"
-			>
+			<span class="mr-2 self-center whitespace-nowrap text-xl font-bold md:text-2xl">
 				Sajid Patel
 			</span>
 		</NavBrand>
-		<Button class="self-center" color="red" size="sm" on:click={logout}>Logout</Button>
+		<Button class="self-center" color="light" size="sm" on:click={logout}>Logout</Button>
 	</Navbar>
 </header>
 
-<main class="min-h-[86.5vh] bg-primary-100 md:min-h-[82vh]">
+<main class="min-h-[84vh] bg-gray-100 md:min-h-[80vh]">
 	<slot />
 </main>
 
 <footer>
-	<Navbar class="bg-primary-300">
-		<Footer rounded color="form" class="flex w-full items-center justify-center p-1 text-center">
+	<Navbar class="bg-gray-900 text-white">
+		<Footer rounded color="form" class="flex w-full items-center justify-center p-2 text-center">
 			<FooterCopyright href="/" by="Voter's Data™" year={2024} />
 		</Footer>
 	</Navbar>

@@ -59,14 +59,13 @@
 		}
 	}
 </script>
-
-<main class="bg-primary-100 py-[12%] md:py-[6%]">
+<main class="bg-gray-300 py-[30%] text-gray-800 md:py-[6%]">
 	<!-- Render the table -->
-	<Card class="max-w-full border-2 border-primary-300 bg-orange-100 md:mx-auto md:max-w-[70%]">
+	<Card class="max-w-full border-2 border-gray-300 bg-gray-100 md:mx-auto md:max-w-[70%]">
 		{#if alert}
 			<Alert color="green" class="mb-4 font-semibold">{alert}</Alert>
 		{/if}
-		<P class="mb-4 text-xl font-bold">Update Resident Information</P>
+		<P class="mb-4 text-xl font-bold">Update Yadi Number / Polling Station</P>
 		<form on:submit|preventDefault={handleSubmit}>
 			<div class="grid gap-4 md:grid-cols-2">
 				<Label>
@@ -82,7 +81,7 @@
 					<Input type="text" bind:value={pollingStation} class="mt-2" />
 				</Label>
 			</div>
-			<Button class="mt-6" type="submit">Update Information</Button>
+			<Button color="dark" class="mt-6 md:w-64" type="submit">Update Information</Button>
 		</form>
 	</Card>
 </main>

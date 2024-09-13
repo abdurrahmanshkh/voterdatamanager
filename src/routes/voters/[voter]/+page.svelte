@@ -198,9 +198,9 @@
 	}
 </script>
 
-<main class="bg-primary-300">
+<main class="bg-gray-300">
 	<!-- Render the table -->
-	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
+	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		{#if alert}
 			<Alert color="green" class="mb-4 font-semibold">{alert}</Alert>
 		{/if}
@@ -253,8 +253,8 @@
 				</Label>
 			</div>
 			<div class="grid gap-4 md:grid-cols-3">
-				<Button class="mt-6" type="submit">Update Information</Button>
-				<Button color="dark" class="md:mt-6" on:click={downloadSingleVoterSlip}>
+				<Button color="dark" class="mt-6" type="submit">Update Information</Button>
+				<Button color="green" class="md:mt-6" on:click={downloadSingleVoterSlip}>
 					Download Voter Slip
 				</Button>
 				<Button color="red" class="md:mt-6" on:click={() => (popupModal = true)}
@@ -275,12 +275,12 @@
 			</Modal>
 		</form>
 	</Card>
-	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
+	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		<P class="mb-4 text-xl font-bold">
-			Residents of {voter.flatNo}, {voter.buildingName}
+			Residents of {voter.wing}{voter.flatNo}, {voter.buildingName}
 		</P>
 		<Table shadow class="w-full table-auto text-left">
-			<TableHead class="border-b border-orange-900 bg-orange-100">
+			<TableHead class="border-b border-blue-900 bg-blue-100">
 				<TableHeadCell>Flat No</TableHeadCell>
 				<TableHeadCell>Name</TableHeadCell>
 				<TableHeadCell>Phone No</TableHeadCell>
@@ -293,7 +293,7 @@
 			<TableBody>
 				{#each sharedResidents as resident}
 					<TableBodyRow
-						class="border-orange-900 bg-orange-100 hover:bg-orange-200"
+						class="border-blue-900 bg-blue-100 hover:bg-blue-200"
 						on:click={() => (window.location.href = `/voters/${resident._id}`)}
 					>
 						<TableBodyCell>{resident.flatNo}</TableBodyCell>
@@ -310,9 +310,7 @@
 		</Table>
 		<div class="mt-8 grid gap-4 md:grid-cols-2">
 			<Button color="blue" on:click={sendSMS}>Send details via SMS</Button>
-			<Button color="green" on:click={sendWhatsAppMessage}>
-				Send details via WhatsApp
-			</Button>
+			<Button color="green" on:click={sendWhatsAppMessage}>Send details via WhatsApp</Button>
 		</div>
 	</Card>
 </main>

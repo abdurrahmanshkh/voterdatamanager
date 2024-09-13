@@ -270,24 +270,24 @@
 	}
 </script>
 
-<main class="bg-primary-300">
+<main class="bg-gray-300">
 	<!-- Building Filter Buttons -->
-	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
+	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		<P class="mb-4 text-xl font-bold">Select a Building</P>
 		<div class="grid gap-1 md:grid-cols-6">
 			{#each uniqueBuildings as building}
-				<Button on:click={() => filterByBuilding(building)}>
+				<Button color="blue" on:click={() => filterByBuilding(building)}>
 					{building}
 				</Button>
 			{/each}
-			<Button on:click={() => filterByBuilding('')}>Show All</Button>
-			<Button on:click={downloadCSV} color="blue">Download Table</Button>
-			<Button on:click={downloadVoterSlips} color="red">Download Slips</Button>
+			<Button color="blue" on:click={() => filterByBuilding('')}>Show All</Button>
+			<Button on:click={downloadVoterSlips} color="green">Download Slips</Button>
+			<Button on:click={downloadCSV} color="dark">Download Table</Button>
 		</div>
 	</Card>
 
 	<!-- Render the table -->
-	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
+	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		<div class="grid md:grid-cols-3">
 			<P class="text-xl font-bold md:col-span-2 md:mt-2"
 				>Residents of {selectedBuilding || 'All Buildings'}</P
@@ -299,7 +299,7 @@
 			/>
 		</div>
 		<Table shadow class="w-full table-auto text-left">
-			<TableHead class="border-b border-orange-900 bg-orange-100">
+			<TableHead class="border-b border-blue-900 bg-blue-100">
 				<TableHeadCell>Flat No</TableHeadCell>
 				<TableHeadCell>Name</TableHeadCell>
 				<TableHeadCell>Phone No</TableHeadCell>
@@ -312,7 +312,7 @@
 			<TableBody>
 				{#each filteredVoters as voter}
 					<TableBodyRow
-						class="border-orange-900 bg-orange-100 hover:bg-orange-200"
+						class="border-blue-900 bg-blue-100 hover:bg-blue-200"
 						on:click={() => goto(`/voters/${voter._id}`)}
 					>
 						<TableBodyCell>{voter.flatNo}</TableBodyCell>
@@ -330,7 +330,7 @@
 	</Card>
 
 	<!-- Conditional Form Display -->
-	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
+	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		{#if alert}
 			<Alert color="green" class="mb-4 font-bold">{alert}</Alert>
 		{/if}
@@ -390,7 +390,7 @@
 				</Label>
 			</div>
 			<div class="grid md:grid-cols-4">
-				<Button class="mt-6" type="submit">Add New Voter</Button>
+				<Button class="mt-6" type="submit" color="dark">Add New Voter</Button>
 				<div></div>
 				<div></div>
 				{#if selectedBuilding}
@@ -404,7 +404,7 @@
 	<Modal bind:open={popupModal} autoclose>
 		<div class="text-center">
 			<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
-			<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
+			<h3 class="mb-5 text-lg font-normal text-gray-300 dark:text-gray-400">
 				Are you sure you want to delete this building?
 			</h3>
 			<Button on:click={handleDelete} color="red" class="me-2">Yes, I'm sure</Button>

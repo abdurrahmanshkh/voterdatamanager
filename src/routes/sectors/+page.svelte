@@ -211,7 +211,7 @@
 			alert = 'An error occurred';
 		}
 	}
-	
+
 	$: filteredVoters = voters.filter((voter) => {
 		// Check if any of the search parameters match the searchTerm
 		return (
@@ -226,8 +226,8 @@
 	});
 </script>
 
-<main class="bg-primary-300">
-	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
+<main class="bg-gray-300">
+	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		<div class="grid md:grid-cols-3">
 			<P class="text-xl font-bold md:col-span-2 md:mt-2">Search for Voter</P>
 			<Input
@@ -237,64 +237,76 @@
 			/>
 		</div>
 		{#if searchTerm}
-			<Table shadow class="mt-4 w-full table-auto text-left">
-				<TableHead class="border-b border-orange-900 bg-orange-100">
-					<TableHeadCell>Flat No</TableHeadCell>
-					<TableHeadCell>Name</TableHeadCell>
-					<TableHeadCell>Phone No</TableHeadCell>
-					<TableHeadCell>Yadi No</TableHeadCell>
-					<TableHeadCell>Sr No</TableHeadCell>
-					<TableHeadCell>RSC No</TableHeadCell>
-					<TableHeadCell>Building Name</TableHeadCell>
-					<TableHeadCell>Wing</TableHeadCell>
-				</TableHead>
-				<TableBody>
-					{#each filteredVoters as voter}
-						<TableBodyRow
-							class="border-orange-900 bg-orange-100 hover:bg-orange-200"
-							on:click={() => goto(`/voters/${voter._id}`)}
-						>
-							<TableBodyCell>{voter.flatNo}</TableBodyCell>
-							<TableBodyCell>{voter.name}</TableBodyCell>
-							<TableBodyCell>{voter.phoneNo}</TableBodyCell>
-							<TableBodyCell>{voter.yadiNo}</TableBodyCell>
-							<TableBodyCell>{voter.srNo}</TableBodyCell>
-							<TableBodyCell>{voter.rscNo}</TableBodyCell>
-							<TableBodyCell>{voter.buildingName}</TableBodyCell>
-							<TableBodyCell>{voter.wing}</TableBodyCell>
-						</TableBodyRow>
-					{/each}
-				</TableBody>
-			</Table>
+			<div class="mt-4">
+				<Table shadow class="w-full table-auto text-left">
+					<TableHead class="border-b border-blue-900 bg-blue-100">
+						<TableHeadCell>Flat No</TableHeadCell>
+						<TableHeadCell>Name</TableHeadCell>
+						<TableHeadCell>Phone No</TableHeadCell>
+						<TableHeadCell>Yadi No</TableHeadCell>
+						<TableHeadCell>Sr No</TableHeadCell>
+						<TableHeadCell>RSC No</TableHeadCell>
+						<TableHeadCell>Building Name</TableHeadCell>
+						<TableHeadCell>Wing</TableHeadCell>
+					</TableHead>
+					<TableBody>
+						{#each filteredVoters as voter}
+							<TableBodyRow
+								class="border-blue-900 bg-blue-100 hover:bg-blue-200"
+								on:click={() => goto(`/voters/${voter._id}`)}
+							>
+								<TableBodyCell>{voter.flatNo}</TableBodyCell>
+								<TableBodyCell>{voter.name}</TableBodyCell>
+								<TableBodyCell>{voter.phoneNo}</TableBodyCell>
+								<TableBodyCell>{voter.yadiNo}</TableBodyCell>
+								<TableBodyCell>{voter.srNo}</TableBodyCell>
+								<TableBodyCell>{voter.rscNo}</TableBodyCell>
+								<TableBodyCell>{voter.buildingName}</TableBodyCell>
+								<TableBodyCell>{voter.wing}</TableBodyCell>
+							</TableBodyRow>
+						{/each}
+					</TableBody>
+				</Table>
+			</div>
 		{/if}
 	</Card>
 
-	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
+	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		<P class="mb-4 text-xl font-bold">Select a Sector</P>
 		<div class="grid grid-cols-2 gap-2 md:grid-cols-5">
 			{#each uniqueSectors as sector}
-				<Button on:click={() => goto(`sectors/${sector}`)}>
+				<Button color="blue" on:click={() => goto(`sectors/${sector}`)}>
 					{sector}
 				</Button>
 			{/each}
 		</div>
 	</Card>
-	<Card
-		class="mx-auto grid max-w-full gap-2 border-2 border-primary-300 bg-primary-100 md:grid-cols-4"
-	>
-		<Button on:click={downloadCSV} color="blue">Download Table</Button>
-		<Button on:click={downloadVoterSlips} color="red">Download Slips</Button>
-		<Button on:click={() => goto('/updateBooth')} color="dark">Update Polling Booth</Button>
-		<Button
-			href="https://docs.google.com/spreadsheets/d/1AHBuP9vZTG7B3wKJv_m_3UDqvLrGhMLH122X8P4k9_Y/edit?usp=sharing"
-			target="_blank"
-			rel="noopener noreferrer"
-		>
-			Open CSV Format
-		</Button>
-	</Card>
+	<div class="grid md:grid-cols-2">
+		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
+			<P class="col-span-2 mb-4 text-xl font-bold">Download Data</P>
+			<div class="grid gap-2 md:grid-cols-2">
+				<Button on:click={downloadVoterSlips} color="green">Download Slips</Button>
+				<Button on:click={downloadCSV} color="dark">Download Table</Button>
+			</div>
+		</Card>
+		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
+			<P class="col-span-2 mb-4 text-xl font-bold">Update Data</P>
+			<div class="grid gap-2 md:grid-cols-2">
+				<Button
+					color="dark"
+					class="bg-gray-600"
+					href="https://docs.google.com/spreadsheets/d/1AHBuP9vZTG7B3wKJv_m_3UDqvLrGhMLH122X8P4k9_Y/edit?usp=sharing"
+					target="_blank"
+					rel="noopener noreferrer"
+				>
+					Open CSV Format
+				</Button>
+				<Button on:click={() => goto('/updateBooth')} color="dark">Update Polling Booth</Button>
+			</div>
+		</Card>
+	</div>
 
-	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
+	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		{#if alert}
 			<Alert color="green" class="mb-4 font-bold">{alert}</Alert>
 		{/if}
@@ -302,7 +314,7 @@
 			<P class="mb-4 text-xl font-bold">Add New Sector</P>
 			<ButtonGroup class="w-full">
 				<Input id="input-addon" type="text" bind:value={sectorName} required />
-				<Button type="submit" color="primary" class="min-w-fit max-w-fit">Add Sector</Button>
+				<Button type="submit" color="dark" class="min-w-fit max-w-fit">Add Sector</Button>
 			</ButtonGroup>
 		</form>
 	</Card>
