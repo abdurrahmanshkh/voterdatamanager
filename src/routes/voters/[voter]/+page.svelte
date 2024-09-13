@@ -275,6 +275,7 @@
 			</Modal>
 		</form>
 	</Card>
+	{#if sharedResidents.length !==0 }
 	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		<P class="mb-4 text-xl font-bold">
 			Residents of {voter.wing}{voter.flatNo}, {voter.buildingName}
@@ -313,4 +314,5 @@
 			<Button color="green" on:click={sendWhatsAppMessage}>Send details via WhatsApp</Button>
 		</div>
 	</Card>
+	{/if}
 </main>

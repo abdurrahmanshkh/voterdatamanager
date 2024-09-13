@@ -30,10 +30,6 @@ export const load = async ({ params }) => {
 		const voterData = await voterResponse.json();
 		const voter = voterData.document;
 
-		if (!voter || !voter.flatNo) {
-			throw new Error('Voter or flatNo not found');
-		}
-
 		// Step 2: Get all persons sharing the same flatNo
 		const sharedResponse = await fetch(findManyEndpoint, {
 			method: 'POST',
@@ -46,10 +42,10 @@ export const load = async ({ params }) => {
 				database: env.dbname,
 				collection: env.dbname,
 				filter: {
-					flatNo: voter.flatNo,
-					buildingName: voter.buildingName,
-					sectorName: voter.sectorName,
-					wing: voter.wing
+					flatNo: voter.flatNo || null,
+					buildingName: voter.buildingName || null,
+					sectorName: voter.sectorName || null,
+					wing: voter.wing || null
 				}
 			})
 		});
