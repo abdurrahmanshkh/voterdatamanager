@@ -101,11 +101,11 @@
 		// Check if any of the search parameters match the searchTerm
 		return (
 			voter.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			voter.flatNo.includes(searchTerm) ||
-			voter.phoneNo.includes(searchTerm) ||
-			voter.yadiNo.includes(searchTerm) ||
-			voter.srNo.includes(searchTerm) ||
-			voter.rscNo.includes(searchTerm) ||
+			voter.flatNo.toLowerCase().includes(searchTerm) ||
+			voter.phoneNo.toLowerCase().includes(searchTerm) ||
+			voter.yadiNo.toLowerCase().includes(searchTerm) ||
+			voter.srNo.toLowerCase().includes(searchTerm) ||
+			voter.rscNo.toLowerCase().includes(searchTerm) ||
 			voter.wing.toLowerCase().includes(searchTerm.toLowerCase())
 		);
 	});
