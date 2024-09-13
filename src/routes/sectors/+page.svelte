@@ -1,9 +1,11 @@
 <script>
 	//Sectors List Page
-	import { Alert, Button, ButtonGroup, Card, Input, InputAddon, Label, P } from 'flowbite-svelte';
+	import { Alert, Button, ButtonGroup, Card, Input, P } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { PDFDocument, rgb } from 'pdf-lib';
+	import { Table, TableBody, TableBodyCell } from 'flowbite-svelte';
+	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
 
 	onMount(() => {
 		if (!localStorage.getItem('isAuthenticated')) {
@@ -24,6 +26,7 @@
 	let pollingStation = '';
 	let caste = '';
 	let alert = '';
+	let searchTerm = ''; // Search term for filtering voters
 
 	export let data; // The fetched data is passed as props to the page component
 	let { voters } = data; // Destructure the voters from the data prop
@@ -208,9 +211,64 @@
 			alert = 'An error occurred';
 		}
 	}
+	
+	$: filteredVoters = voters.filter((voter) => {
+		// Check if any of the search parameters match the searchTerm
+		return (
+			voter.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			voter.flatNo.toLowerCase().includes(searchTerm) ||
+			voter.phoneNo.toLowerCase().includes(searchTerm) ||
+			voter.yadiNo.toLowerCase().includes(searchTerm) ||
+			voter.srNo.toLowerCase().includes(searchTerm) ||
+			voter.rscNo.toLowerCase().includes(searchTerm) ||
+			voter.wing.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+	});
 </script>
 
 <main class="bg-primary-300">
+	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
+		<div class="grid md:grid-cols-3">
+			<P class="text-xl font-bold md:col-span-2 md:mt-2">Search for Voter</P>
+			<Input
+				placeholder="Search by Voter Information"
+				bind:value={searchTerm}
+				class="mt-2 md:mt-0"
+			/>
+		</div>
+		{#if searchTerm}
+			<Table shadow class="mt-4 w-full table-auto text-left">
+				<TableHead class="border-b border-orange-900 bg-orange-100">
+					<TableHeadCell>Flat No</TableHeadCell>
+					<TableHeadCell>Name</TableHeadCell>
+					<TableHeadCell>Phone No</TableHeadCell>
+					<TableHeadCell>Yadi No</TableHeadCell>
+					<TableHeadCell>Sr No</TableHeadCell>
+					<TableHeadCell>RSC No</TableHeadCell>
+					<TableHeadCell>Building Name</TableHeadCell>
+					<TableHeadCell>Wing</TableHeadCell>
+				</TableHead>
+				<TableBody>
+					{#each filteredVoters as voter}
+						<TableBodyRow
+							class="border-orange-900 bg-orange-100 hover:bg-orange-200"
+							on:click={() => goto(`/voters/${voter._id}`)}
+						>
+							<TableBodyCell>{voter.flatNo}</TableBodyCell>
+							<TableBodyCell>{voter.name}</TableBodyCell>
+							<TableBodyCell>{voter.phoneNo}</TableBodyCell>
+							<TableBodyCell>{voter.yadiNo}</TableBodyCell>
+							<TableBodyCell>{voter.srNo}</TableBodyCell>
+							<TableBodyCell>{voter.rscNo}</TableBodyCell>
+							<TableBodyCell>{voter.buildingName}</TableBodyCell>
+							<TableBodyCell>{voter.wing}</TableBodyCell>
+						</TableBodyRow>
+					{/each}
+				</TableBody>
+			</Table>
+		{/if}
+	</Card>
+
 	<Card class="mx-auto max-w-full border-2 border-primary-300 bg-primary-100">
 		<P class="mb-4 text-xl font-bold">Select a Sector</P>
 		<div class="grid grid-cols-2 gap-2 md:grid-cols-5">

@@ -292,7 +292,11 @@
 			<P class="text-xl font-bold md:col-span-2 md:mt-2"
 				>Residents of {selectedBuilding || 'All Buildings'}</P
 			>
-			<Input placeholder="Search by Voter Name" bind:value={searchTerm} class="mb-4" />
+			<Input
+				placeholder="Search by Voter Information"
+				bind:value={searchTerm}
+				class="mb-4 mt-2 md:mt-0"
+			/>
 		</div>
 		<Table shadow class="w-full table-auto text-left">
 			<TableHead class="border-b border-orange-900 bg-orange-100">
