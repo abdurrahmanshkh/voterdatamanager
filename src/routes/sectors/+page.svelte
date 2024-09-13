@@ -177,7 +177,7 @@
 		event.preventDefault();
 
 		const formData = {
-			flatNo,
+			flatNo: 'newsector',
 			name,
 			phoneNo,
 			yadiNo,
@@ -312,10 +312,11 @@
 		{/if}
 		<form on:submit|preventDefault={handleSubmit}>
 			<P class="mb-4 text-xl font-bold">Add New Sector</P>
-			<ButtonGroup class="w-full">
-				<Input id="input-addon" type="text" bind:value={sectorName} required />
-				<Button type="submit" color="dark" class="min-w-fit max-w-fit">Add Sector</Button>
-			</ButtonGroup>
+			<div class="w-full grid gap-4 md:grid-cols-3">
+				<Input type="text" bind:value={buildingName} placeholder="Building Name" required/>
+				<Input type="text" bind:value={sectorName} placeholder="Sector Name" required />
+				<Button type="submit" color="dark">Add Sector</Button>
+			</div>
 		</form>
 	</Card>
 </main>
