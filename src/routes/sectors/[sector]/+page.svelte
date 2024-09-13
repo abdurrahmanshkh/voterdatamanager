@@ -41,6 +41,14 @@
 		? voters.filter((voter) => voter.buildingName === selectedBuilding)
 		: voters;
 
+	let searchBuilding = ''; // This will be your search input
+	let searchedBuildings = [];
+
+	// Reactive statement to update filteredBuildings based on searchBuilding
+	$: searchedBuildings = uniqueBuildings.filter((building) =>
+		building.toLowerCase().includes(searchBuilding.toLowerCase())
+	);
+
 	// Function to handle button click
 	function filterByBuilding(buildingName) {
 		selectedBuilding = buildingName; // Set the selected building name
@@ -273,9 +281,18 @@
 <main class="bg-gray-300">
 	<!-- Building Filter Buttons -->
 	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
-		<P class="mb-4 text-xl font-bold">Select a Building</P>
+		<div class="grid md:grid-cols-3">
+			<P class="text-xl font-bold md:col-span-2 md:mt-2">
+				Select a Building
+			</P>
+			<Input
+				placeholder="Search by Building Name"
+				bind:value={searchBuilding}
+				class="mb-4 mt-2 md:mt-0"
+			/>
+		</div>
 		<div class="grid gap-1 md:grid-cols-6">
-			{#each uniqueBuildings as building}
+			{#each searchedBuildings as building}
 				<Button color="blue" on:click={() => filterByBuilding(building)}>
 					{building}
 				</Button>
