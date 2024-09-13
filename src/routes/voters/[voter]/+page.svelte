@@ -95,7 +95,7 @@
 		}
 	}
 
-	async function downloadSingleVoterSlip() {
+	async function downloadVoterSlips() {
 		const pdfDoc = await PDFDocument.create();
 		const pageWidth = 595.276; // A4 width in points
 		const pageHeight = 841.89; // A4 height in points
@@ -155,16 +155,26 @@
 			});
 		}
 
-		// Add a new page for a single slip
-		const page = pdfDoc.addPage([pageWidth, pageHeight]);
-		drawTitle(page); // Add the title at the top
+		for (let i = 0; i < sharedResidents.length; i++) {
+			const voter = sharedResidents[i];
 
-		// Draw the slip in the center of the page
-		const x = margin; // Start from the left with margin
-		const y = pageHeight - titleHeight - slipHeight; // Adjust Y position after the title
+			// Add a new page if necessary (for every 12 voters)
+			if (i % 12 === 0) {
+				pdfDoc.addPage([pageWidth, pageHeight]);
+				const page = pdfDoc.getPage(pdfDoc.getPageCount() - 1);
+				drawTitle(page); // Add the title on each page
+			}
 
-		// Assume we're drawing the first voter from filteredVoters (you can modify this to use any voter)
-		drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo);
+			const page = pdfDoc.getPage(Math.floor(i / 12));
+
+			// Calculate the position for the slip on the page (6 rows, 2 columns)
+			const row = (i % 12) % 6;
+			const col = Math.floor((i % 12) / 6);
+			const x = col * slipWidth + margin;
+			const y = pageHeight - titleHeight - (row + 1) * slipHeight + 10;
+
+			drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo);
+		}
 
 		// Save and download the PDF
 		const pdfBytes = await pdfDoc.save();
@@ -172,15 +182,21 @@
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement('a');
 		a.href = url;
-		a.download = 'voter_slip.pdf';
+		a.download = 'voter_slips.pdf';
 		document.body.appendChild(a);
 		a.click();
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
 	}
 
+	let message = '';
+
 	// Define the phone number and the message
-	let message = `Dear ${name},\nYour voting details are as follows:\n- EPIC No: ${rscNo}\n- List No / Part No: ${yadiNo}\n- Sr No: ${srNo}\n- Polling Station Address: ${pollingStation}\nPlease keep this information handy for your upcoming vote. For any queries, feel free to contact us.`;
+	if (sharedResidents.length == 1) {
+		message = `Dear ${name},\nYour voting details are as follows:\n- EPIC No: ${rscNo}\n- List No / Part No: ${yadiNo}\n- Sr No: ${srNo}\n- Polling Station Address: ${pollingStation}\nPlease keep this information handy for your upcoming vote. For any queries, feel free to contact us.`;
+	} else {
+		message = `Dear ${name},\nYour family members' voting details are as follows:\n\n${sharedResidents.map((resident) => `- Name: ${resident.name}\n- EPIC No: ${resident.rscNo}\n- List No / Part No: ${resident.yadiNo}\n- Sr No: ${resident.srNo}\n- Polling Station Address: ${resident.pollingStation}`).join('\n\n')}\n\nPlease keep this information handy for the upcoming vote. For any queries, feel free to contact us.`;
+	}
 
 	// Function to create the SMS link
 	function sendSMS() {
@@ -254,7 +270,7 @@
 			</div>
 			<div class="grid gap-4 md:grid-cols-3">
 				<Button color="dark" class="mt-6" type="submit">Update Information</Button>
-				<Button color="green" class="md:mt-6" on:click={downloadSingleVoterSlip}>
+				<Button color="green" class="md:mt-6" on:click={downloadVoterSlips}>
 					Download Voter Slip
 				</Button>
 				<Button color="red" class="md:mt-6" on:click={() => (popupModal = true)}
@@ -275,44 +291,47 @@
 			</Modal>
 		</form>
 	</Card>
-	{#if sharedResidents.length !==0 }
+	{#if sharedResidents.length > 1}
+		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
+			<P class="mb-4 text-xl font-bold">
+				Residents of {voter.wing}{voter.flatNo}, {voter.buildingName}
+			</P>
+			<Table shadow class="w-full table-auto text-left">
+				<TableHead class="border-b border-blue-900 bg-blue-100">
+					<TableHeadCell>Flat No</TableHeadCell>
+					<TableHeadCell>Name</TableHeadCell>
+					<TableHeadCell>Phone No</TableHeadCell>
+					<TableHeadCell>Yadi No</TableHeadCell>
+					<TableHeadCell>Sr No</TableHeadCell>
+					<TableHeadCell>RSC No</TableHeadCell>
+					<TableHeadCell>Building Name</TableHeadCell>
+					<TableHeadCell>Wing</TableHeadCell>
+				</TableHead>
+				<TableBody>
+					{#each sharedResidents as resident}
+						<TableBodyRow
+							class="border-blue-900 bg-blue-100 hover:bg-blue-200"
+							on:click={() => (window.location.href = `/voters/${resident._id}`)}
+						>
+							<TableBodyCell>{resident.flatNo}</TableBodyCell>
+							<TableBodyCell>{resident.name}</TableBodyCell>
+							<TableBodyCell>{resident.phoneNo}</TableBodyCell>
+							<TableBodyCell>{resident.yadiNo}</TableBodyCell>
+							<TableBodyCell>{resident.srNo}</TableBodyCell>
+							<TableBodyCell>{resident.rscNo}</TableBodyCell>
+							<TableBodyCell>{resident.buildingName}</TableBodyCell>
+							<TableBodyCell>{resident.wing}</TableBodyCell>
+						</TableBodyRow>
+					{/each}
+				</TableBody>
+			</Table>
+		</Card>
+	{/if}
 	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
-		<P class="mb-4 text-xl font-bold">
-			Residents of {voter.wing}{voter.flatNo}, {voter.buildingName}
-		</P>
-		<Table shadow class="w-full table-auto text-left">
-			<TableHead class="border-b border-blue-900 bg-blue-100">
-				<TableHeadCell>Flat No</TableHeadCell>
-				<TableHeadCell>Name</TableHeadCell>
-				<TableHeadCell>Phone No</TableHeadCell>
-				<TableHeadCell>Yadi No</TableHeadCell>
-				<TableHeadCell>Sr No</TableHeadCell>
-				<TableHeadCell>RSC No</TableHeadCell>
-				<TableHeadCell>Building Name</TableHeadCell>
-				<TableHeadCell>Wing</TableHeadCell>
-			</TableHead>
-			<TableBody>
-				{#each sharedResidents as resident}
-					<TableBodyRow
-						class="border-blue-900 bg-blue-100 hover:bg-blue-200"
-						on:click={() => (window.location.href = `/voters/${resident._id}`)}
-					>
-						<TableBodyCell>{resident.flatNo}</TableBodyCell>
-						<TableBodyCell>{resident.name}</TableBodyCell>
-						<TableBodyCell>{resident.phoneNo}</TableBodyCell>
-						<TableBodyCell>{resident.yadiNo}</TableBodyCell>
-						<TableBodyCell>{resident.srNo}</TableBodyCell>
-						<TableBodyCell>{resident.rscNo}</TableBodyCell>
-						<TableBodyCell>{resident.buildingName}</TableBodyCell>
-						<TableBodyCell>{resident.wing}</TableBodyCell>
-					</TableBodyRow>
-				{/each}
-			</TableBody>
-		</Table>
-		<div class="mt-8 grid gap-4 md:grid-cols-2">
-			<Button color="blue" on:click={sendSMS}>Send details via SMS</Button>
-			<Button color="green" on:click={sendWhatsAppMessage}>Send details via WhatsApp</Button>
+		<P class="mb-4 text-xl font-bold">Send Voter Details</P>
+		<div class="grid gap-4 md:grid-cols-2">
+			<Button color="blue" on:click={sendSMS}>Send via SMS</Button>
+			<Button color="green" on:click={sendWhatsAppMessage}>Send via WhatsApp</Button>
 		</div>
 	</Card>
-	{/if}
 </main>
