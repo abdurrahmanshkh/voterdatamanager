@@ -93,8 +93,8 @@
 	}
 </script>
 
-<main class="bg-gray-300 py-[19%] text-gray-800 md:px-64 md:py-[5%]">
-	<h1 class="pb-12 text-center text-2xl font-semibold md:pb-8 md:text-3xl">
+<main class="bg-gray-300 py-[18%] text-gray-800 md:px-64 md:py-[5%]">
+	<h1 class="pb-10 text-center text-2xl font-semibold md:pb-8 md:text-3xl">
 		Welcome to Voter's Data Portal
 	</h1>
 	<Card class="max-w-full bg-gray-100 p-8" padding="none">
