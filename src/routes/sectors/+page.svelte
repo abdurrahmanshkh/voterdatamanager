@@ -224,6 +224,26 @@
 			voter.wing.toLowerCase().includes(searchTerm.toLowerCase())
 		);
 	});
+
+	// Create a set of unique combinations of building and sector
+	let uniqueBuildings = Array.from(
+		new Map(
+			voters.map((voter) => [
+				voter.buildingName + '-' + voter.sectorName,
+				{ buildingName: voter.buildingName, sectorName: voter.sectorName }
+			])
+		).values()
+	);
+
+	// Input value for filtering
+	let filterText = '';
+
+	// Filter function to match building name or sector name
+	$: filteredBuildings = uniqueBuildings.filter(
+		(building) =>
+			building.buildingName.toLowerCase().includes(filterText.toLowerCase()) ||
+			building.sectorName.toLowerCase().includes(filterText.toLowerCase())
+	);
 </script>
 
 <main class="bg-gray-300">
@@ -272,8 +292,36 @@
 	</Card>
 
 	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
-		<P class="mb-4 text-xl font-bold">Select a Sector</P>
-		<div class="grid grid-cols-2 gap-2 md:grid-cols-5">
+		<div class="grid md:grid-cols-3">
+			<P class="text-xl font-bold md:col-span-2 md:mt-2">Select a Sector</P>
+			<Input
+				placeholder="Search by Building / Sector"
+				bind:value={filterText}
+				class="mt-2 md:mt-0"
+			/>
+		</div>
+		{#if filterText}
+			<div class="mt-4">
+				<Table shadow class="w-full table-auto text-left">
+					<TableHead class="border-b border-blue-900 bg-blue-100">
+						<TableHeadCell>Building Name</TableHeadCell>
+						<TableHeadCell>Sector Name</TableHeadCell>
+					</TableHead>
+					<TableBody>
+						{#each filteredBuildings as building}
+							<TableBodyRow
+								class="border-blue-900 bg-blue-100 hover:bg-blue-200"
+								on:click={() => goto(`/sectors/${building.sectorName}`)}
+							>
+								<TableBodyCell>{building.buildingName}</TableBodyCell>
+								<TableBodyCell>{building.sectorName}</TableBodyCell>
+							</TableBodyRow>
+						{/each}
+					</TableBody>
+				</Table>
+			</div>
+		{/if}
+		<div class="mt-4 grid grid-cols-2 gap-2 md:grid-cols-5">
 			{#each uniqueSectors as sector}
 				<Button color="blue" on:click={() => goto(`sectors/${sector}`)}>
 					{sector}
@@ -281,6 +329,7 @@
 			{/each}
 		</div>
 	</Card>
+
 	<div class="grid md:grid-cols-2">
 		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 			<P class="col-span-2 mb-4 text-xl font-bold">Download Data</P>
