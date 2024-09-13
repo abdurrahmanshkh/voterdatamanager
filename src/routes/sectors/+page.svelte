@@ -91,7 +91,7 @@
 		const titleHeight = 40; // Space for the title on top
 
 		// Draws a slip
-		function drawSlip(page, x, y, name, yadiNo, srNo) {
+		function drawSlip(page, x, y, name, yadiNo, srNo, pollingStation) {
 			page.drawRectangle({
 				x,
 				y,
@@ -156,7 +156,7 @@
 			const x = col * slipWidth + margin;
 			const y = pageHeight - titleHeight - (row + 1) * slipHeight + 10;
 
-			drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo);
+			drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo, voter.pollingStation);
 		}
 
 		// Save and download the PDF
@@ -312,8 +312,8 @@
 		{/if}
 		<form on:submit|preventDefault={handleSubmit}>
 			<P class="mb-4 text-xl font-bold">Add New Sector</P>
-			<div class="w-full grid gap-4 md:grid-cols-3">
-				<Input type="text" bind:value={buildingName} placeholder="Building Name" required/>
+			<div class="grid w-full gap-4 md:grid-cols-3">
+				<Input type="text" bind:value={buildingName} placeholder="Building Name" required />
 				<Input type="text" bind:value={sectorName} placeholder="Sector Name" required />
 				<Button type="submit" color="dark">Add Sector</Button>
 			</div>

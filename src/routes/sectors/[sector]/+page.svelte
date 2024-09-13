@@ -176,7 +176,7 @@
 		const titleHeight = 40; // Space for the title on top
 
 		// Draws a slip
-		function drawSlip(page, x, y, name, yadiNo, srNo) {
+		function drawSlip(page, x, y, name, yadiNo, srNo, pollingStation) {
 			page.drawRectangle({
 				x,
 				y,
@@ -241,7 +241,7 @@
 			const x = col * slipWidth + margin;
 			const y = pageHeight - titleHeight - (row + 1) * slipHeight + 10;
 
-			drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo);
+			drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo, voter.pollingStation);
 		}
 
 		// Save and download the PDF
@@ -282,9 +282,7 @@
 	<!-- Building Filter Buttons -->
 	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		<div class="grid md:grid-cols-3">
-			<P class="text-xl font-bold md:col-span-2 md:mt-2">
-				Select a Building
-			</P>
+			<P class="text-xl font-bold md:col-span-2 md:mt-2">Select a Building</P>
 			<Input
 				placeholder="Search by Building Name"
 				bind:value={searchBuilding}

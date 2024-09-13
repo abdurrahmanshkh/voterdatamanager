@@ -108,7 +108,7 @@
 		const titleHeight = 40; // Space for the title on top
 
 		// Draws a slip
-		function drawSlip(page, x, y, name, yadiNo, srNo) {
+		function drawSlip(page, x, y, name, yadiNo, srNo, pollingStation) {
 			page.drawRectangle({
 				x,
 				y,
@@ -173,7 +173,7 @@
 			const x = col * slipWidth + margin;
 			const y = pageHeight - titleHeight - (row + 1) * slipHeight + 10;
 
-			drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo);
+			drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo, voter.pollingStation);
 		}
 
 		// Save and download the PDF
