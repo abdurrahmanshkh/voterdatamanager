@@ -32,6 +32,7 @@
 	let pollingStation = voter.pollingStation;
 	let caste = voter.caste;
 	let alert = '';
+	let newPhoneNumber = '';
 
 	// Function to handle form submission
 	async function handleSubmit(event) {
@@ -201,14 +202,14 @@
 	// Function to create the SMS link
 	function sendSMS() {
 		// Encode the message to be used in the SMS link
-		let smsLink = `sms:+91${phoneNo}?&body=${encodeURIComponent(message)}`;
+		let smsLink = `sms:+91${newPhoneNumber || phoneNo}?&body=${encodeURIComponent(message)}`;
 		// Redirect to the SMS app
 		window.location.href = smsLink;
 	}
 	// Function to create the WhatsApp link
 	function sendWhatsAppMessage() {
 		// Encode the message to be used in the WhatsApp link
-		let whatsappLink = `https://wa.me/+91${phoneNo}?text=${encodeURIComponent(message)}`;
+		let whatsappLink = `https://wa.me/+91${newPhoneNumber || phoneNo}?text=${encodeURIComponent(message)}`;
 		// Open WhatsApp with the pre-filled message
 		window.location.href = whatsappLink;
 	}
@@ -329,7 +330,8 @@
 	{/if}
 	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		<P class="mb-4 text-xl font-bold">Send Voter Details</P>
-		<div class="grid gap-4 md:grid-cols-2">
+		<div class="grid gap-4 md:grid-cols-3">
+			<Input placeholder="Send on new number" type="text" bind:value={newPhoneNumber}/>
 			<Button color="blue" on:click={sendSMS}>Send via SMS</Button>
 			<Button color="green" on:click={sendWhatsAppMessage}>Send via WhatsApp</Button>
 		</div>
