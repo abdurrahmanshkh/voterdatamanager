@@ -33,51 +33,6 @@
 
 	let uniqueSectors = [...new Set(voters.map((voter) => voter.sectorName))]; // Get unique building names
 
-	function downloadCSV() {
-		// Create CSV header
-		const header = [
-			'Flat No',
-			'Name',
-			'Phone No',
-			'Yadi No',
-			'Sr No',
-			'RSC No',
-			'Building Name',
-			'Wing'
-		];
-
-		// Convert data to CSV format
-		const csvRows = [];
-		csvRows.push(header.join(',')); // Add header row
-
-		// Add data rows
-		voters.forEach((voter) => {
-			const row = [
-				voter.flatNo,
-				voter.name,
-				voter.phoneNo,
-				voter.yadiNo,
-				voter.srNo,
-				voter.rscNo,
-				voter.buildingName,
-				voter.wing
-			];
-			csvRows.push(row.join(','));
-		});
-
-		// Create a blob with CSV data and create a download link
-		const csvContent = csvRows.join('\n');
-		const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-		const url = URL.createObjectURL(blob);
-		const a = document.createElement('a');
-		a.href = url;
-		a.download = 'voters.csv';
-		document.body.appendChild(a);
-		a.click();
-		document.body.removeChild(a);
-		URL.revokeObjectURL(url);
-	}
-
 	async function downloadVoterSlips() {
 		const pdfDoc = await PDFDocument.create();
 		const pageWidth = 595.276; // A4 width in points
@@ -335,7 +290,7 @@
 			<P class="col-span-2 mb-4 text-xl font-bold">Download Data</P>
 			<div class="grid gap-2 md:grid-cols-2">
 				<Button on:click={downloadVoterSlips} color="green">Download Slips</Button>
-				<Button on:click={downloadCSV} color="dark">Download Table</Button>
+				<Button on:click={() => goto('/downloadTable')} color="dark">Download Table</Button>
 			</div>
 		</Card>
 		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
