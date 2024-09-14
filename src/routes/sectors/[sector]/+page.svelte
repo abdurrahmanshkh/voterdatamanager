@@ -33,6 +33,7 @@
 	let pollingStation = '';
 	let caste = '';
 	let newBuildingName = '';
+	let newSectorName = '';
 
 	let alert = '';
 	let searchTerm = '';
@@ -301,6 +302,30 @@
 			alert = 'An error occurred';
 		}
 	}
+
+	//Function to update sector name
+	async function updateSectorName() {
+		try {
+			const response = await fetch(`/api/update-sectorName/${sectorName}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ sectorName: newSectorName })
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				alert = 'Sector information updated successfully!';
+				// Go to sectors page
+				goto('/sectors');
+			} else {
+				alert = 'Failed to update sector information';
+			}
+		} catch (error) {
+			alert = 'An error occurred';
+		}
+	}
 </script>
 
 <main class="bg-gray-300">
@@ -454,8 +479,26 @@
 					New Building Name:
 					<Input type="text" bind:value={newBuildingName} class="mt-2" required />
 				</Label>
-				<Button on:click={updateBuildingName} class="md:mt-6" type="submit" color="dark">
+				<Button on:click={updateBuildingName} class="md:mt-7" type="submit" color="dark">
 					Update Building Name
+				</Button>
+			</div>
+		</Card>
+	{:else}
+		<!-- Update sector name card -->
+		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
+			<P class="mb-4 text-xl font-bold">Update Sector Name</P>
+			<div class="grid gap-4 md:grid-cols-3">
+				<Label>
+					Current Sector Name:
+					<Input type="text" bind:value={sectorName} class="mt-2" required disabled />
+				</Label>
+				<Label>
+					New Sector Name:
+					<Input type="text" bind:value={newSectorName} class="mt-2" required />
+				</Label>
+				<Button on:click={updateSectorName} class="md:mt-7" type="submit" color="dark">
+					Update Sector Name
 				</Button>
 			</div>
 		</Card>
