@@ -192,10 +192,10 @@
 	let message = '';
 
 	// Define the phone number and the message
-	if (sharedResidents.length == 1) {
-		message = `Dear ${name},\nYour voting details are as follows:\n- EPIC No: ${rscNo}\n- List No / Part No: ${yadiNo}\n- Sr No: ${srNo}\n- Polling Station Address: ${pollingStation}\nPlease keep this information handy for your upcoming vote. For any queries, feel free to contact us.`;
-	} else {
+	if (sharedResidents.length > 1) {
 		message = `Dear ${name},\nYour family members' voting details are as follows:\n\n${sharedResidents.map((resident) => `- Name: ${resident.name}\n- EPIC No: ${resident.rscNo}\n- List No / Part No: ${resident.yadiNo}\n- Sr No: ${resident.srNo}\n- Polling Station Address: ${resident.pollingStation}`).join('\n\n')}\n\nPlease keep this information handy for the upcoming vote. For any queries, feel free to contact us.`;
+	} else {
+		message = `Dear ${name},\nYour voting details are as follows:\n- EPIC No: ${rscNo}\n- List No / Part No: ${yadiNo}\n- Sr No: ${srNo}\n- Polling Station Address: ${pollingStation}\nPlease keep this information handy for your upcoming vote. For any queries, feel free to contact us.`;
 	}
 
 	// Function to create the SMS link
