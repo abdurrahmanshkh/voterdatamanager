@@ -32,6 +32,7 @@
 	let sectorName = voters[0].sectorName;
 	let pollingStation = '';
 	let caste = '';
+	let newBuildingName = '';
 
 	let alert = '';
 	let searchTerm = '';
@@ -276,6 +277,30 @@
 			alert = 'An error occurred';
 		}
 	}
+
+	//Function to update building name
+	async function updateBuildingName() {
+		try {
+			const response = await fetch(`/api/update-buildingName/${sectorName}:${selectedBuilding}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ buildingName: newBuildingName })
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				alert = 'Building information updated successfully!';
+				// Refresh page
+				location.reload();
+			} else {
+				alert = 'Failed to update building information';
+			}
+		} catch (error) {
+			alert = 'An error occurred';
+		}
+	}
 </script>
 
 <main class="bg-gray-300">
@@ -416,6 +441,25 @@
 			</div>
 		</form>
 	</Card>
+	{#if selectedBuilding}
+		<!-- Update building name card -->
+		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
+			<P class="mb-4 text-xl font-bold">Update Building Name</P>
+			<div class="grid gap-4 md:grid-cols-3">
+				<Label>
+					Current Building Name:
+					<Input type="text" bind:value={selectedBuilding} class="mt-2" required disabled />
+				</Label>
+				<Label>
+					New Building Name:
+					<Input type="text" bind:value={newBuildingName} class="mt-2" required />
+				</Label>
+				<Button on:click={updateBuildingName} class="md:mt-6" type="submit" color="dark">
+					Update Building Name
+				</Button>
+			</div>
+		</Card>
+	{/if}
 	<Modal bind:open={popupModal} autoclose>
 		<div class="text-center">
 			<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />

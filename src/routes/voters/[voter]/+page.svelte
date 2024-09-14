@@ -331,7 +331,7 @@
 	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		<P class="mb-4 text-xl font-bold">Send Voter Details</P>
 		<div class="grid gap-4 md:grid-cols-3">
-			<Input placeholder="Send on new number" type="text" bind:value={newPhoneNumber}/>
+			<Input placeholder="Send on new number" type="text" bind:value={newPhoneNumber} />
 			<Button color="blue" on:click={sendSMS}>Send via SMS</Button>
 			<Button color="green" on:click={sendWhatsAppMessage}>Send via WhatsApp</Button>
 		</div>
