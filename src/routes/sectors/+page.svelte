@@ -23,8 +23,10 @@
 	let buildingName = '';
 	let wing = '';
 	let sectorName = '';
+	let buildingNo = '';
 	let pollingStation = '';
 	let caste = '';
+	let note = '';
 	let alert = '';
 	let searchTerm = ''; // Search term for filtering voters
 
@@ -42,7 +44,7 @@
 
 		const margin = 10; // Adjusted margin
 		const slipMargin = 10; // Adjusted slip padding
-		const textSize = 14; // Adjusted text size
+		const textSize = 12; // Adjusted text size
 		const titleHeight = 40; // Space for the title on top
 
 		// Draws a slip
@@ -58,27 +60,27 @@
 			});
 			page.drawText(`Name: ${name}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - textSize - 16,
+				y: y + slipHeight - slipMargin - textSize - 19,
 				size: textSize
 			});
 			page.drawText(`List No / Part No: ${yadiNo}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 2 * textSize - 22,
+				y: y + slipHeight - slipMargin - 2 * textSize - 26,
 				size: textSize
 			});
 			page.drawText(`Sr No: ${srNo}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 3 * textSize - 28,
+				y: y + slipHeight - slipMargin - 3 * textSize - 33,
 				size: textSize
 			});
 			page.drawText(`Polling Station Address:`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 4 * textSize - 34,
+				y: y + slipHeight - slipMargin - 4 * textSize - 40,
 				size: textSize
 			});
 			page.drawText(`${pollingStation}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 5 * textSize - 40,
+				y: y + slipHeight - slipMargin - 5 * textSize - 47,
 				size: textSize
 			});
 		}
@@ -141,8 +143,10 @@
 			buildingName,
 			wing,
 			sectorName,
+			buildingNo,
 			pollingStation,
-			caste
+			caste,
+			note
 		};
 
 		try {
@@ -180,12 +184,16 @@
 		);
 	});
 
-	// Create a set of unique combinations of building and sector
+	// Create a set of unique combinations of building name, sector name, and buildingNo
 	let uniqueBuildings = Array.from(
 		new Map(
 			voters.map((voter) => [
-				voter.buildingName + '-' + voter.sectorName,
-				{ buildingName: voter.buildingName, sectorName: voter.sectorName }
+				voter.buildingName + '-' + voter.sectorName + '-' + voter.buildingNo,
+				{
+					buildingName: voter.buildingName,
+					sectorName: voter.sectorName,
+					buildingNo: voter.buildingNo
+				}
 			])
 		).values()
 	);
@@ -193,11 +201,12 @@
 	// Input value for filtering
 	let filterText = '';
 
-	// Filter function to match building name or sector name
+	// Filter function to match building name, sector name, or building no
 	$: filteredBuildings = uniqueBuildings.filter(
 		(building) =>
 			building.buildingName.toLowerCase().includes(filterText.toLowerCase()) ||
-			building.sectorName.toLowerCase().includes(filterText.toLowerCase())
+			building.sectorName.toLowerCase().includes(filterText.toLowerCase()) ||
+			building.buildingNo.toLowerCase().includes(filterText.toLowerCase())
 	);
 </script>
 
@@ -259,6 +268,7 @@
 			<div class="mt-4">
 				<Table shadow class="w-full table-auto text-left">
 					<TableHead class="border-b border-blue-900 bg-blue-100">
+						<TableHeadCell>Building No</TableHeadCell>
 						<TableHeadCell>Building Name</TableHeadCell>
 						<TableHeadCell>Sector Name</TableHeadCell>
 					</TableHead>
@@ -268,6 +278,7 @@
 								class="border-blue-900 bg-blue-100 hover:bg-blue-200"
 								on:click={() => goto(`/sectors/${building.sectorName}`)}
 							>
+								<TableBodyCell>{building.buildingNo}</TableBodyCell>
 								<TableBodyCell>{building.buildingName}</TableBodyCell>
 								<TableBodyCell>{building.sectorName}</TableBodyCell>
 							</TableBodyRow>

@@ -16,6 +16,7 @@ export const load = async ({ params }) => {
 				dataSource: 'cluster0',
 				database: env.dbname,
 				collection: env.dbname,
+				sort: { buildingNo: 1 },
 				filter: { sectorName: decodeURIComponent(params.sector) }
 			})
 		});

@@ -29,8 +29,10 @@
 	let buildingName = voter.buildingName;
 	let wing = voter.wing;
 	let sectorName = voter.sectorName;
+	let buildingNo = voter.buildingNo;
 	let pollingStation = voter.pollingStation;
 	let caste = voter.caste;
+	let note = voter.note;
 	let alert = '';
 	let newPhoneNumber = '';
 
@@ -48,8 +50,10 @@
 			buildingName,
 			wing,
 			sectorName,
+			buildingNo,
 			pollingStation,
-			caste
+			caste,
+			note
 		};
 
 		try {
@@ -105,7 +109,7 @@
 
 		const margin = 10; // Adjusted margin
 		const slipMargin = 10; // Adjusted slip padding
-		const textSize = 14; // Adjusted text size
+		const textSize = 12; // Adjusted text size
 		const titleHeight = 40; // Space for the title on top
 
 		// Draws a slip
@@ -121,27 +125,27 @@
 			});
 			page.drawText(`Name: ${name}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - textSize - 16,
+				y: y + slipHeight - slipMargin - textSize - 19,
 				size: textSize
 			});
 			page.drawText(`List No / Part No: ${yadiNo}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 2 * textSize - 22,
+				y: y + slipHeight - slipMargin - 2 * textSize - 26,
 				size: textSize
 			});
 			page.drawText(`Sr No: ${srNo}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 3 * textSize - 28,
+				y: y + slipHeight - slipMargin - 3 * textSize - 33,
 				size: textSize
 			});
 			page.drawText(`Polling Station Address:`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 4 * textSize - 34,
+				y: y + slipHeight - slipMargin - 4 * textSize - 40,
 				size: textSize
 			});
 			page.drawText(`${pollingStation}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 5 * textSize - 40,
+				y: y + slipHeight - slipMargin - 5 * textSize - 47,
 				size: textSize
 			});
 		}
@@ -260,6 +264,10 @@
 					Sector:
 					<Input type="text" bind:value={sectorName} class="mt-2" required />
 				</Label>
+				<Label>
+					Building No:
+					<Input type="text" bind:value={buildingNo} class="mt-2" />
+				</Label>
 				<Label class="md:col-span-2">
 					Polling Station:
 					<Input type="text" bind:value={pollingStation} class="mt-2" />
@@ -267,6 +275,10 @@
 				<Label>
 					Caste:
 					<Input type="text" bind:value={caste} class="mt-2" />
+				</Label>
+				<Label class="md:col-span-2">
+					Note:
+					<Input type="text" bind:value={note} class="mt-2" />
 				</Label>
 			</div>
 			<div class="grid gap-4 md:grid-cols-3">

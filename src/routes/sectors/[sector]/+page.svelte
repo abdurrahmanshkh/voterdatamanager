@@ -30,10 +30,13 @@
 	let buildingName = '';
 	let wing = '';
 	let sectorName = voters[0].sectorName;
+	let buildingNo = '';
 	let pollingStation = '';
 	let caste = '';
 	let newBuildingName = '';
 	let newSectorName = '';
+	let note = '';
+	let newBuildingNo = '';
 
 	let alert = '';
 	let searchTerm = '';
@@ -42,6 +45,10 @@
 	$: filteredBuildings = selectedBuilding
 		? voters.filter((voter) => voter.buildingName === selectedBuilding)
 		: voters;
+
+	$: if (selectedBuilding) {
+		buildingNo = filteredBuildings[0].buildingNo;
+	}
 
 	let searchBuilding = ''; // This will be your search input
 	let searchedBuildings = [];
@@ -70,8 +77,10 @@
 			buildingName: selectedBuilding || buildingName,
 			wing,
 			sectorName,
+			buildingNo,
 			pollingStation,
-			caste
+			caste,
+			note
 		};
 
 		try {
@@ -86,17 +95,6 @@
 			if (response.ok) {
 				const result = await response.json();
 				alert = 'Voter information added successfully!';
-				// Clear form fields
-				flatNo = '';
-				name = '';
-				phoneNo = '';
-				yadiNo = '';
-				srNo = '';
-				rscNo = '';
-				buildingName = '';
-				wing = '';
-				pollingStation = '';
-				caste = '';
 				//Refresh page to show new voter
 				location.reload();
 			} else {
@@ -174,7 +172,7 @@
 
 		const margin = 10; // Adjusted margin
 		const slipMargin = 10; // Adjusted slip padding
-		const textSize = 14; // Adjusted text size
+		const textSize = 12; // Adjusted text size
 		const titleHeight = 40; // Space for the title on top
 
 		// Draws a slip
@@ -190,27 +188,27 @@
 			});
 			page.drawText(`Name: ${name}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - textSize - 16,
+				y: y + slipHeight - slipMargin - textSize - 19,
 				size: textSize
 			});
 			page.drawText(`List No / Part No: ${yadiNo}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 2 * textSize - 22,
+				y: y + slipHeight - slipMargin - 2 * textSize - 26,
 				size: textSize
 			});
 			page.drawText(`Sr No: ${srNo}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 3 * textSize - 28,
+				y: y + slipHeight - slipMargin - 3 * textSize - 33,
 				size: textSize
 			});
 			page.drawText(`Polling Station Address:`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 4 * textSize - 34,
+				y: y + slipHeight - slipMargin - 4 * textSize - 40,
 				size: textSize
 			});
 			page.drawText(`${pollingStation}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 5 * textSize - 40,
+				y: y + slipHeight - slipMargin - 5 * textSize - 47,
 				size: textSize
 			});
 		}
@@ -288,6 +286,30 @@
 					'Content-Type': 'application/json'
 				},
 				body: JSON.stringify({ buildingName: newBuildingName })
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				alert = 'Building information updated successfully!';
+				// Refresh page
+				location.reload();
+			} else {
+				alert = 'Failed to update building information';
+			}
+		} catch (error) {
+			alert = 'An error occurred';
+		}
+	}
+
+	//Function to update building no
+	async function updateBuildingNo() {
+		try {
+			const response = await fetch(`/api/update-buildingNo/${sectorName}:${selectedBuilding}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ buildingNo: newBuildingNo })
 			});
 
 			if (response.ok) {
@@ -445,6 +467,17 @@
 					Sector:
 					<Input type="text" bind:value={sectorName} class="mt-2" required disabled />
 				</Label>
+				{#if selectedBuilding}
+					<Label>
+						Building No:
+						<Input type="text" bind:value={buildingNo} class="mt-2" required disabled />
+					</Label>
+				{:else}
+					<Label>
+						Building No:
+						<Input type="text" bind:value={buildingNo} class="mt-2" required />
+					</Label>
+				{/if}
 				<Label class="md:col-span-2">
 					Polling Station:
 					<Input type="text" bind:value={pollingStation} class="mt-2" />
@@ -452,6 +485,10 @@
 				<Label>
 					Caste:
 					<Input type="text" bind:value={caste} class="mt-2" />
+				</Label>
+				<Label class="md:col-span-2">
+					Note:
+					<Input type="text" bind:value={note} class="mt-2" />
 				</Label>
 			</div>
 			<div class="grid md:grid-cols-4">
@@ -481,6 +518,23 @@
 				</Label>
 				<Button on:click={updateBuildingName} class="md:mt-7" type="submit" color="dark">
 					Update Building Name
+				</Button>
+			</div>
+		</Card>
+		<!-- Update building no card -->
+		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
+			<P class="mb-4 text-xl font-bold">Update Building No</P>
+			<div class="grid gap-4 md:grid-cols-3">
+				<Label>
+					Current Building No:
+					<Input type="text" bind:value={buildingNo} class="mt-2" required disabled />
+				</Label>
+				<Label>
+					New Building No:
+					<Input type="text" bind:value={newBuildingNo} class="mt-2" required />
+				</Label>
+				<Button on:click={updateBuildingNo} class="md:mt-7" type="submit" color="dark">
+					Update Building No
 				</Button>
 			</div>
 		</Card>
