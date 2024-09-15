@@ -31,6 +31,7 @@
 	let wing = '';
 	let sectorName = voters[0].sectorName;
 	let buildingNo = '';
+	let selectedBuildingNo = '';
 	let pollingStation = '';
 	let caste = '';
 	let newBuildingName = '';
@@ -47,9 +48,9 @@
 		: voters;
 
 	$: if (selectedBuilding) {
-		buildingNo = filteredBuildings[0].buildingNo;
+		selectedBuildingNo = filteredBuildings[0].buildingNo;
 	} else {
-		buildingNo = '';
+		selectedBuildingNo = '';
 	}
 
 	let searchBuilding = ''; // This will be your search input
@@ -79,7 +80,7 @@
 			buildingName: selectedBuilding || buildingName,
 			wing,
 			sectorName,
-			buildingNo,
+			buildingNo: selectedBuildingNo || buildingNo,
 			pollingStation,
 			caste,
 			note
@@ -472,7 +473,7 @@
 				{#if selectedBuilding}
 					<Label>
 						Building No:
-						<Input type="text" bind:value={buildingNo} class="mt-2" required disabled />
+						<Input type="text" bind:value={selectedBuildingNo} class="mt-2" required disabled />
 					</Label>
 				{:else}
 					<Label>
@@ -530,7 +531,7 @@
 				<div class="grid gap-4 md:grid-cols-3">
 					<Label>
 						Current Building No:
-						<Input type="text" bind:value={buildingNo} class="mt-2" required disabled />
+						<Input type="text" bind:value={selectedBuildingNo} class="mt-2" required disabled />
 					</Label>
 					<Label>
 						New Building No:
