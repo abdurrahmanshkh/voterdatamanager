@@ -172,7 +172,7 @@
 
 		const margin = 10; // Adjusted margin
 		const slipMargin = 10; // Adjusted slip padding
-		const textSize = 12; // Adjusted text size
+		const textSize = 10; // Adjusted text size
 		const titleHeight = 40; // Space for the title on top
 
 		// Draws a slip
@@ -188,27 +188,27 @@
 			});
 			page.drawText(`Name: ${name}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - textSize - 19,
+				y: y + slipHeight - slipMargin - textSize - 23,
 				size: textSize
 			});
 			page.drawText(`List No / Part No: ${yadiNo}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 2 * textSize - 26,
+				y: y + slipHeight - slipMargin - 2 * textSize - 31,
 				size: textSize
 			});
 			page.drawText(`Sr No: ${srNo}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 3 * textSize - 33,
+				y: y + slipHeight - slipMargin - 3 * textSize - 39,
 				size: textSize
 			});
 			page.drawText(`Polling Station Address:`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 4 * textSize - 40,
+				y: y + slipHeight - slipMargin - 4 * textSize - 47,
 				size: textSize
 			});
 			page.drawText(`${pollingStation}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 5 * textSize - 47,
+				y: y + slipHeight - slipMargin - 5 * textSize - 55,
 				size: textSize
 			});
 		}
@@ -507,54 +507,54 @@
 		<!-- Update building name card -->
 		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 			<P class="mb-4 text-xl font-bold">Update Building Name</P>
-			<div class="grid gap-4 md:grid-cols-3">
-				<Label>
-					Current Building Name:
-					<Input type="text" bind:value={selectedBuilding} class="mt-2" required disabled />
-				</Label>
-				<Label>
-					New Building Name:
-					<Input type="text" bind:value={newBuildingName} class="mt-2" required />
-				</Label>
-				<Button on:click={updateBuildingName} class="md:mt-7" type="submit" color="dark">
-					Update Building Name
-				</Button>
-			</div>
+			<form on:submit|preventDefault={updateBuildingName}>
+				<div class="grid gap-4 md:grid-cols-3">
+					<Label>
+						Current Building Name:
+						<Input type="text" bind:value={selectedBuilding} class="mt-2" required disabled />
+					</Label>
+					<Label>
+						New Building Name:
+						<Input type="text" bind:value={newBuildingName} class="mt-2" required />
+					</Label>
+					<Button class="md:mt-7" type="submit" color="dark">Update Building Name</Button>
+				</div>
+			</form>
 		</Card>
 		<!-- Update building no card -->
 		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 			<P class="mb-4 text-xl font-bold">Update Building No</P>
-			<div class="grid gap-4 md:grid-cols-3">
-				<Label>
-					Current Building No:
-					<Input type="text" bind:value={buildingNo} class="mt-2" required disabled />
-				</Label>
-				<Label>
-					New Building No:
-					<Input type="text" bind:value={newBuildingNo} class="mt-2" required />
-				</Label>
-				<Button on:click={updateBuildingNo} class="md:mt-7" type="submit" color="dark">
-					Update Building No
-				</Button>
-			</div>
+			<form on:submit|preventDefault={updateBuildingNo}>
+				<div class="grid gap-4 md:grid-cols-3">
+					<Label>
+						Current Building No:
+						<Input type="text" bind:value={buildingNo} class="mt-2" required disabled />
+					</Label>
+					<Label>
+						New Building No:
+						<Input type="text" bind:value={newBuildingNo} class="mt-2" required />
+					</Label>
+					<Button class="md:mt-7" type="submit" color="dark">Update Building No</Button>
+				</div>
+			</form>
 		</Card>
 	{:else}
 		<!-- Update sector name card -->
 		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 			<P class="mb-4 text-xl font-bold">Update Sector Name</P>
-			<div class="grid gap-4 md:grid-cols-3">
-				<Label>
-					Current Sector Name:
-					<Input type="text" bind:value={sectorName} class="mt-2" required disabled />
-				</Label>
-				<Label>
-					New Sector Name:
-					<Input type="text" bind:value={newSectorName} class="mt-2" required />
-				</Label>
-				<Button on:click={updateSectorName} class="md:mt-7" type="submit" color="dark">
-					Update Sector Name
-				</Button>
-			</div>
+			<form on:submit|preventDefault={updateSectorName}>
+				<div class="grid gap-4 md:grid-cols-3">
+					<Label>
+						Current Sector Name:
+						<Input type="text" bind:value={sectorName} class="mt-2" required disabled />
+					</Label>
+					<Label>
+						New Sector Name:
+						<Input type="text" bind:value={newSectorName} class="mt-2" required />
+					</Label>
+					<Button class="md:mt-7" type="submit" color="dark">Update Sector Name</Button>
+				</div>
+			</form>
 		</Card>
 	{/if}
 	<Modal bind:open={popupModal} autoclose>
