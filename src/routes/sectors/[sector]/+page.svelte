@@ -48,6 +48,8 @@
 
 	$: if (selectedBuilding) {
 		buildingNo = filteredBuildings[0].buildingNo;
+	} else {
+		buildingNo = '';
 	}
 
 	let searchBuilding = ''; // This will be your search input
