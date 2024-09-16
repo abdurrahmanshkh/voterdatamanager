@@ -77,7 +77,7 @@
 
 	// Function to create the SMS link
 	function sendSMS(name, phoneNo, link) {
-		let message = `Dear ${name},\n\nYou have been successfully onboarded as a surveyor for the voter survey in your designated area.\n\nYour details are as follows:\n\n- Name: ${name}\n- Phone No: ${phoneNo}\n- Access Link: ${link}\n\nPlease use the access link to log in and start your survey. If you have any questions, feel free to contact us.\n\nThank you for your valuable contribution!`;
+		let message = `Dear ${name},\n\nYou have been successfully onboarded as a surveyor for the voter survey in your designated area.\n\nYour details are as follows:\n\n- Name: ${name}\n\n- Phone No: ${phoneNo}\n\n- Access Link: ${link}\n\nPlease use the access link to log in and start your survey. If you have any questions, feel free to contact us.\n\nThank you for your valuable contribution!`;
 
 		// Encode the message to be used in the SMS link
 		let smsLink = `sms:+91${phoneNo}?&body=${encodeURIComponent(message)}`;
@@ -87,7 +87,7 @@
 
 	// Function to create the WhatsApp link
 	function sendWhatsAppMessage(name, phoneNo, link) {
-		let message = `Dear ${name},\n\nYou have been successfully onboarded as a surveyor for the voter survey in your designated area.\n\nYour details are as follows:\n\n- Name: ${name}\n- Phone No: ${phoneNo}\n- Access Link: ${link}\n\nPlease use the access link to log in and start your survey. If you have any questions, feel free to contact us.\n\nThank you for your valuable contribution!`;
+		let message = `Dear ${name},\n\nYou have been successfully onboarded as a surveyor for the voter survey in your designated area.\n\nYour details are as follows:\n\n- Name: ${name}\n\n- Phone No: ${phoneNo}\n\n- Access Link: ${link}\n\nPlease use the access link to log in and start your survey. If you have any questions, feel free to contact us.\n\nThank you for your valuable contribution!`;
 
 		// Encode the message to be used in the WhatsApp link
 		let whatsappLink = `https://wa.me/+91${phoneNo}?text=${encodeURIComponent(message)}`;
