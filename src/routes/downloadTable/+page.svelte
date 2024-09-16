@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 
 	onMount(() => {
-		if (!localStorage.getItem('isAuthenticated')) {
+		if (localStorage.getItem('isAuthenticated') !== '776112529259') {
 			goto('/');
 		}
 	});
@@ -141,9 +141,7 @@
 </script>
 
 <main class="bg-gray-300 py-[18%] text-gray-800 md:px-64 md:py-[5%]">
-	<h1 class="pb-10 text-center text-2xl font-semibold md:pb-8 md:text-3xl">
-		Download Data as CSV
-	</h1>
+	<h1 class="pb-10 text-center text-2xl font-semibold md:pb-8 md:text-3xl">Download Data as CSV</h1>
 	<Card class="max-w-full bg-gray-100 p-8" padding="none">
 		<form class="flex flex-col space-y-6" action="/">
 			{#if alert}

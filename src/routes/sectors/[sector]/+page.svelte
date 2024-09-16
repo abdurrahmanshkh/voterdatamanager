@@ -10,7 +10,7 @@
 	let popupModal = false;
 
 	onMount(() => {
-		if (!localStorage.getItem('isAuthenticated')) {
+		if (localStorage.getItem('isAuthenticated') !== '776112529259') {
 			goto('/');
 		}
 	});

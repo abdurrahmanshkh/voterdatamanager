@@ -10,7 +10,7 @@
 	import { PDFDocument, rgb } from 'pdf-lib';
 
 	onMount(() => {
-		if (!localStorage.getItem('isAuthenticated')) {
+		if (localStorage.getItem('isAuthenticated') !== '776112529259') {
 			goto('/');
 		}
 	});

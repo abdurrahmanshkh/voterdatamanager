@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte';
 
 	onMount(() => {
-		if (localStorage.getItem('isAuthenticated') == 'true') {
+		if (localStorage.getItem('isAuthenticated') === '776112529259') {
 			goto('/sectors');
 		}
 	});
@@ -47,7 +47,7 @@
 
 		const data = await response.json();
 		if (data.success) {
-			localStorage.setItem('isAuthenticated', JSON.stringify(true));
+			localStorage.setItem('isAuthenticated', JSON.stringify(776112529259));
 			// OTP is correct, redirect to a new page
 			goto('/sectors'); // Redirect to a success page or dashboard
 		} else {
@@ -85,7 +85,7 @@
 
 	function handleSubmit() {
 		if (password == verificationCode) {
-			localStorage.setItem('isAuthenticated', JSON.stringify(true));
+			localStorage.setItem('isAuthenticated', JSON.stringify(776112529259));
 			goto('/sectors');
 		} else {
 			error = 'Incorrect Verification Code';

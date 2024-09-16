@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte';
 
 	onMount(() => {
-		if (!localStorage.getItem('isAuthenticated')) {
+		if (localStorage.getItem('isAuthenticated') !== '776112529259') {
 			goto('/');
 		}
 	});
@@ -59,6 +59,7 @@
 		}
 	}
 </script>
+
 <main class="bg-gray-300 py-[30%] text-gray-800 md:py-[6%]">
 	<!-- Render the table -->
 	<Card class="max-w-full border-2 border-gray-300 bg-gray-100 md:mx-auto md:max-w-[70%]">

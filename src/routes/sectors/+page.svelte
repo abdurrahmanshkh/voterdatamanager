@@ -8,7 +8,7 @@
 	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
 
 	onMount(() => {
-		if (!localStorage.getItem('isAuthenticated')) {
+		if (localStorage.getItem('isAuthenticated') !== '776112529259') {
 			goto('/');
 		}
 	});
