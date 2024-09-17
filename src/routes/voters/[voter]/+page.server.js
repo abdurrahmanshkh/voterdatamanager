@@ -2,10 +2,8 @@ import { env } from '$env/dynamic/private';
 
 export const load = async ({ params }) => {
 	const apiKey = env.API_KEY;
-	const findOneEndpoint =
-		'https://ap-south-1.aws.data.mongodb-api.com/app/data-mxiiynz/endpoint/data/v1/action/findOne';
-	const findManyEndpoint =
-		'https://ap-south-1.aws.data.mongodb-api.com/app/data-mxiiynz/endpoint/data/v1/action/find';
+	const findOneEndpoint = env.endpoint + 'findOne';
+	const findManyEndpoint = env.endpoint + 'find';
 
 	try {
 		// Step 1: Get the voter using the _id from params

@@ -2,8 +2,7 @@ import { env } from '$env/dynamic/private';
 
 export async function POST({ params, request }) {
 	const apiKey = env.API_KEY;
-	const endpoint =
-		'https://ap-south-1.aws.data.mongodb-api.com/app/data-mxiiynz/endpoint/data/v1/action/updateMany';
+	const endpoint = env.endpoint + 'updateMany';
 
 	const formData = await request.json();
 
