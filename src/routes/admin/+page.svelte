@@ -30,7 +30,7 @@
 			formsUpdatedToday: 0,
 			formsDeleted: 0,
 			formsDeletedToday: 0,
-			loggedIn: false,
+			loggedIn: false
 		};
 
 		try {
@@ -44,7 +44,7 @@
 
 			if (response.ok) {
 				const result = await response.json();
-				alert = 'surveyor information added successfully!';
+				alert = 'Surveyor information added successfully!';
 				//Refresh page to show new surveyor
 				location.reload();
 			} else {
@@ -97,6 +97,19 @@
 		// Open WhatsApp with the pre-filled message
 		window.location.href = whatsappLink;
 	}
+
+	//Function to reset link
+	async function resetLink(id) {
+		const surveyResponse = await fetch(`/api/update-loggedIn/${id}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		alert = 'Link reset successful!';
+		//Refresh page to show new surveyor
+		location.reload();
+	}
 </script>
 
 <main>
@@ -129,8 +142,9 @@
 				<TableHeadCell>Phone No</TableHeadCell>
 				<TableHeadCell>Forms Filled</TableHeadCell>
 				<TableHeadCell>Forms Updated</TableHeadCell>
+				<TableHeadCell>Forms Deleted</TableHeadCell>
 				<TableHeadCell>Send Details</TableHeadCell>
-				<TableHeadCell>Delete</TableHeadCell>
+				<TableHeadCell>Actions</TableHeadCell>
 			</TableHead>
 			<TableBody>
 				{#each surveyors as surveyor}
@@ -139,6 +153,7 @@
 						<TableBodyCell>{surveyor.phoneNo}</TableBodyCell>
 						<TableBodyCell>{surveyor.formsFilled}</TableBodyCell>
 						<TableBodyCell>{surveyor.formsUpdated}</TableBodyCell>
+						<TableBodyCell>{surveyor.formsDeleted}</TableBodyCell>
 						<TableBodyCell class="">
 							<Button
 								color="blue"
@@ -148,7 +163,7 @@
 										surveyor.phoneNo,
 										`https://sajidpatel.pages.dev/${surveyor._id}`
 									)}
-								class="mr-2 w-28"
+								class="mr-1 w-28"
 								>SMS
 							</Button>
 							<Button
@@ -164,7 +179,12 @@
 							</Button>
 						</TableBodyCell>
 						<TableBodyCell>
-							<Button color="red" on:click={() => (popupModal = true)}>Delete</Button>
+							{#if surveyor.loggedIn}
+								<Button on:click={() => resetLink(surveyor._id)} color="dark" class="mr-1 w-28">
+									Reset Link
+								</Button>
+							{/if}
+							<Button color="red" on:click={() => (popupModal = true)} class="w-28">Delete</Button>
 						</TableBodyCell>
 						<Modal bind:open={popupModal} autoclose>
 							<div class="text-center">
