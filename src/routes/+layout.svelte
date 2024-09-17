@@ -3,7 +3,11 @@
 	import '../app.css';
 	import { Navbar, NavBrand, Footer, FooterCopyright } from 'flowbite-svelte';
 	import { Button, Avatar, Modal, FooterLinkGroup } from 'flowbite-svelte';
-	import { CaretLeftOutline, ExclamationCircleOutline, UserSettingsOutline } from 'flowbite-svelte-icons';
+	import {
+		CaretLeftOutline,
+		ExclamationCircleOutline,
+		UserSettingsOutline
+	} from 'flowbite-svelte-icons';
 	import { goto } from '$app/navigation';
 
 	let popupModal = false;
@@ -29,7 +33,7 @@
 				Sajid Patel
 			</span>
 		</NavBrand>
-		<Button on:click={()=>goto('/admin')} class="bg-blue-300 mr-2" color='alternative' size="sm">
+		<Button on:click={() => goto('/admin')} class="mr-2 bg-blue-300" color="alternative" size="sm">
 			<UserSettingsOutline />
 		</Button>
 		<Button on:click={goBack} class="self-center" color="light" size="xs">

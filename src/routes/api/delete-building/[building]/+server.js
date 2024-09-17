@@ -14,8 +14,8 @@ export async function POST({ params }) {
 			},
 			body: JSON.stringify({
 				dataSource: 'cluster0',
-				database: env.dbname,
-				collection: env.dbname,
+				database: 'voterinfo',
+				collection: 'voterinfo',
 				filter: { buildingName: params.building }
 			})
 		});

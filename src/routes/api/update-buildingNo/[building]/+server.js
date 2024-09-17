@@ -19,8 +19,8 @@ export async function POST({ params, request }) {
 			},
 			body: JSON.stringify({
 				dataSource: 'cluster0',
-				database: env.dbname,
-				collection: env.dbname,
+				database: 'voterinfo',
+				collection: 'voterinfo',
 				filter: { sectorName: partsArray[0], buildingName: partsArray[1] },
 				update: { $set: formData }
 			})

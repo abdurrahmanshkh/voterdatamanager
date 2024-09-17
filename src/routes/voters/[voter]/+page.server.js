@@ -17,8 +17,8 @@ export const load = async ({ params }) => {
 			},
 			body: JSON.stringify({
 				dataSource: 'cluster0',
-				database: env.dbname,
-				collection: env.dbname,
+				database: 'voterinfo',
+				collection: 'voterinfo',
 				filter: { _id: { $oid: params.voter } }
 			})
 		});
@@ -39,13 +39,13 @@ export const load = async ({ params }) => {
 			},
 			body: JSON.stringify({
 				dataSource: 'cluster0',
-				database: env.dbname,
-				collection: env.dbname,
+				database: 'voterinfo',
+				collection: 'voterinfo',
 				filter: {
 					flatNo: voter.flatNo || null,
 					buildingName: voter.buildingName || null,
 					sectorName: voter.sectorName || null,
-					wing: voter.wing || null
+					wing: voter.wing || ''
 				}
 			})
 		});
