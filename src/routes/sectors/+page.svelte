@@ -348,7 +348,7 @@
 						required
 					/>
 				</Label>
-				<Button class="mt-7" type="submit" color="dark">Add Sector</Button>
+				<Button class="md:mt-7" type="submit" color="dark">Add Sector</Button>
 			</div>
 		</form>
 	</Card>
