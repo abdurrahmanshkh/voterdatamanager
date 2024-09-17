@@ -1,6 +1,6 @@
 <script>
 	//Sectors List Page
-	import { Alert, Button, ButtonGroup, Card, Input, P } from 'flowbite-svelte';
+	import { Alert, Button, Label, Card, Input, P } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { PDFDocument, rgb } from 'pdf-lib';
@@ -328,9 +328,27 @@
 		<form on:submit|preventDefault={handleSubmit}>
 			<P class="mb-4 text-xl font-bold">Add New Sector</P>
 			<div class="grid w-full gap-4 md:grid-cols-3">
-				<Input type="text" bind:value={buildingName} placeholder="Building Name" required />
-				<Input type="text" bind:value={sectorName} placeholder="Sector Name" required />
-				<Button type="submit" color="dark">Add Sector</Button>
+				<Label>
+					New Sector Name:
+					<Input
+						type="text"
+						class="mt-2"
+						bind:value={sectorName}
+						placeholder="Sector Name"
+						required
+					/>
+				</Label>
+				<Label>
+					New Building Name:
+					<Input
+						type="text"
+						class="mt-2"
+						bind:value={buildingName}
+						placeholder="Building Name"
+						required
+					/>
+				</Label>
+				<Button class="mt-7" type="submit" color="dark">Add Sector</Button>
 			</div>
 		</form>
 	</Card>
