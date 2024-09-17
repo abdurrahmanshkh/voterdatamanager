@@ -27,7 +27,10 @@
 			formsFilled: 0,
 			formsFilledToday: 0,
 			formsUpdated: 0,
-			formsUpdatedToday: 0
+			formsUpdatedToday: 0,
+			formsDeleted: 0,
+			formsDeletedToday: 0,
+			loggedIn: false,
 		};
 
 		try {
