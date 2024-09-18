@@ -257,7 +257,7 @@
 
 	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		<div class="grid md:grid-cols-3">
-			<P class="text-xl font-bold md:col-span-2 md:mt-2">Select a Sector</P>
+			<P class="text-xl font-bold md:col-span-2 md:mt-2">Select a Sector / Building</P>
 			<Input
 				placeholder="Search by Building / Sector"
 				bind:value={filterText}
