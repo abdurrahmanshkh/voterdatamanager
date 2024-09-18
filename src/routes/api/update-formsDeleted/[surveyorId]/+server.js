@@ -5,20 +5,21 @@ import { env } from '$env/dynamic/private';
 const client = new MongoClient(env.MONGO_URI);
 
 export async function POST({ params }) {
-	const { surveyorId } = params; // Extract surveyorId from params
+	const { surveyorId } = params; // Extract the surveyorId from params
 
 	try {
-		// Connect to MongoDB
+		// Connect to MongoDB client
 		await client.connect();
-		const db = client.db('survey'); // Replace with your database name
-		const collection = db.collection('survey'); // Replace with your collection name
+		const db = client.db('survey'); // Replace 'survey' with your database name
+		const collection = db.collection('survey'); // Replace 'survey' with your collection name
 
-		// Update the document
+		// Update the document in the collection
 		const result = await collection.updateOne(
 			{ _id: new ObjectId(surveyorId) },
-			{ $set: { loggedIn: true } } // Set the `loggedIn` field to `true`
+			{ $inc: { formsDeleted: 1 } } // Replace `formsDeleted` with the field you want to increment by 1
 		);
 
+		// Return a successful response
 		if (result.modifiedCount === 1) {
 			return new Response(JSON.stringify({ message: 'Document updated successfully' }), {
 				status: 200
@@ -32,7 +33,7 @@ export async function POST({ params }) {
 		console.error('Error updating data:', error);
 		return new Response('Error updating data', { status: 500 });
 	} finally {
-		// Close the MongoDB client
+		// Ensure the client is closed when the operation is finished
 		await client.close();
 	}
 }

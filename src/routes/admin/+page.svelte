@@ -100,7 +100,7 @@
 
 	//Function to reset link
 	async function resetLink(id) {
-		const surveyResponse = await fetch(`/api/update-loggedIn/${id}`, {
+		const surveyResponse = await fetch(`/api/admin-update-loggedIn/${id}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -161,7 +161,7 @@
 									sendSMS(
 										surveyor.name,
 										surveyor.phoneNo,
-										`https://sajidpatel.pages.dev/${surveyor._id}`
+										`https://sajidpatel.onrender.com/surveyor/${surveyor._id}`
 									)}
 								class="mr-1 w-28"
 								>SMS
@@ -172,7 +172,7 @@
 									sendWhatsAppMessage(
 										surveyor.name,
 										surveyor.phoneNo,
-										`https://sajidpatel.pages.dev/${surveyor._id}`
+										`https://sajidpatel.onrender.com/surveyor/${surveyor._id}`
 									)}
 								class="w-28"
 								>WhatsApp
