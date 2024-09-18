@@ -68,9 +68,7 @@
 			if (response.ok) {
 				const result = await response.json();
 				alert = 'Voter information updated successfully!';
-				setTimeout(() => {
-					goto(`/sectors/${voter.sectorName}`);
-				}, 1000);
+				goto(`/sectors/${voter.sectorName}`);
 			} else {
 				alert = 'Failed to update voter information';
 			}
@@ -89,9 +87,7 @@
 			if (response.ok) {
 				const result = await response.json();
 				alert = 'Voter information deleted successfully!';
-				setTimeout(() => {
-					goto(`/sectors/${voter.sectorName}`);
-				}, 1000);
+				goto(`/sectors/${voter.sectorName}`);
 			} else {
 				alert = 'Failed to delete voter information';
 			}
