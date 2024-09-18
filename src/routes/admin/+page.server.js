@@ -1,38 +1,40 @@
+import { MongoClient } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
 export const load = async () => {
-	const apiKey = env.API_KEY;
-	const endpoint = env.endpoint + 'find';
+	const uri = env.MONGO_URI; // MongoDB connection string from environment variables
+	const client = new MongoClient(uri);
+	const databaseName = 'survey';
+	const collectionName = 'survey';
 
 	try {
-		const response = await fetch(endpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'api-key': apiKey
-			},
-			body: JSON.stringify({
-				dataSource: 'cluster0',
-				database: 'survey',
-				collection: 'survey',
-				filter: {}
-			})
-		});
+		// Connect to the MongoDB cluster
+		await client.connect();
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
+		// Get the database and collection
+		const database = client.db(databaseName);
+		const collection = database.collection(collectionName);
 
-		const data = await response.json();
+		// Fetch all documents from the collection
+		const surveyors = await collection.find({}).toArray();
+
+		// Convert _id to string
+		const serializedSurveyors = surveyors.map((doc) => ({
+			...doc,
+			_id: doc._id.toString() // Convert ObjectId to string
+		}));
 
 		// Return the fetched data as props to the page
 		return {
-			surveyors: data.documents || []
+			surveyors: serializedSurveyors
 		};
 	} catch (error) {
 		console.error('Error fetching data:', error);
 		return {
 			surveyors: []
 		};
+	} finally {
+		// Close the MongoDB connection
+		await client.close();
 	}
 };

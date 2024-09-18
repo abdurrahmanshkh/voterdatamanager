@@ -1,32 +1,41 @@
+import { MongoClient, ObjectId } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
 export async function POST({ params }) {
-	const apiKey = env.API_KEY;
-	const endpoint = env.endpoint + 'deleteOne';
+	const uri = env.MONGO_URI; // MongoDB connection string from environment variables
+	const client = new MongoClient(uri);
 
 	try {
-		const response = await fetch(endpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'api-key': apiKey
-			},
-			body: JSON.stringify({
-				dataSource: 'cluster0',
-				database: 'survey',
-				collection: 'survey',
-				filter: { _id: { $oid: params.surveyorId } }
-			})
+		// Connect to the MongoDB cluster
+		await client.connect();
+
+		// Get the database and collection
+		const database = client.db('survey');
+		const collection = database.collection('survey');
+
+		// Perform the deleteOne operation
+		const deleteResult = await collection.deleteOne({
+			_id: new ObjectId(params.surveyorId) // Convert string ID to ObjectId
 		});
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+		// Check if a document was deleted
+		if (deleteResult.deletedCount === 0) {
+			return new Response('No document found to delete', { status: 404 });
 		}
 
-		const data = await response.json();
-		return new Response(JSON.stringify(data), { status: 200 });
+		// Return a success response
+		return new Response(
+			JSON.stringify({
+				message: 'Document deleted successfully',
+				deletedCount: deleteResult.deletedCount
+			}),
+			{ status: 200 }
+		);
 	} catch (error) {
-		console.error('Error inserting data:', error);
-		return new Response('Error inserting data', { status: 500 });
+		console.error('Error deleting data:', error);
+		return new Response('Error deleting data', { status: 500 });
+	} finally {
+		// Close the MongoDB connection
+		await client.close();
 	}
 }

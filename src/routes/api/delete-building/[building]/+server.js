@@ -1,32 +1,36 @@
+import { MongoClient } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
 export async function POST({ params }) {
-	const apiKey = env.API_KEY;
-	const endpoint = env.endpoint + 'deleteMany';
+	const uri = env.MONGO_URI; // MongoDB connection string from environment variables
+	const client = new MongoClient(uri);
 
 	try {
-		const response = await fetch(endpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'api-key': apiKey
-			},
-			body: JSON.stringify({
-				dataSource: 'cluster0',
-				database: 'voterinfo',
-				collection: 'voterinfo',
-				filter: { buildingName: params.building }
-			})
+		// Connect to the MongoDB cluster
+		await client.connect();
+
+		// Get the database and collection
+		const database = client.db('voterinfo');
+		const collection = database.collection('voterinfo');
+
+		// Perform the deleteMany operation
+		const deleteResult = await collection.deleteMany({
+			buildingName: params.building // Filter for documents to delete
 		});
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
-
-		const data = await response.json();
-		return new Response(JSON.stringify(data), { status: 200 });
+		// Return a success response with the result
+		return new Response(
+			JSON.stringify({
+				message: 'Documents deleted successfully',
+				deletedCount: deleteResult.deletedCount
+			}),
+			{ status: 200 }
+		);
 	} catch (error) {
-		console.error('Error inserting data:', error);
-		return new Response('Error inserting data', { status: 500 });
+		console.error('Error deleting data:', error);
+		return new Response('Error deleting data', { status: 500 });
+	} finally {
+		// Close the MongoDB connection
+		await client.close();
 	}
 }

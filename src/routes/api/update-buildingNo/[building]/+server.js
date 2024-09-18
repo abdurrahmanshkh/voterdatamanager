@@ -1,38 +1,49 @@
+import { MongoClient } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
 export async function POST({ params, request }) {
-	const apiKey = env.API_KEY;
-	const endpoint = env.endpoint + 'updateMany';
+	const uri = env.MONGO_URI; // MongoDB connection string from environment variables
+	const client = new MongoClient(uri);
 
 	const formData = await request.json();
 
-	const updateString = params.building; // Example string
-	const partsArray = updateString.split(':'); // Split the string at every colon
+	// Split the params.building string into parts (sectorName:buildingName)
+	const updateString = params.building;
+	const partsArray = updateString.split(':'); // Split the string by colon
 
 	try {
-		const response = await fetch(endpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'api-key': apiKey
-			},
-			body: JSON.stringify({
-				dataSource: 'cluster0',
-				database: 'voterinfo',
-				collection: 'voterinfo',
-				filter: { sectorName: partsArray[0], buildingName: partsArray[1] },
-				update: { $set: formData }
-			})
-		});
+		// Connect to the MongoDB cluster
+		await client.connect();
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+		// Get the database and collection
+		const database = client.db('voterinfo');
+		const collection = database.collection('voterinfo');
+
+		// Perform the updateMany operation
+		const updateResult = await collection.updateMany(
+			{ sectorName: partsArray[0], buildingName: partsArray[1] }, // Filtering by sectorName and buildingName
+			{ $set: formData } // Applying the formData as updates
+		);
+
+		// Check if the update was successful
+		if (updateResult.matchedCount === 0) {
+			throw new Error('No matching documents found');
 		}
 
-		const data = await response.json();
-		return new Response(JSON.stringify(data), { status: 200 });
+		// Return a success response
+		return new Response(
+			JSON.stringify({
+				message: 'Update successful',
+				matchedCount: updateResult.matchedCount,
+				modifiedCount: updateResult.modifiedCount
+			}),
+			{ status: 200 }
+		);
 	} catch (error) {
-		console.error('Error inserting data:', error);
-		return new Response('Error inserting data', { status: 500 });
+		console.error('Error updating data:', error);
+		return new Response('Error updating data', { status: 500 });
+	} finally {
+		// Close the MongoDB connection
+		await client.close();
 	}
 }

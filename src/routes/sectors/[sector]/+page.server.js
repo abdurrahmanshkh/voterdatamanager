@@ -1,39 +1,42 @@
+import { MongoClient } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
 export const load = async ({ params }) => {
-	const apiKey = env.API_KEY;
-	const endpoint = env.endpoint + 'find';
+	// Define MongoDB connection details
+	const uri = env.MONGO_URI; // The connection string for your MongoDB instance
+	const client = new MongoClient(uri);
 
 	try {
-		const response = await fetch(endpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'api-key': apiKey
-			},
-			body: JSON.stringify({
-				dataSource: 'cluster0',
-				database: 'voterinfo',
-				collection: 'voterinfo',
-				sort: { buildingNo: 1 },
-				filter: { sectorName: decodeURIComponent(params.sector) }
-			})
-		});
+		// Connect to the MongoDB cluster
+		await client.connect();
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
+		// Get the database and collection
+		const database = client.db('voterinfo');
+		const collection = database.collection('voterinfo');
 
-		const data = await response.json();
+		// Find documents with the specified sectorName, sorted by buildingNo
+		const voters = await collection
+			.find({ sectorName: decodeURIComponent(params.sector) })
+			.sort({ buildingNo: 1 })
+			.toArray();
 
-		// Return the fetched data as props to the page
+		// Convert MongoDB ObjectId to string for serialization
+		const serializedVoters = voters.map((voter) => ({
+			...voter,
+			_id: voter._id.toString()
+		}));
+
+		// Return the serialized data
 		return {
-			voters: data.documents || []
+			voters: serializedVoters
 		};
 	} catch (error) {
 		console.error('Error fetching data:', error);
 		return {
 			voters: []
 		};
+	} finally {
+		// Close the MongoDB connection
+		await client.close();
 	}
 };

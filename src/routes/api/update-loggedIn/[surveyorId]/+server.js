@@ -1,35 +1,43 @@
+import { MongoClient, ObjectId } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
 export async function POST({ params }) {
-	const apiKey = env.API_KEY;
-	const endpoint = env.endpoint + 'updateOne';
+	const uri = env.MONGO_URI; // MongoDB connection string from environment variables
+	const client = new MongoClient(uri);
 
 	try {
-		const response = await fetch(endpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'api-key': apiKey
-			},
-			body: JSON.stringify({
-				dataSource: 'cluster0',
-				database: 'survey',
-				collection: 'survey',
-				filter: { _id: { $oid: params.surveyorId } },
-				update: {
-					$set: { loggedIn: false }
-				}
-			})
-		});
+		// Connect to the MongoDB cluster
+		await client.connect();
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+		// Get the database and collection
+		const database = client.db('survey');
+		const collection = database.collection('survey');
+
+		// Perform the updateOne operation to set 'loggedIn' to false
+		const updateResult = await collection.updateOne(
+			{ _id: new ObjectId(params.surveyorId) }, // Convert params.surveyorId to ObjectId
+			{ $set: { loggedIn: false } }
+		);
+
+		// Check if the update was successful
+		if (updateResult.matchedCount === 0) {
+			throw new Error('No matching surveyor found');
 		}
 
-		const data = await response.json();
-		return new Response(JSON.stringify(data), { status: 200 });
+		// Return a success response
+		return new Response(
+			JSON.stringify({
+				message: 'Update successful',
+				matchedCount: updateResult.matchedCount,
+				modifiedCount: updateResult.modifiedCount
+			}),
+			{ status: 200 }
+		);
 	} catch (error) {
-		console.error('Error inserting data:', error);
-		return new Response('Error inserting data', { status: 500 });
+		console.error('Error updating data:', error);
+		return new Response('Error updating data', { status: 500 });
+	} finally {
+		// Close the MongoDB connection
+		await client.close();
 	}
 }

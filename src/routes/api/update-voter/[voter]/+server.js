@@ -1,35 +1,38 @@
+import { MongoClient, ObjectId } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
 export async function POST({ params, request }) {
-	const apiKey = env.API_KEY;
-	const endpoint = env.endpoint + 'updateOne';
+	const uri = env.MONGO_URI; // MongoDB connection string from environment variables
+	const client = new MongoClient(uri);
 
 	const formData = await request.json();
 
 	try {
-		const response = await fetch(endpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'api-key': apiKey
-			},
-			body: JSON.stringify({
-				dataSource: 'cluster0',
-				database: 'voterinfo',
-				collection: 'voterinfo',
-				filter: { _id: { $oid: params.voter } },
-				update: { $set: formData }
-			})
-		});
+		// Connect to the MongoDB cluster
+		await client.connect();
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
+		// Get the database and collection
+		const database = client.db('voterinfo');
+		const collection = database.collection('voterinfo');
+
+		// Perform the update operation
+		const updateResult = await collection.updateOne(
+			{ _id: new ObjectId(params.voter) }, // Convert params.voter to ObjectId
+			{ $set: formData }
+		);
+
+		// Check if the update was successful
+		if (updateResult.modifiedCount === 0) {
+			throw new Error('No documents were updated');
 		}
 
-		const data = await response.json();
-		return new Response(JSON.stringify(data), { status: 200 });
+		// Return a success response
+		return new Response(JSON.stringify({ message: 'Update successful' }), { status: 200 });
 	} catch (error) {
-		console.error('Error inserting data:', error);
-		return new Response('Error inserting data', { status: 500 });
+		console.error('Error updating data:', error);
+		return new Response('Error updating data', { status: 500 });
+	} finally {
+		// Close the MongoDB connection
+		await client.close();
 	}
 }

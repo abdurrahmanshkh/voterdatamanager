@@ -1,63 +1,46 @@
+import { MongoClient, ObjectId } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
 export const load = async ({ params }) => {
-	const apiKey = env.API_KEY;
-	const findOneEndpoint = env.endpoint + 'findOne';
-	const findManyEndpoint = env.endpoint + 'find';
+	const uri = env.MONGO_URI; // Connection string for your MongoDB instance
+	const client = new MongoClient(uri);
 
 	try {
-		// Step 1: Get the voter using the _id from params
-		const voterResponse = await fetch(findOneEndpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'api-key': apiKey
-			},
-			body: JSON.stringify({
-				dataSource: 'cluster0',
-				database: 'voterinfo',
-				collection: 'voterinfo',
-				filter: { _id: { $oid: params.voter } }
-			})
-		});
+		// Connect to the MongoDB cluster
+		await client.connect();
 
-		if (!voterResponse.ok) {
-			throw new Error(`HTTP error! status: ${voterResponse.status}`);
+		// Get the database and collection
+		const database = client.db('voterinfo');
+		const collection = database.collection('voterinfo');
+
+		// Step 1: Find the voter using the _id from params
+		const voter = await collection.findOne({ _id: new ObjectId(params.voter) });
+
+		if (!voter) {
+			throw new Error('Voter not found');
 		}
 
-		const voterData = await voterResponse.json();
-		const voter = voterData.document;
-
-		// Step 2: Get all persons sharing the same flatNo
-		const sharedResponse = await fetch(findManyEndpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'api-key': apiKey
-			},
-			body: JSON.stringify({
-				dataSource: 'cluster0',
-				database: 'voterinfo',
-				collection: 'voterinfo',
-				filter: {
-					flatNo: voter.flatNo || null,
-					buildingName: voter.buildingName || null,
-					sectorName: voter.sectorName || null,
-					wing: voter.wing || ''
-				}
+		// Step 2: Find all residents sharing the same flatNo, buildingName, sectorName, and wing
+		const sharedResidents = await collection
+			.find({
+				flatNo: voter.flatNo || null,
+				buildingName: voter.buildingName || null,
+				sectorName: voter.sectorName || null,
+				wing: voter.wing || ''
 			})
-		});
+			.toArray();
 
-		if (!sharedResponse.ok) {
-			throw new Error(`HTTP error! status: ${sharedResponse.status}`);
-		}
+		// Step 3: Convert MongoDB ObjectId to string for serialization
+		const serializedVoter = { ...voter, _id: voter._id.toString() };
+		const serializedSharedResidents = sharedResidents.map((resident) => ({
+			...resident,
+			_id: resident._id.toString()
+		}));
 
-		const sharedData = await sharedResponse.json();
-
-		// Step 3: Return the original voter and others sharing the flatNo
+		// Return the original voter and others sharing the flatNo
 		return {
-			voter: voter || null,
-			sharedResidents: sharedData.documents || []
+			voter: serializedVoter,
+			sharedResidents: serializedSharedResidents
 		};
 	} catch (error) {
 		console.error('Error fetching data:', error);
@@ -65,5 +48,8 @@ export const load = async ({ params }) => {
 			voter: null,
 			sharedResidents: []
 		};
+	} finally {
+		// Close the MongoDB connection
+		await client.close();
 	}
 };

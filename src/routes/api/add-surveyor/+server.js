@@ -1,38 +1,41 @@
+import { MongoClient } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
 export async function POST({ request }) {
-	const apiKey = env.API_KEY;
-	const endpoint = env.endpoint + 'insertOne';
-
-	const formData = await request.json();
-
-	// Add a timestamp to the formData
-	const timestamp = new Date().toISOString();
-	formData.timestamp = timestamp;
+	const uri = env.MONGO_URI; // MongoDB connection string from environment variables
+	const client = new MongoClient(uri);
 
 	try {
-		const response = await fetch(endpoint, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'api-key': apiKey
-			},
-			body: JSON.stringify({
-				dataSource: 'cluster0',
-				database: 'survey',
-				collection: 'survey',
-				document: formData
-			})
-		});
+		// Connect to the MongoDB cluster
+		await client.connect();
 
-		if (!response.ok) {
-			throw new Error(`HTTP error! status: ${response.status}`);
-		}
+		// Get the database and collection
+		const database = client.db('survey');
+		const collection = database.collection('survey');
 
-		const data = await response.json();
-		return new Response(JSON.stringify(data), { status: 200 });
+		// Get the data from the request
+		const formData = await request.json();
+
+		// Add a timestamp to the formData
+		const timestamp = new Date().toISOString();
+		formData.timestamp = timestamp;
+
+		// Perform the insertOne operation
+		const insertResult = await collection.insertOne(formData);
+
+		// Return a success response with the result
+		return new Response(
+			JSON.stringify({
+				message: 'Document inserted successfully',
+				insertedId: insertResult.insertedId
+			}),
+			{ status: 200 }
+		);
 	} catch (error) {
 		console.error('Error inserting data:', error);
 		return new Response('Error inserting data', { status: 500 });
+	} finally {
+		// Close the MongoDB connection
+		await client.close();
 	}
 }
