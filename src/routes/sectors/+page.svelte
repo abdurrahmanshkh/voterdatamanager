@@ -4,7 +4,7 @@
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
 	import { PDFDocument, rgb } from 'pdf-lib';
-	import { Table, TableBody, TableBodyCell } from 'flowbite-svelte';
+	import { Table, TableBody, TableBodyCell, Spinner } from 'flowbite-svelte';
 	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
 
 	var voters = [];
@@ -303,11 +303,15 @@
 				</Table>
 			</div>
 		{/if}
-		<div class="mt-4 grid grid-cols-2 gap-2 md:grid-cols-5">
-			{#each uniqueSectors as sector}
-				<Button color="blue" on:click={() => goto(`sectors/${sector}`)}>{sector}</Button>
-			{/each}
-		</div>
+		{#if uniqueSectors.length > 0}
+			<div class="mt-4 grid grid-cols-2 gap-2 md:grid-cols-5">
+				{#each uniqueSectors as sector}
+					<Button color="blue" on:click={() => goto(`sectors/${sector}`)}>{sector}</Button>
+				{/each}
+			</div>
+		{:else}
+			<div class="mt-4 text-center"><Spinner color="blue" /></div>
+		{/if}
 	</Card>
 
 	<div class="grid md:grid-cols-2">
