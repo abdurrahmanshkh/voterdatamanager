@@ -7,14 +7,35 @@
 	import { Table, TableBody, TableBodyCell } from 'flowbite-svelte';
 	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
 
+	var voters = [];
+	let error = null;
+
 	onMount(() => {
 		if (localStorage.getItem('isAuthenticated') !== '776112529259') {
 			goto('/');
+		} else {
+			// Fetch voter data from the API endpoint
+			async function fetchVoters() {
+				try {
+					const response = await fetch('/api/fetch-all-voters');
+					const data = await response.json();
+
+					if (response.ok) {
+						voters = data.voters;
+					} else {
+						error = data.error || 'An error occurred';
+					}
+				} catch (err) {
+					console.error('Fetch error:', err);
+					error = 'Failed to load data';
+				}
+			}
+			// Call the function to fetch data when the page loads
+			fetchVoters();
 		}
 	});
 
 	// Form fields
-	let flatNo = '';
 	let name = '';
 	let phoneNo = '';
 	let yadiNo = '';
@@ -29,11 +50,86 @@
 	let note = '';
 	let alert = '';
 	let searchTerm = ''; // Search term for filtering voters
+	let filterText = ''; /// Input value for filtering
 
-	export let data; // The fetched data is passed as props to the page component
-	let { voters } = data; // Destructure the voters from the data prop
+	$: uniqueSectors = [...new Set(voters.map((voter) => voter.sectorName))]; // Get unique building names
 
-	let uniqueSectors = [...new Set(voters.map((voter) => voter.sectorName))]; // Get unique building names
+	$: filteredVoters = voters.filter((voter) => {
+		// Check if any of the search parameters match the searchTerm
+		return (
+			voter.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+			voter.flatNo.toLowerCase().includes(searchTerm) ||
+			voter.phoneNo.toLowerCase().includes(searchTerm) ||
+			voter.yadiNo.toLowerCase().includes(searchTerm) ||
+			voter.srNo.toLowerCase().includes(searchTerm) ||
+			voter.rscNo.toLowerCase().includes(searchTerm) ||
+			voter.wing.toLowerCase().includes(searchTerm.toLowerCase())
+		);
+	});
+
+	// Create a set of unique combinations of building name, sector name, and buildingNo
+	$: uniqueBuildings = Array.from(
+		new Map(
+			voters.map((voter) => [
+				voter.buildingName + '-' + voter.sectorName + '-' + voter.buildingNo,
+				{
+					buildingName: voter.buildingName,
+					sectorName: voter.sectorName,
+					buildingNo: voter.buildingNo
+				}
+			])
+		).values()
+	);
+
+	// Filter function to match building name, sector name, or building no
+	$: filteredBuildings = uniqueBuildings.filter(
+		(building) =>
+			building.buildingName.toLowerCase().includes(filterText.toLowerCase()) ||
+			building.sectorName.toLowerCase().includes(filterText.toLowerCase()) ||
+			building.buildingNo.toLowerCase().includes(filterText.toLowerCase())
+	);
+
+	// Function to handle form submission
+	async function handleSubmit(event) {
+		event.preventDefault();
+
+		const formData = {
+			flatNo: 'newsector',
+			name,
+			phoneNo,
+			yadiNo,
+			srNo,
+			rscNo,
+			buildingName,
+			wing,
+			sectorName,
+			buildingNo,
+			pollingStation,
+			caste,
+			note
+		};
+
+		try {
+			const response = await fetch('/api/add-voter', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(formData)
+			});
+
+			if (response.ok) {
+				const result = await response.json();
+				alert = 'Sector added successfully!';
+				// Update the UI to reflect the new sector
+				uniqueSectors = [...new Set([...uniqueSectors, sectorName])];
+			} else {
+				alert = 'Failed to add sector';
+			}
+		} catch (error) {
+			alert = 'An error occurred';
+		}
+	}
 
 	async function downloadVoterSlips() {
 		const pdfDoc = await PDFDocument.create();
@@ -128,86 +224,6 @@
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
 	}
-
-	// Function to handle form submission
-	async function handleSubmit(event) {
-		event.preventDefault();
-
-		const formData = {
-			flatNo: 'newsector',
-			name,
-			phoneNo,
-			yadiNo,
-			srNo,
-			rscNo,
-			buildingName,
-			wing,
-			sectorName,
-			buildingNo,
-			pollingStation,
-			caste,
-			note
-		};
-
-		try {
-			const response = await fetch('/api/add-voter', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(formData)
-			});
-
-			if (response.ok) {
-				const result = await response.json();
-				alert = 'Sector added successfully!';
-				// Update the UI to reflect the new sector
-				uniqueSectors = [...new Set([...uniqueSectors, sectorName])];
-			} else {
-				alert = 'Failed to add sector';
-			}
-		} catch (error) {
-			alert = 'An error occurred';
-		}
-	}
-
-	$: filteredVoters = voters.filter((voter) => {
-		// Check if any of the search parameters match the searchTerm
-		return (
-			voter.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-			voter.flatNo.toLowerCase().includes(searchTerm) ||
-			voter.phoneNo.toLowerCase().includes(searchTerm) ||
-			voter.yadiNo.toLowerCase().includes(searchTerm) ||
-			voter.srNo.toLowerCase().includes(searchTerm) ||
-			voter.rscNo.toLowerCase().includes(searchTerm) ||
-			voter.wing.toLowerCase().includes(searchTerm.toLowerCase())
-		);
-	});
-
-	// Create a set of unique combinations of building name, sector name, and buildingNo
-	let uniqueBuildings = Array.from(
-		new Map(
-			voters.map((voter) => [
-				voter.buildingName + '-' + voter.sectorName + '-' + voter.buildingNo,
-				{
-					buildingName: voter.buildingName,
-					sectorName: voter.sectorName,
-					buildingNo: voter.buildingNo
-				}
-			])
-		).values()
-	);
-
-	// Input value for filtering
-	let filterText = '';
-
-	// Filter function to match building name, sector name, or building no
-	$: filteredBuildings = uniqueBuildings.filter(
-		(building) =>
-			building.buildingName.toLowerCase().includes(filterText.toLowerCase()) ||
-			building.sectorName.toLowerCase().includes(filterText.toLowerCase()) ||
-			building.buildingNo.toLowerCase().includes(filterText.toLowerCase())
-	);
 </script>
 
 <main class="bg-gray-300">
@@ -289,9 +305,7 @@
 		{/if}
 		<div class="mt-4 grid grid-cols-2 gap-2 md:grid-cols-5">
 			{#each uniqueSectors as sector}
-				<Button color="blue" on:click={() => window.location.href=`sectors/${sector}`}>
-					{sector}
-				</Button>
+				<Button color="blue" on:click={() => goto(`sectors/${sector}`)}>{sector}</Button>
 			{/each}
 		</div>
 	</Card>
