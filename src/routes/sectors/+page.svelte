@@ -62,8 +62,7 @@
 			voter.phoneNo.toLowerCase().includes(searchTerm) ||
 			voter.yadiNo.toLowerCase().includes(searchTerm) ||
 			voter.srNo.toLowerCase().includes(searchTerm) ||
-			voter.rscNo.toLowerCase().includes(searchTerm) ||
-			voter.wing.toLowerCase().includes(searchTerm.toLowerCase())
+			voter.rscNo.toLowerCase().includes(searchTerm)
 		);
 	});
 

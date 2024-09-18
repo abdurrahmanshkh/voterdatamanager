@@ -11,7 +11,7 @@ export const GET = async () => {
 		await client.connect();
 		const database = client.db('voterinfo');
 		const collection = database.collection('voterinfo');
-		const voters = await collection.find({}).toArray();
+		const voters = await collection.find({}, { projection: { caste: 0, note: 0 } }).toArray();
 
 		// Send raw voters data without serializing ObjectId
 		return json({ voters });
