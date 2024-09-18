@@ -1,6 +1,6 @@
 {
 	"name": "Sajid Patel - Voter Data Dashboard",
-	"short_name": "Voter Data Dashboard",
+	"short_name": "Sajid Patel - Voter Data",
 	"description": "A dashboard for Sajid Patel, BJP Politician and Ex Deputy Sarpanch of Owe, Kharghar Gram Panchayat, to manage and organize voter data efficiently.",
 	"start_url": "/sectors",
 	"display": "standalone",
