@@ -289,7 +289,7 @@
 		{/if}
 		<div class="mt-4 grid grid-cols-2 gap-2 md:grid-cols-5">
 			{#each uniqueSectors as sector}
-				<Button color="blue" on:click={() => goto(`sectors/${sector}`)}>
+				<Button color="blue" on:click={() => window.location.href=`sectors/${sector}`}>
 					{sector}
 				</Button>
 			{/each}

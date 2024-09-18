@@ -33,7 +33,12 @@
 				Sajid Patel
 			</span>
 		</NavBrand>
-		<Button on:click={() => goto('/admin')} class="mr-2 bg-blue-300" color="alternative" size="sm">
+		<Button
+			on:click={() => (window.location.href = '/admin')}
+			class="mr-2 bg-blue-300"
+			color="alternative"
+			size="sm"
+		>
 			<UserSettingsOutline />
 		</Button>
 		<Button on:click={goBack} class="self-center" color="light" size="xs">
