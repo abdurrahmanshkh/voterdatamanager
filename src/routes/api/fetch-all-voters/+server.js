@@ -13,14 +13,8 @@ export const GET = async () => {
 		const collection = database.collection('voterinfo');
 		const voters = await collection.find({}).toArray();
 
-		// Serialize the _id field to string
-		const serializedVoters = voters.map((voter) => ({
-			...voter,
-			_id: voter._id.toString()
-		}));
-
-		// Return the data as a JSON response
-		return json({ voters: serializedVoters });
+		// Send raw voters data without serializing ObjectId
+		return json({ voters });
 	} catch (error) {
 		console.error('Error fetching voters:', error);
 		return json({ voters: [], error: 'Failed to fetch data' }, { status: 500 });
