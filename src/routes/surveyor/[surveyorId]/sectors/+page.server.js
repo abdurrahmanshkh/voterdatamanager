@@ -6,8 +6,8 @@ export const load = async ({ params }) => {
 	const client = new MongoClient(uri);
 	const databaseNameSurvey = 'survey';
 	const collectionNameSurvey = 'survey';
-	const databaseNameVoter = 'voterinfo';
-	const collectionNameVoter = 'voterinfo';
+	const databaseNameVoter = env.dbname;
+	const collectionNameVoter = env.dbname;
 
 	try {
 		// Connect to the MongoDB cluster

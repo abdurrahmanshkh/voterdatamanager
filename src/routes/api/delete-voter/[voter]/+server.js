@@ -10,8 +10,8 @@ export async function POST({ params }) {
 		await client.connect();
 
 		// Get the database and collection
-		const database = client.db('voterinfo');
-		const collection = database.collection('voterinfo');
+		const database = client.db(env.dbname);
+		const collection = database.collection(env.dbname);
 
 		// Perform the deleteOne operation
 		const deleteResult = await collection.deleteOne({

@@ -7,9 +7,9 @@ export const load = async ({ params }) => {
 
 	// Define database and collection names
 	const surveyDatabase = 'survey';
-	const voterDatabase = 'voterinfo';
+	const voterDatabase = env.dbname;
 	const surveyCollectionName = 'survey';
-	const voterCollectionName = 'voterinfo';
+	const voterCollectionName = env.dbname;
 
 	try {
 		// Connect to MongoDB

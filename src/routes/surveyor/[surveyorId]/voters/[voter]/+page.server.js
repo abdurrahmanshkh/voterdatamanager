@@ -25,14 +25,14 @@ export const load = async ({ params }) => {
 		// Connect to the MongoDB client
 		await client.connect();
 		const surveyDb = client.db('survey'); // Replace 'survey' with your database name
-		const voterDb = client.db('voterinfo'); // Replace 'voterinfo' with your database name
+		const voterDb = client.db(env.dbname); // Replace env.dbname with your database name
 
 		// Fetch the surveyor data
 		const surveyorCollection = surveyDb.collection('survey'); // Replace 'survey' with your collection name
 		const surveyorData = await surveyorCollection.findOne({ _id: new ObjectId(surveyorId) });
 
 		// Fetch the voter data
-		const voterCollection = voterDb.collection('voterinfo'); // Replace 'voterinfo' with your collection name
+		const voterCollection = voterDb.collection(env.dbname); // Replace env.dbname with your collection name
 		const voterData = await voterCollection.findOne({ _id: new ObjectId(voterId) });
 
 		if (voterData) {

@@ -9,9 +9,9 @@ export const GET = async () => {
 	try {
 		// Connect to MongoDB and fetch voters data
 		await client.connect();
-		const database = client.db('voterinfo');
-		const collection = database.collection('voterinfo');
-		const voters = await collection.find({}, { projection: { caste: 0, note: 0 } }).toArray();
+		const database = client.db(env.dbname);
+		const collection = database.collection(env.dbname);
+		const voters = await collection.find({}).toArray();
 
 		// Send raw voters data without serializing ObjectId
 		return json({ voters });

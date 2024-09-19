@@ -10,8 +10,8 @@ export async function POST({ request }) {
 		await client.connect();
 
 		// Get the database and collection
-		const database = client.db('voterinfo');
-		const collection = database.collection('voterinfo');
+		const database = client.db(env.dbname);
+		const collection = database.collection(env.dbname);
 
 		// Get the data from the request
 		const formData = await request.json();

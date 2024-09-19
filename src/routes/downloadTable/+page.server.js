@@ -10,8 +10,8 @@ export const load = async () => {
 		await client.connect();
 
 		// Get the database and collection
-		const database = client.db('voterinfo');
-		const collection = database.collection('voterinfo');
+		const database = client.db(env.dbname);
+		const collection = database.collection(env.dbname);
 
 		// Fetch all voters (without filter for now, adjust as needed)
 		const voters = await collection.find({}).toArray();
