@@ -92,17 +92,21 @@
 	});
 
 	function selectSector(sector) {
+		showForm = false;
 		sectorName = '';
 		selectedSector = sector;
 		selectedBuilding = ''; // Reset building selection when a new sector is selected
 		locationSearchTerm = ''; // Clear location search term
+		resetForm();
 	}
 
 	function selectBuilding(building) {
+		showForm = false;
 		buildingName = '';
 		buildingNo = '';
 		selectedBuilding = building;
 		locationSearchTerm = ''; // Clear location search term
+		resetForm();
 	}
 
 	let flatNo = '';
@@ -642,7 +646,7 @@
 		{#if filteredSectors.length > 0}
 			<div class="mt-4 grid grid-cols-2 gap-1 md:grid-cols-6">
 				{#each filteredSectors as sector}
-					<Button on:click={() => selectSector(sector)}>
+					<Button on:click={() => selectSector(sector)} class="bg-blue-900">
 						{sector}
 					</Button>
 				{/each}
@@ -658,7 +662,7 @@
 			<P class="text-xl font-bold">Buildings in {selectedSector}</P>
 			<div class="mt-4 grid grid-cols-2 gap-1 md:grid-cols-6">
 				{#each filteredBuildings as building}
-					<Button on:click={() => selectBuilding(building)}>
+					<Button on:click={() => selectBuilding(building)} color="blue">
 						{building}
 					</Button>
 				{/each}
@@ -667,7 +671,7 @@
 	{/if}
 
 	{#if selectedSector}
-		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100 p-1" padding="none">
+		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100 md:p-1" padding="none">
 			<Accordion>
 				<AccordionItem>
 					<span slot="header">
@@ -837,16 +841,18 @@
 			</div>
 			<div class="mt-6 grid gap-1 md:grid-cols-4">
 				{#if showForm}
-					<Button type="submit">Update</Button>
+					<Button type="submit" color="dark">Update Information</Button>
 					<div></div>
 					<div></div>
-					<Button type="button" on:click={() => (deleteVoterModal = true)}>Delete Voter</Button>
+					<Button type="button" on:click={() => (deleteVoterModal = true)} color="red">
+						Delete Voter
+					</Button>
 				{:else}
-					<Button type="submit">Add Voter</Button>
+					<Button type="submit" color="dark">Add Voter</Button>
 					<div></div>
 					<div></div>
 					{#if selectedBuilding}
-						<Button type="button" on:click={() => (deleteBuildingModal = true)}>
+						<Button type="button" on:click={() => (deleteBuildingModal = true)} color="red">
 							Delete Building
 						</Button>
 					{/if}
