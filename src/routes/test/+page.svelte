@@ -10,7 +10,6 @@
 	import { AccordionItem, Accordion } from 'flowbite-svelte';
 
 	let voters = [];
-	let error = null;
 	let sharedResidents = [];
 	let newPhoneNumber = '';
 
@@ -44,8 +43,9 @@
 		}
 	});
 
-	let selectedSector = null;
-	let selectedBuilding = null;
+	let selectedSector = '';
+	let selectedBuilding = '';
+	let selectedBuildingNo = '';
 
 	let voterSearchTerm = '';
 	let locationSearchTerm = '';
@@ -72,6 +72,7 @@
 						(!selectedSector || voter.sectorName === selectedSector) &&
 						voter.buildingName.toLowerCase().includes(locationSearchTerm.toLowerCase())
 				)
+				.sort((a, b) => a.buildingNo - b.buildingNo) // Sort by buildingNo
 				.map((voter) => voter.buildingName)
 		)
 	];
@@ -91,12 +92,15 @@
 	});
 
 	function selectSector(sector) {
+		sectorName = '';
 		selectedSector = sector;
-		selectedBuilding = null; // Reset building selection when a new sector is selected
+		selectedBuilding = ''; // Reset building selection when a new sector is selected
 		locationSearchTerm = ''; // Clear location search term
 	}
 
 	function selectBuilding(building) {
+		buildingName = '';
+		buildingNo = '';
 		selectedBuilding = building;
 		locationSearchTerm = ''; // Clear location search term
 	}
@@ -107,9 +111,9 @@
 	let yadiNo = '';
 	let srNo = '';
 	let rscNo = '';
-	let buildingName = selectedBuilding || '';
+	let buildingName = '';
 	let wing = '';
-	let sectorName = selectedSector || '';
+	let sectorName = '';
 	let buildingNo = ''; // Assuming buildingNo is unique per building
 	let pollingStation = '';
 	let caste = '';
@@ -119,19 +123,28 @@
 	let newBuildingNo = '';
 	let newSectorName = '';
 
-	// Automatically bind and disable fields if a sector or building is selected
-	$: if (selectedBuilding) {
-		buildingName = selectedBuilding;
-		// Assuming each building has a unique buildingNo
-		const selectedBuildingDetails = voters.find((voter) => voter.buildingName === selectedBuilding);
-		buildingNo = selectedBuildingDetails?.buildingNo || '';
-	} else {
-		buildingName = '';
+	// Function to reset form
+	function resetForm() {
+		flatNo = '';
+		name = '';
+		phoneNo = '';
+		yadiNo = '';
+		srNo = '';
+		rscNo = '';
+		buildingName = selectedBuilding || '';
+		wing = '';
+		sectorName = selectedSector || '';
 		buildingNo = '';
+		pollingStation = '';
+		caste = '';
+		note = '';
 	}
 
-	$: if (selectedSector) {
-		sectorName = selectedSector;
+	// Automatically bind and disable fields if a sector or building is selected
+	$: if (selectedBuilding) {
+		// Assuming each building has a unique buildingNo
+		const selectedBuildingDetails = voters.find((voter) => voter.buildingName === selectedBuilding);
+		selectedBuildingNo = selectedBuildingDetails?.buildingNo || '';
 	}
 
 	// Function to handle form submission
@@ -145,10 +158,10 @@
 			yadiNo,
 			srNo,
 			rscNo,
-			buildingName,
+			buildingName: buildingName || selectedBuilding,
 			wing,
-			sectorName,
-			buildingNo,
+			sectorName: sectorName || selectedSector,
+			buildingNo: buildingNo || selectedBuildingNo,
 			pollingStation,
 			caste,
 			note
@@ -170,19 +183,7 @@
 					// Add new voter to voters array
 					voters = [...voters, formData];
 					// Reset form fields
-					flatNo = '';
-					name = '';
-					phoneNo = '';
-					yadiNo = '';
-					srNo = '';
-					rscNo = '';
-					buildingName = selectedBuilding || '';
-					wing = '';
-					sectorName = selectedSector || '';
-					buildingNo = '';
-					pollingStation = '';
-					caste = '';
-					note = '';
+					resetForm();
 				} else {
 					alert = 'Failed to add voter';
 				}
@@ -202,6 +203,12 @@
 				if (response.ok) {
 					alert = 'Voter information updated successfully!';
 					showForm = false; // Hide the form
+					// Update current voter object
+					currentVoter = { ...currentVoter, ...formData };
+					// Update voters array
+					voters = voters.map((voter) => (voter._id === currentVoter._id ? currentVoter : voter));
+					// Reset form fields
+					resetForm();
 				} else {
 					alert = 'Failed to update voter information';
 				}
@@ -253,6 +260,10 @@
 			if (response.ok) {
 				alert = 'Voter information deleted successfully!';
 				showForm = false; // Hide the form
+				// Remove the deleted voter from the voters array
+				voters = voters.filter((voter) => voter._id !== currentVoter._id);
+				// Reset form fields
+				resetForm();
 			} else {
 				alert = 'Failed to delete voter information';
 			}
@@ -439,6 +450,11 @@
 			if (response.ok) {
 				const result = await response.json();
 				alert = 'Building information deleted successfully!';
+				// Remove the deleted building from the voters array
+				voters = voters.filter((voter) => voter.buildingName !== selectedBuilding);
+				selectedBuilding = ''; // Reset selected building
+				// Reset form fields
+				resetForm();
 			} else {
 				alert = 'Failed to delete building information';
 			}
@@ -450,17 +466,30 @@
 	//Function to update building name
 	async function updateBuildingName() {
 		try {
-			const response = await fetch(`/api/update-buildingName/${sectorName}:${selectedBuilding}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ buildingName: newBuildingName })
-			});
+			const response = await fetch(
+				`/api/update-buildingName/${selectedSector}:${selectedBuilding}`,
+				{
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ buildingName: newBuildingName })
+				}
+			);
 
 			if (response.ok) {
 				const result = await response.json();
 				alert = 'Building information updated successfully!';
+				// Update the building name in the voters array
+				voters = voters.map((voter) =>
+					voter.buildingName === selectedBuilding
+						? { ...voter, buildingName: newBuildingName }
+						: voter
+				);
+				// Reset form fields
+				resetForm();
+				// Reset selected building
+				selectedBuilding = '';
 			} else {
 				alert = 'Failed to update building information';
 			}
@@ -472,7 +501,7 @@
 	//Function to update building no
 	async function updateBuildingNo() {
 		try {
-			const response = await fetch(`/api/update-buildingNo/${sectorName}:${selectedBuilding}`, {
+			const response = await fetch(`/api/update-buildingNo/${selectedSector}:${selectedBuilding}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -483,6 +512,14 @@
 			if (response.ok) {
 				const result = await response.json();
 				alert = 'Building information updated successfully!';
+				// Update the building no in the voters array
+				voters = voters.map((voter) =>
+					voter.buildingName === selectedBuilding ? { ...voter, buildingNo: newBuildingNo } : voter
+				);
+				// Reset form fields
+				resetForm();
+				// Reset selected building
+				selectedBuilding = '';
 			} else {
 				alert = 'Failed to update building information';
 			}
@@ -494,7 +531,7 @@
 	//Function to update sector name
 	async function updateSectorName() {
 		try {
-			const response = await fetch(`/api/update-sectorName/${sectorName}`, {
+			const response = await fetch(`/api/update-sectorName/${selectedSector}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
@@ -505,6 +542,14 @@
 			if (response.ok) {
 				const result = await response.json();
 				alert = 'Sector information updated successfully!';
+				// Update the sector name in the voters array
+				voters = voters.map((voter) =>
+					voter.sectorName === selectedSector ? { ...voter, sectorName: newSectorName } : voter
+				);
+				// Reset form fields
+				resetForm();
+				// Reset selected sector
+				selectedSector = '';
 			} else {
 				alert = 'Failed to update sector information';
 			}
@@ -566,7 +611,7 @@
 						{#each filteredVoters as voter}
 							<TableBodyRow
 								class="border-blue-900 bg-blue-100 hover:bg-blue-200"
-								on:click={()=> showVoterForm(voter)}
+								on:click={() => showVoterForm(voter)}
 							>
 								<TableBodyCell>{voter.flatNo}</TableBodyCell>
 								<TableBodyCell>{voter.name}</TableBodyCell>
@@ -673,7 +718,7 @@
 			<P class="mb-4 text-xl font-bold">Add Resident to {selectedBuilding || 'New Building'}</P>
 		{/if}
 		<form on:submit|preventDefault={handleSubmit}>
-			<div class="grid md:grid-cols-3 gap-4">
+			<div class="grid gap-4 md:grid-cols-3">
 				<div>
 					<Label>
 						Flat No
@@ -716,30 +761,35 @@
 					</Label>
 				</div>
 
-				<div>
-					<Label>
-						Building Name
-						<Input
-							type="text"
-							class="mt-2"
-							bind:value={buildingName}
-							disabled={selectedBuilding && !showForm}
-							required
-						/>
-					</Label>
-				</div>
+				{#if showForm || !selectedBuilding}
+					<div>
+						<Label>
+							Building Name
+							<Input type="text" class="mt-2" bind:value={buildingName} required />
+						</Label>
+					</div>
 
-				<div>
-					<Label>
-						Building No
-						<Input
-							type="text"
-							class="mt-2"
-							bind:value={buildingNo}
-							disabled={selectedBuilding && !showForm}
-						/>
-					</Label>
-				</div>
+					<div>
+						<Label>
+							Building No
+							<Input type="text" class="mt-2" bind:value={buildingNo} />
+						</Label>
+					</div>
+				{:else}
+					<div>
+						<Label>
+							Building Name
+							<Input type="text" class="mt-2" bind:value={selectedBuilding} required disabled />
+						</Label>
+					</div>
+
+					<div>
+						<Label>
+							Building No
+							<Input type="text" class="mt-2" bind:value={selectedBuildingNo} disabled />
+						</Label>
+					</div>
+				{/if}
 
 				<div>
 					<Label>
@@ -748,18 +798,21 @@
 					</Label>
 				</div>
 
-				<div>
-					<Label>
-						Sector Name
-						<Input
-							type="text"
-							class="mt-2"
-							bind:value={sectorName}
-							disabled={selectedSector && !showForm}
-							required
-						/>
-					</Label>
-				</div>
+				{#if showForm || !selectedSector}
+					<div>
+						<Label>
+							Sector Name
+							<Input type="text" class="mt-2" bind:value={sectorName} required />
+						</Label>
+					</div>
+				{:else}
+					<div>
+						<Label>
+							Sector Name
+							<Input type="text" class="mt-2" bind:value={selectedSector} required disabled />
+						</Label>
+					</div>
+				{/if}
 
 				<div class="md:col-span-2">
 					<Label>
@@ -782,7 +835,7 @@
 					</Label>
 				</div>
 			</div>
-			<div class="mt-6 grid md:grid-cols-4 gap-1">
+			<div class="mt-6 grid gap-1 md:grid-cols-4">
 				{#if showForm}
 					<Button type="submit">Update</Button>
 					<div></div>
@@ -830,7 +883,7 @@
 	{#if sharedResidents.length > 1}
 		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 			<P class="mb-4 text-xl font-bold">
-				Residents of {currentVoter.wing} {currentVoter.flatNo}, {currentVoter.buildingName}
+				Residents of {currentVoter.wing}{currentVoter.flatNo}, {currentVoter.buildingName}
 			</P>
 			<Table shadow class="w-full table-auto text-left">
 				<TableHead class="border-b border-blue-900 bg-blue-100">
@@ -883,7 +936,7 @@
 				<div class="grid gap-4 md:grid-cols-3">
 					<Label>
 						Current Sector Name:
-						<Input type="text" bind:value={sectorName} class="mt-2" required disabled />
+						<Input type="text" bind:value={selectedSector} class="mt-2" required disabled />
 					</Label>
 					<Label>
 						New Sector Name:
@@ -920,7 +973,7 @@
 				<div class="grid gap-4 md:grid-cols-3">
 					<Label>
 						Current Building No:
-						<Input type="text" bind:value={buildingNo} class="mt-2" required disabled />
+						<Input type="text" bind:value={selectedBuildingNo} class="mt-2" required disabled />
 					</Label>
 					<Label>
 						New Building No:
