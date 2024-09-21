@@ -14,6 +14,7 @@
 
 	function logout() {
 		localStorage.removeItem('isAuthenticated'); // Clear localStorage
+		localStorage.removeItem('authenticated'); // Clear localStorage
 		goto('/'); // Redirect to the homepage
 	}
 

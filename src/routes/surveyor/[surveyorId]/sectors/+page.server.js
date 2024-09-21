@@ -1,57 +1,37 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import { env } from '$env/dynamic/private';
 
+// Initialize MongoDB client
+const client = new MongoClient(env.MONGO_URI);
+
 export const load = async ({ params }) => {
-	const uri = env.MONGO_URI; // MongoDB connection string from environment variables
-	const client = new MongoClient(uri);
-	const databaseNameSurvey = 'survey';
-	const collectionNameSurvey = 'survey';
-	const databaseNameVoter = env.dbname;
-	const collectionNameVoter = env.dbname;
+	const surveyorId = params.surveyorId;
+	let surveyor = null;
 
 	try {
-		// Connect to the MongoDB cluster
+		// Connect to the MongoDB client
 		await client.connect();
+		const database = client.db('survey'); // Replace 'survey' with your database name
+		const collection = database.collection('survey'); // Replace 'survey' with your collection name
 
-		// Get the databases and collections
-		const databaseSurvey = client.db(databaseNameSurvey);
-		const collectionSurvey = databaseSurvey.collection(collectionNameSurvey);
-		const databaseVoter = client.db(databaseNameVoter);
-		const collectionVoter = databaseVoter.collection(collectionNameVoter);
+		// Query the MongoDB collection
+		const surveyorData = await collection.findOne({ _id: new ObjectId(surveyorId) });
 
-		// Fetch surveyor data by _id
-		const surveyor = await collectionSurvey.findOne({ _id: new ObjectId(params.surveyorId) });
+		// Serialize the document if necessary
+		if (surveyorData) {
+			surveyorData._id = surveyorData._id.toString(); // Convert ObjectId to string
+		}
 
-		// Fetch all voter data
-		const voters = await collectionVoter.find({}).toArray();
-
-		// Convert _id fields to strings
-		const serializeDocument = (doc) => {
-			if (doc) {
-				return {
-					...doc,
-					_id: doc._id.toString() // Convert ObjectId to string
-				};
-			}
-			return null;
-		};
-
-		const serializedSurveyor = serializeDocument(surveyor);
-		const serializedVoters = voters.map(serializeDocument);
-
-		// Return the fetched data as props to the page
 		return {
-			surveyor: serializedSurveyor,
-			voters: serializedVoters
+			surveyor: surveyorData || null
 		};
 	} catch (error) {
 		console.error('Error fetching data:', error);
 		return {
-			surveyor: null,
-			voters: []
+			surveyor: null
 		};
 	} finally {
-		// Close the MongoDB connection
+		// Ensure the client is closed when the operation is finished
 		await client.close();
 	}
 };
