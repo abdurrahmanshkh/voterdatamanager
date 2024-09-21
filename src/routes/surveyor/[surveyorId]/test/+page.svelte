@@ -179,6 +179,13 @@
 					body: JSON.stringify(formData)
 				});
 
+				const surveyResponse = await fetch(`/api/update-formsFilled/${surveyor._id}`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					}
+				});
+
 				if (response.ok) {
 					const result = await response.json();
 					alert = `Voter - ${formData.name} added successfully!`;
@@ -200,6 +207,13 @@
 						'Content-Type': 'application/json'
 					},
 					body: JSON.stringify(formData)
+				});
+
+				const surveyResponse = await fetch(`/api/update-formsUpdated/${surveyor._id}`, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					}
 				});
 
 				if (response.ok) {
@@ -257,6 +271,13 @@
 		try {
 			const response = await fetch(`/api/delete-voter/${currentVoter._id}`, {
 				method: 'POST'
+			});
+
+			const surveyResponse = await fetch(`/api/update-formsDeleted/${surveyor._id}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				}
 			});
 
 			if (response.ok) {
