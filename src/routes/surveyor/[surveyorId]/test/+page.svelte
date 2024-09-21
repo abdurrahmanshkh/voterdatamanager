@@ -7,7 +7,9 @@
 	import { Table, TableBody, TableBodyCell, Spinner } from 'flowbite-svelte';
 	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
 	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
-	import { AccordionItem, Accordion } from 'flowbite-svelte';
+
+	export let data; // The fetched data is passed as props to the page component
+	let { surveyor } = data; // Destructure the sectors from the data prop
 
 	let voters = [];
 	let sharedResidents = [];
@@ -15,12 +17,11 @@
 
 	// Popup Modals
 	let deleteVoterModal = false;
-	let deleteBuildingModal = false;
 
 	// On mount, check authentication and fetch voter data
 	onMount(() => {
-		if (localStorage.getItem('isAuthenticated') !== '776112529259') {
-			goto('/');
+		if (localStorage.getItem('authenticated') !== '179438144299' || !surveyor) {
+			goto(`/surveyor`);
 		} else {
 			// Fetch voter data from the API endpoint
 			async function fetchVoters() {
@@ -123,9 +124,6 @@
 	let caste = '';
 	let note = '';
 	let alert = '';
-	let newBuildingName = '';
-	let newBuildingNo = '';
-	let newSectorName = '';
 
 	// Function to reset form
 	function resetForm() {
@@ -275,54 +273,6 @@
 			alert = 'An error occurred';
 		}
 	}
-	function downloadCSV() {
-		if (selectedSector) {
-			// Create CSV header
-			const header = [
-				'Flat No',
-				'Name',
-				'Phone No',
-				'Yadi No',
-				'Sr No',
-				'RSC No',
-				'Building Name',
-				'Wing'
-			];
-
-			// Convert data to CSV format
-			const csvRows = [];
-			csvRows.push(header.join(',')); // Add header row
-
-			// Add data rows
-			filteredVoters.forEach((voter) => {
-				const row = [
-					voter.flatNo,
-					voter.name,
-					voter.phoneNo,
-					voter.yadiNo,
-					voter.srNo,
-					voter.rscNo,
-					voter.buildingName,
-					voter.wing
-				];
-				csvRows.push(row.join(','));
-			});
-
-			// Create a blob with CSV data and create a download link
-			const csvContent = csvRows.join('\n');
-			const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-			const url = URL.createObjectURL(blob);
-			const a = document.createElement('a');
-			a.href = url;
-			a.download = 'voters.csv';
-			document.body.appendChild(a);
-			a.click();
-			document.body.removeChild(a);
-			URL.revokeObjectURL(url);
-		} else {
-			goto('/downloadTable');
-		}
-	}
 
 	async function downloadVoterSlips() {
 		const pdfDoc = await PDFDocument.create();
@@ -387,48 +337,25 @@
 			);
 		}
 
-		if (sharedResidents.length > 0) {
-			for (let i = 0; i < sharedResidents.length; i++) {
-				const voter = sharedResidents[i];
+		for (let i = 0; i < sharedResidents.length; i++) {
+			const voter = sharedResidents[i];
 
-				// Add a new page if necessary (for every 12 voters)
-				if (i % 12 === 0) {
-					pdfDoc.addPage([pageWidth, pageHeight]);
-					const page = pdfDoc.getPage(pdfDoc.getPageCount() - 1);
-					drawTitle(page); // Add the title on each page
-				}
-
-				const page = pdfDoc.getPage(Math.floor(i / 12));
-
-				// Calculate the position for the slip on the page (6 rows, 2 columns)
-				const row = (i % 12) % 6;
-				const col = Math.floor((i % 12) / 6);
-				const x = col * slipWidth + margin;
-				const y = pageHeight - titleHeight - (row + 1) * slipHeight + 10;
-
-				drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo, voter.pollingStation);
+			// Add a new page if necessary (for every 12 voters)
+			if (i % 12 === 0) {
+				pdfDoc.addPage([pageWidth, pageHeight]);
+				const page = pdfDoc.getPage(pdfDoc.getPageCount() - 1);
+				drawTitle(page); // Add the title on each page
 			}
-		} else {
-			for (let i = 0; i < filteredVoters.length; i++) {
-				const voter = filteredVoters[i];
 
-				// Add a new page if necessary (for every 12 voters)
-				if (i % 12 === 0) {
-					pdfDoc.addPage([pageWidth, pageHeight]);
-					const page = pdfDoc.getPage(pdfDoc.getPageCount() - 1);
-					drawTitle(page); // Add the title on each page
-				}
+			const page = pdfDoc.getPage(Math.floor(i / 12));
 
-				const page = pdfDoc.getPage(Math.floor(i / 12));
+			// Calculate the position for the slip on the page (6 rows, 2 columns)
+			const row = (i % 12) % 6;
+			const col = Math.floor((i % 12) / 6);
+			const x = col * slipWidth + margin;
+			const y = pageHeight - titleHeight - (row + 1) * slipHeight + 10;
 
-				// Calculate the position for the slip on the page (6 rows, 2 columns)
-				const row = (i % 12) % 6;
-				const col = Math.floor((i % 12) / 6);
-				const x = col * slipWidth + margin;
-				const y = pageHeight - titleHeight - (row + 1) * slipHeight + 10;
-
-				drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo, voter.pollingStation);
-			}
+			drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo, voter.pollingStation);
 		}
 
 		// Save and download the PDF
@@ -442,124 +369,6 @@
 		a.click();
 		document.body.removeChild(a);
 		URL.revokeObjectURL(url);
-	}
-
-	// Function to delete voter data
-	async function deleteBuilding() {
-		try {
-			const response = await fetch(`/api/delete-building/${selectedBuilding}`, {
-				method: 'POST'
-			});
-
-			if (response.ok) {
-				const result = await response.json();
-				alert = 'Building information deleted successfully!';
-				// Remove the deleted building from the voters array
-				voters = voters.filter((voter) => voter.buildingName !== selectedBuilding);
-				selectedBuilding = ''; // Reset selected building
-				// Reset form fields
-				resetForm();
-			} else {
-				alert = 'Failed to delete building information';
-			}
-		} catch (error) {
-			alert = 'An error occurred';
-		}
-	}
-
-	//Function to update building name
-	async function updateBuildingName() {
-		try {
-			const response = await fetch(
-				`/api/update-buildingName/${selectedSector}:${selectedBuilding}`,
-				{
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({ buildingName: newBuildingName })
-				}
-			);
-
-			if (response.ok) {
-				const result = await response.json();
-				alert = 'Building information updated successfully!';
-				// Update the building name in the voters array
-				voters = voters.map((voter) =>
-					voter.buildingName === selectedBuilding
-						? { ...voter, buildingName: newBuildingName }
-						: voter
-				);
-				// Reset form fields
-				resetForm();
-				// Reset selected building
-				selectedBuilding = '';
-			} else {
-				alert = 'Failed to update building information';
-			}
-		} catch (error) {
-			alert = 'An error occurred';
-		}
-	}
-
-	//Function to update building no
-	async function updateBuildingNo() {
-		try {
-			const response = await fetch(`/api/update-buildingNo/${selectedSector}:${selectedBuilding}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ buildingNo: newBuildingNo })
-			});
-
-			if (response.ok) {
-				const result = await response.json();
-				alert = 'Building information updated successfully!';
-				// Update the building no in the voters array
-				voters = voters.map((voter) =>
-					voter.buildingName === selectedBuilding ? { ...voter, buildingNo: newBuildingNo } : voter
-				);
-				// Reset form fields
-				resetForm();
-				// Reset selected building
-				selectedBuilding = '';
-			} else {
-				alert = 'Failed to update building information';
-			}
-		} catch (error) {
-			alert = 'An error occurred';
-		}
-	}
-
-	//Function to update sector name
-	async function updateSectorName() {
-		try {
-			const response = await fetch(`/api/update-sectorName/${selectedSector}`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({ sectorName: newSectorName })
-			});
-
-			if (response.ok) {
-				const result = await response.json();
-				alert = 'Sector information updated successfully!';
-				// Update the sector name in the voters array
-				voters = voters.map((voter) =>
-					voter.sectorName === selectedSector ? { ...voter, sectorName: newSectorName } : voter
-				);
-				// Reset form fields
-				resetForm();
-				// Reset selected sector
-				selectedSector = '';
-			} else {
-				alert = 'Failed to update sector information';
-			}
-		} catch (error) {
-			alert = 'An error occurred';
-		}
 	}
 
 	let message = '';
@@ -667,48 +476,6 @@
 					</Button>
 				{/each}
 			</div>
-		</Card>
-	{/if}
-
-	{#if selectedSector}
-		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100 md:p-1" padding="none">
-			<Accordion>
-				<AccordionItem>
-					<span slot="header">
-						<P class="text-xl font-bold">Residents of {selectedBuilding || selectedSector}</P>
-					</span>
-					<!-- Table displaying filtered voters -->
-					<Table shadow class="w-full table-auto text-left">
-						<TableHead class="border-b border-blue-900 bg-blue-100">
-							<TableHeadCell>Flat No</TableHeadCell>
-							<TableHeadCell>Name</TableHeadCell>
-							<TableHeadCell>Phone No</TableHeadCell>
-							<TableHeadCell>Yadi No</TableHeadCell>
-							<TableHeadCell>Sr No</TableHeadCell>
-							<TableHeadCell>RSC No</TableHeadCell>
-							<TableHeadCell>Building Name</TableHeadCell>
-							<TableHeadCell>Wing</TableHeadCell>
-						</TableHead>
-						<TableBody>
-							{#each filteredVoters as uniqueVoter}
-								<TableBodyRow
-									class="border-blue-900 bg-blue-100 hover:bg-blue-200"
-									on:click={() => showVoterForm(uniqueVoter)}
-								>
-									<TableBodyCell>{uniqueVoter.flatNo}</TableBodyCell>
-									<TableBodyCell>{uniqueVoter.name}</TableBodyCell>
-									<TableBodyCell>{uniqueVoter.phoneNo}</TableBodyCell>
-									<TableBodyCell>{uniqueVoter.yadiNo}</TableBodyCell>
-									<TableBodyCell>{uniqueVoter.srNo}</TableBodyCell>
-									<TableBodyCell>{uniqueVoter.rscNo}</TableBodyCell>
-									<TableBodyCell>{uniqueVoter.buildingName}</TableBodyCell>
-									<TableBodyCell>{uniqueVoter.wing}</TableBodyCell>
-								</TableBodyRow>
-							{/each}
-						</TableBody>
-					</Table>
-				</AccordionItem>
-			</Accordion>
 		</Card>
 	{/if}
 
@@ -839,52 +606,19 @@
 					</Label>
 				</div>
 			</div>
-			<div class="mt-6 grid gap-1 md:grid-cols-4">
+			<div class="mt-6 grid gap-4 md:grid-cols-3">
 				{#if showForm}
 					<Button type="submit" color="dark">Update Information</Button>
-					<div></div>
-					<div></div>
+					<Button on:click={downloadVoterSlips} color="green">Download Slips</Button>
 					<Button type="button" on:click={() => (deleteVoterModal = true)} color="red">
 						Delete Voter
 					</Button>
 				{:else}
 					<Button type="submit" color="dark">Add Voter</Button>
-					<div></div>
-					<div></div>
-					{#if selectedBuilding}
-						<Button type="button" on:click={() => (deleteBuildingModal = true)} color="red">
-							Delete Building
-						</Button>
-					{/if}
 				{/if}
 			</div>
 		</form>
 	</Card>
-
-	<div class="grid md:grid-cols-2">
-		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
-			<P class="col-span-2 mb-4 text-xl font-bold">Download Data</P>
-			<div class="grid gap-2 md:grid-cols-2">
-				<Button on:click={downloadVoterSlips} color="green">Download Slips</Button>
-				<Button on:click={downloadCSV} color="dark">Download Table</Button>
-			</div>
-		</Card>
-		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
-			<P class="col-span-2 mb-4 text-xl font-bold">Update Data</P>
-			<div class="grid gap-2 md:grid-cols-2">
-				<Button
-					color="dark"
-					class="bg-gray-600"
-					href="https://docs.google.com/spreadsheets/d/1AHBuP9vZTG7B3wKJv_m_3UDqvLrGhMLH122X8P4k9_Y/edit?usp=sharing"
-					target="_blank"
-					rel="noopener noreferrer"
-				>
-					Open CSV Format
-				</Button>
-				<Button on:click={() => goto('/updateBooth')} color="dark">Update Polling Booth</Button>
-			</div>
-		</Card>
-	</div>
 
 	{#if sharedResidents.length > 1}
 		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
@@ -933,63 +667,6 @@
 			</div>
 		</Card>
 	{/if}
-
-	{#if selectedSector && !selectedBuilding}
-		<!-- Update sector name card -->
-		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
-			<P class="mb-4 text-xl font-bold">Update Sector Name</P>
-			<form on:submit|preventDefault={updateSectorName}>
-				<div class="grid gap-4 md:grid-cols-3">
-					<Label>
-						Current Sector Name:
-						<Input type="text" bind:value={selectedSector} class="mt-2" required disabled />
-					</Label>
-					<Label>
-						New Sector Name:
-						<Input type="text" bind:value={newSectorName} class="mt-2" required />
-					</Label>
-					<Button class="md:mt-7" type="submit" color="dark">Update Sector Name</Button>
-				</div>
-			</form>
-		</Card>
-	{/if}
-
-	{#if selectedBuilding}
-		<!-- Update building name card -->
-		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
-			<P class="mb-4 text-xl font-bold">Update Building Name</P>
-			<form on:submit|preventDefault={updateBuildingName}>
-				<div class="grid gap-4 md:grid-cols-3">
-					<Label>
-						Current Building Name:
-						<Input type="text" bind:value={selectedBuilding} class="mt-2" required disabled />
-					</Label>
-					<Label>
-						New Building Name:
-						<Input type="text" bind:value={newBuildingName} class="mt-2" required />
-					</Label>
-					<Button class="md:mt-7" type="submit" color="dark">Update Building Name</Button>
-				</div>
-			</form>
-		</Card>
-		<!-- Update building no card -->
-		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
-			<P class="mb-4 text-xl font-bold">Update Building No</P>
-			<form on:submit|preventDefault={updateBuildingNo}>
-				<div class="grid gap-4 md:grid-cols-3">
-					<Label>
-						Current Building No:
-						<Input type="text" bind:value={selectedBuildingNo} class="mt-2" required disabled />
-					</Label>
-					<Label>
-						New Building No:
-						<Input type="text" bind:value={newBuildingNo} class="mt-2" required />
-					</Label>
-					<Button class="md:mt-7" type="submit" color="dark">Update Building No</Button>
-				</div>
-			</form>
-		</Card>
-	{/if}
 </main>
 
 <!-- Delete voter modal -->
@@ -1000,18 +677,6 @@
 			Are you sure you want to delete this voter?
 		</h3>
 		<Button on:click={handleDelete} color="red" class="me-2">Yes, I'm sure</Button>
-		<Button color="alternative">No, cancel</Button>
-	</div>
-</Modal>
-
-<!-- Delete building modal -->
-<Modal bind:open={deleteBuildingModal} autoclose>
-	<div class="text-center">
-		<ExclamationCircleOutline class="mx-auto mb-4 h-12 w-12 text-gray-400 dark:text-gray-200" />
-		<h3 class="mb-5 text-lg font-normal text-gray-500 dark:text-gray-400">
-			Are you sure you want to delete this building?
-		</h3>
-		<Button on:click={deleteBuilding} color="red" class="me-2">Yes, I'm sure</Button>
 		<Button color="alternative">No, cancel</Button>
 	</div>
 </Modal>
