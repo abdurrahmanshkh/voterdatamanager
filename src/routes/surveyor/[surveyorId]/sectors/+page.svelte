@@ -6,6 +6,7 @@
 	import { PDFDocument, rgb } from 'pdf-lib';
 	import { Table, TableBody, TableBodyCell, Spinner } from 'flowbite-svelte';
 	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
+	import { Accordion, AccordionItem } from 'flowbite-svelte';
 	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
 
 	export let data; // The fetched data is passed as props to the page component
@@ -17,6 +18,7 @@
 
 	// Popup Modals
 	let deleteVoterModal = false;
+	let buildingAccordion = true;
 
 	// On mount, check authentication and fetch voter data
 	onMount(() => {
@@ -119,6 +121,7 @@
 	});
 
 	function selectSector(sector) {
+		buildingAccordion = true;
 		showForm = false;
 		sectorName = '';
 		selectedSector = sector;
@@ -128,6 +131,7 @@
 	}
 
 	function selectBuilding(building) {
+		buildingAccordion = false;
 		showForm = false;
 		buildingName = '';
 		buildingNo = '';
@@ -522,15 +526,21 @@
 
 	<!-- Building Buttons (filtered by location search input) -->
 	{#if selectedSector || locationSearchTerm}
-		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
-			<P class="text-xl font-bold">Buildings in {selectedSector}</P>
-			<div class="mt-4 grid grid-cols-2 gap-1 md:grid-cols-6">
-				{#each filteredBuildings as building}
-					<Button on:click={() => selectBuilding(building)} color="blue">
-						{building}
-					</Button>
-				{/each}
-			</div>
+		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100 md:p-1" padding="none">
+			<Accordion>
+				<AccordionItem bind:open={buildingAccordion}>
+					<span slot="header">
+						<P class="text-xl font-bold">Buildings in {selectedSector}</P>
+					</span>
+					<div class="grid grid-cols-2 gap-1 md:grid-cols-6">
+						{#each filteredBuildings as building}
+							<Button on:click={() => selectBuilding(building)} color="blue">
+								{building}
+							</Button>
+						{/each}
+					</div>
+				</AccordionItem>
+			</Accordion>
 		</Card>
 	{/if}
 
