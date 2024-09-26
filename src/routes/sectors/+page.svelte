@@ -105,18 +105,25 @@
 	];
 
 	// Filter voters based on selected sector, building, and voter search term
-	$: filteredVoters = voters.filter((voter) => {
-		const matchesSector = !selectedSector || voter.sectorName === selectedSector;
-		const matchesBuilding = !selectedBuilding || voter.buildingName === selectedBuilding;
-		const matchesVoterSearchTerm =
-			voter.name.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-			voter.flatNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-			voter.phoneNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-			voter.yadiNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-			voter.srNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-			voter.rscNo.toLowerCase().includes(voterSearchTerm.toLowerCase());
-		return matchesSector && matchesBuilding && matchesVoterSearchTerm;
-	});
+	$: filteredVoters = voters
+		.filter((voter) => {
+			const matchesSector = !selectedSector || voter.sectorName === selectedSector;
+			const matchesBuilding = !selectedBuilding || voter.buildingName === selectedBuilding;
+			const matchesVoterSearchTerm =
+				voter.name.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
+				voter.flatNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
+				voter.phoneNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
+				voter.yadiNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
+				voter.srNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
+				voter.rscNo.toLowerCase().includes(voterSearchTerm.toLowerCase());
+			return matchesSector && matchesBuilding && matchesVoterSearchTerm;
+		})
+		.sort((a, b) => {
+			// Ensure comparison is done in a case-insensitive manner
+			const flatNoA = a.flatNo;
+			const flatNoB = b.flatNo;
+			return flatNoA.localeCompare(flatNoB);
+		});
 
 	function selectSector(sector) {
 		buildingAccordion = true;
