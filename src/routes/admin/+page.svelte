@@ -161,7 +161,7 @@
 									sendSMS(
 										surveyor.name,
 										surveyor.phoneNo,
-										`https://sajidpatel.onrender.com/surveyor/${surveyor._id}`
+										`http://192.168.0.107:5173/surveyor/${surveyor._id}`
 									)}
 								class="mr-1 w-28"
 								>SMS
@@ -172,7 +172,7 @@
 									sendWhatsAppMessage(
 										surveyor.name,
 										surveyor.phoneNo,
-										`https://sajidpatel.onrender.com/surveyor/${surveyor._id}`
+										`http://192.168.0.107:5173/surveyor/${surveyor._id}`
 									)}
 								class="w-28"
 								>WhatsApp

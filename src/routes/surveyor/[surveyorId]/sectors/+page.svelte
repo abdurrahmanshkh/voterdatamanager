@@ -53,32 +53,6 @@
 	let voterSearchTerm = '';
 	let locationSearchTerm = '';
 
-	const sectorList = [
-		'SECTOR 23',
-		'SECTOR 27',
-		'SECTOR 30 1',
-		'SECTOR 30 2',
-		'OWA 1',
-		'OWA 2',
-		'SECTOR 35 D',
-		'SECTOR 35 E',
-		'SECTOR 35 F',
-		'SECTOR 35 G',
-		'SECTOR 35 H',
-		'SECTOR 35 I',
-		'KHUTUKBANDHAN',
-		'FARSHI PADA',
-		'SECTOR 34 A',
-		'SECTOR 34 B',
-		'SECTOR 34 C',
-		'SECTOR 20',
-		'PETH GAON',
-		'OWA CAMP',
-		'SECTOR 36',
-		'SECTOR 39',
-		'SECTOR 40'
-	];
-
 	// Get unique sectors based on location search input
 	$: filteredSectors = [
 		...new Set(
@@ -535,19 +509,11 @@
 		<!-- Sector Buttons (filtered by location search input) -->
 		{#if filteredSectors.length > 0}
 			<div class="mt-4 grid grid-cols-2 gap-1 md:grid-cols-6">
-				{#if locationSearchTerm}
-					{#each filteredSectors as sector}
-						<Button on:click={() => selectSector(sector)} class="bg-blue-900">
-							{sector}
-						</Button>
-					{/each}
-				{:else}
-					{#each sectorList as sector}
-						<Button on:click={() => selectSector(sector)} class="bg-blue-900">
-							{sector}
-						</Button>
-					{/each}
-				{/if}
+				{#each filteredSectors as sector}
+					<Button on:click={() => selectSector(sector)} class="bg-blue-900">
+						{sector}
+					</Button>
+				{/each}
 			</div>
 		{:else}
 			<div class="mt-4 text-center"><Spinner color="blue" /></div>
