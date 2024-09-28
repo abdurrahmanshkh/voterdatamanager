@@ -406,22 +406,22 @@
 				borderColor: rgb(0, 0, 0),
 				borderWidth: 1
 			});
-			page.drawText(`Name: ${name}`, {
+			page.drawText(`NAME: ${name}`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - textSize - 23,
 				size: textSize
 			});
-			page.drawText(`List No / Part No: ${yadiNo}`, {
+			page.drawText(`LIST NO / PART NO: ${yadiNo}`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - 2 * textSize - 31,
 				size: textSize
 			});
-			page.drawText(`Sr No: ${srNo}`, {
+			page.drawText(`SR NO: ${srNo}`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - 3 * textSize - 39,
 				size: textSize
 			});
-			page.drawText(`Polling Station Address:`, {
+			page.drawText(`POLLING STATION ADDRESS:`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - 4 * textSize - 47,
 				size: textSize
@@ -436,7 +436,7 @@
 		// Draws the title at the top of each page
 		function drawTitle(page) {
 			page.drawText(
-				`Sajid Patel - Voter's Data - ${selectedBuilding || ''} ${selectedSector || ''}`,
+				`SAJID PATEL - VOTER'S DATA - ${selectedBuilding || ''} ${selectedSector || ''}`,
 				{
 					x: margin,
 					y: pageHeight - margin - titleHeight / 2,
