@@ -148,6 +148,37 @@
 			return a.flatNo.localeCompare(b.flatNo);
 		});
 
+	// Create an object that stores unique yadiNo and their corresponding pollingStation
+	$: yadiPollingStations = voters.reduce((acc, voter) => {
+		const { yadiNo, pollingStation } = voter;
+
+		// If yadiNo exists and pollingStation is not empty, process it
+		if (yadiNo && pollingStation) {
+			// If the yadiNo is not already in the accumulator, add it
+			if (!acc[yadiNo]) {
+				acc[yadiNo] = pollingStation;
+			}
+		}
+
+		return acc;
+	}, {});
+
+	// Convert the object into an array if you want a more iterable format
+	$: yadiPollingArray = Object.entries(yadiPollingStations).map(([yadiNo, pollingStation]) => ({
+		yadiNo,
+		pollingStation
+	}));
+
+	// Watch for changes in yadiNo and update pollingStation if found in yadiPollingArray
+	$: if (yadiNo) {
+		const matchedEntry = yadiPollingArray.find((entry) => entry.yadiNo === yadiNo);
+		if (matchedEntry) {
+			pollingStation = matchedEntry.pollingStation;
+		} else {
+			pollingStation = ''; // Clear pollingStation if no match is found
+		}
+	}
+
 	function selectSector(sector) {
 		buildingAccordion = true;
 		showForm = false;
