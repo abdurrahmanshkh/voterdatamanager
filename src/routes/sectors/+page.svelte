@@ -7,7 +7,7 @@
 	import { Table, TableBody, TableBodyCell, Spinner } from 'flowbite-svelte';
 	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
 	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
-	import { AccordionItem, Accordion } from 'flowbite-svelte';
+	import { AccordionItem, Accordion, ButtonGroup } from 'flowbite-svelte';
 
 	let voters = [];
 	let sharedResidents = [];
@@ -109,14 +109,7 @@
 		.filter((voter) => {
 			const matchesSector = !selectedSector || voter.sectorName === selectedSector;
 			const matchesBuilding = !selectedBuilding || voter.buildingName === selectedBuilding;
-			const matchesVoterSearchTerm =
-				voter.name.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-				voter.flatNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-				voter.phoneNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-				voter.yadiNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-				voter.srNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-				voter.rscNo.toLowerCase().includes(voterSearchTerm.toLowerCase());
-			return matchesSector && matchesBuilding && matchesVoterSearchTerm;
+			return matchesSector && matchesBuilding;
 		})
 		.sort((a, b) => {
 			// First compare the wing (alphabetically)
@@ -147,6 +140,18 @@
 			// If neither has a numeric part, fall back to lexicographical (alphabetical) comparison
 			return a.flatNo.localeCompare(b.flatNo);
 		});
+
+	let searchedVoters = [];
+
+	//Search voters array
+	function searchForVoter() {
+		searchedVoters = voters.filter((voter) => {
+			const nameMatch = voter.name.toLowerCase().includes(voterSearchTerm.toLowerCase());
+			const phoneNoMatch = voter.phoneNo.includes(voterSearchTerm);
+			const rscNoMatch = voter.rscNo.toLowerCase().includes(voterSearchTerm.toLowerCase());
+			return nameMatch || phoneNoMatch || rscNoMatch;
+		});
+	}
 
 	// Create an object that stores unique yadiNo and their corresponding pollingStation
 	$: yadiPollingStations = voters.reduce((acc, voter) => {
@@ -682,13 +687,16 @@
 	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		<div class="grid md:grid-cols-3">
 			<P class="text-xl font-bold md:col-span-2 md:mt-2">Search for Voter</P>
-			<Input
-				placeholder="Search by Voter Information"
-				bind:value={voterSearchTerm}
-				class="mt-2 md:mt-0"
-			/>
+			<ButtonGroup>
+				<Input
+					placeholder="Search by Voter Information"
+					bind:value={voterSearchTerm}
+					class="mt-2 md:mt-0"
+				/>
+				<Button on:click={searchForVoter} color="blue">Search</Button>
+			</ButtonGroup>
 		</div>
-		{#if voterSearchTerm}
+		{#if searchedVoters.length > 0}
 			<div class="mt-4">
 				<Table shadow class="w-full table-auto text-left">
 					<TableHead class="border-b border-blue-900 bg-blue-100">
@@ -702,7 +710,7 @@
 						<TableHeadCell>Wing</TableHeadCell>
 					</TableHead>
 					<TableBody>
-						{#each filteredVoters as voter}
+						{#each searchedVoters as voter}
 							<TableBodyRow
 								class="border-blue-900 bg-blue-100 hover:bg-blue-200"
 								on:click={() => showVoterForm(voter)}
