@@ -106,43 +106,6 @@
 		)
 	];
 
-	// Filter voters based on selected sector, building, and voter search term
-	$: filteredVoters = voters
-		.filter((voter) => {
-			const matchesSector = !selectedSector || voter.sectorName === selectedSector;
-			const matchesBuilding = !selectedBuilding || voter.buildingName === selectedBuilding;
-			return matchesSector && matchesBuilding;
-		})
-		.sort((a, b) => {
-			// First compare the wing (alphabetically)
-			if (a.wing.toLowerCase() < b.wing.toLowerCase()) return -1;
-			if (a.wing.toLowerCase() > b.wing.toLowerCase()) return 1;
-
-			// If wings are the same, then compare flatNo (numerically/lexicographically)
-
-			// Helper function to extract numeric part of flatNo, if available
-			function extractNumericValue(flatNo) {
-				const match = flatNo.match(/\d+/); // Extract first numeric sequence
-				return match ? parseInt(match[0], 10) : null; // Return number or null if not found
-			}
-
-			// Get numeric and alphanumeric parts for both flatNos
-			const flatNoA_numeric = extractNumericValue(a.flatNo);
-			const flatNoB_numeric = extractNumericValue(b.flatNo);
-
-			// If both flatNos have numeric parts, compare them numerically
-			if (flatNoA_numeric !== null && flatNoB_numeric !== null) {
-				return flatNoA_numeric - flatNoB_numeric;
-			}
-
-			// If one has a numeric part and the other does not, prioritize the numeric one
-			if (flatNoA_numeric !== null) return -1;
-			if (flatNoB_numeric !== null) return 1;
-
-			// If neither has a numeric part, fall back to lexicographical (alphabetical) comparison
-			return a.flatNo.localeCompare(b.flatNo);
-		});
-
 	let searchedVoters = [];
 
 	//Search voters array

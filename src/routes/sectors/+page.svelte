@@ -17,6 +17,7 @@
 	let deleteVoterModal = false;
 	let deleteBuildingModal = false;
 	let buildingAccordion = true;
+	let residentsAccordion = false;
 
 	// On mount, check authentication and fetch voter data
 	onMount(() => {
@@ -348,6 +349,8 @@
 		note = voter.note;
 		showForm = true;
 		alert = ''; // Clear any previous alerts
+		buildingAccordion = false;
+		residentsAccordion = false;
 
 		// Populate sharedResidents with voters who share the same flatNo, buildingName, sectorName, and wing
 		sharedResidents = voters.filter(
@@ -792,7 +795,7 @@
 	{#if selectedSector}
 		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100 md:p-1" padding="none">
 			<Accordion>
-				<AccordionItem>
+				<AccordionItem bind:open={residentsAccordion}>
 					<span slot="header">
 						<P class="text-xl font-bold">Residents of {selectedBuilding || selectedSector}</P>
 					</span>
