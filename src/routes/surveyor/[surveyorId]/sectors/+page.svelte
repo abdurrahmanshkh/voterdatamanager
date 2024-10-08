@@ -206,6 +206,16 @@
 		resetForm();
 	}
 
+	function resetSector() {
+		selectedSector = '';
+		selectedBuilding = '';
+		voterSearchTerm = '';
+		locationSearchTerm = '';
+		searchedVoters = [];
+		showForm = false;
+		resetForm();
+	}
+
 	let flatNo = '';
 	let name = '';
 	let phoneNo = '';
@@ -516,16 +526,13 @@
 <main class="bg-gray-300">
 	<!-- Search Bar for Voters -->
 	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
-		<div class="grid md:grid-cols-3">
-			<P class="text-xl font-bold md:col-span-2 md:mt-2">Search for Voter</P>
-			<ButtonGroup>
-				<Input
-					placeholder="Search by Voter Information"
-					bind:value={voterSearchTerm}
-					class="mt-2 md:mt-0"
-				/>
-				<Button on:click={searchForVoter} color="blue">Search</Button>
-			</ButtonGroup>
+		<div class="grid gap-3 md:grid-cols-3">
+			<P class="text-xl font-bold md:mt-2">Search for Voter</P>
+			<Input placeholder="Search by Voter Information" bind:value={voterSearchTerm} />
+			<div class="grid grid-cols-2 gap-2">
+				<Button on:click={searchForVoter} color="blue" class>Search</Button>
+				<Button on:click={resetSector} color="dark">Reset</Button>
+			</div>
 		</div>
 		{#if searchedVoters.length > 0}
 			<div class="mt-4">
