@@ -6,7 +6,7 @@
 	import { PDFDocument, rgb } from 'pdf-lib';
 	import { Table, TableBody, TableBodyCell, Spinner } from 'flowbite-svelte';
 	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
-	import { Accordion, AccordionItem, ButtonGroup } from 'flowbite-svelte';
+	import { Accordion, AccordionItem } from 'flowbite-svelte';
 	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
 
 	export let data; // The fetched data is passed as props to the page component
@@ -175,6 +175,7 @@
 		voterSearchTerm = '';
 		locationSearchTerm = '';
 		searchedVoters = [];
+		sharedResidents = [];
 		showForm = false;
 		resetForm();
 	}

@@ -7,7 +7,7 @@
 	import { Table, TableBody, TableBodyCell, Spinner } from 'flowbite-svelte';
 	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
 	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
-	import { AccordionItem, Accordion, ButtonGroup } from 'flowbite-svelte';
+	import { AccordionItem, Accordion } from 'flowbite-svelte';
 
 	let voters = [];
 	let sharedResidents = [];
@@ -211,6 +211,7 @@
 		voterSearchTerm = '';
 		locationSearchTerm = '';
 		searchedVoters = [];
+		sharedResidents = [];
 		showForm = false;
 		resetForm();
 	}
