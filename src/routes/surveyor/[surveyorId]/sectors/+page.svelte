@@ -195,6 +195,18 @@
 	let note = '';
 	let alert = '';
 
+	//Auto capitalise form fields
+	$: if (!showForm) {
+		flatNo = flatNo.toUpperCase();
+		name = name.toUpperCase();
+		buildingName = buildingName.toUpperCase();
+		wing = wing.toUpperCase();
+		sectorName = sectorName.toUpperCase();
+		pollingStation = pollingStation.toUpperCase();
+		caste = caste.toUpperCase();
+		note = note.toUpperCase();
+	}
+
 	// Function to reset form
 	function resetForm() {
 		flatNo = '';
