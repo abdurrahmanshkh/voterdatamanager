@@ -146,12 +146,16 @@
 
 	//Search voters array
 	function searchForVoter() {
-		searchedVoters = voters.filter((voter) => {
-			const nameMatch = voter.name.toLowerCase().includes(voterSearchTerm.toLowerCase());
-			const phoneNoMatch = voter.phoneNo.includes(voterSearchTerm);
-			const rscNoMatch = voter.rscNo.toLowerCase().includes(voterSearchTerm.toLowerCase());
-			return nameMatch || phoneNoMatch || rscNoMatch;
-		});
+		if (voterSearchTerm.length > 4) {
+			searchedVoters = voters.filter((voter) => {
+				const nameMatch = voter.name.toLowerCase().includes(voterSearchTerm.toLowerCase());
+				const phoneNoMatch = voter.phoneNo.includes(voterSearchTerm);
+				const rscNoMatch = voter.rscNo.toLowerCase().includes(voterSearchTerm.toLowerCase());
+				return nameMatch || phoneNoMatch || rscNoMatch;
+			});
+		} else {
+			searchedVoters = [];
+		}
 	}
 
 	// Create an object that stores unique yadiNo and their corresponding pollingStation
@@ -238,6 +242,7 @@
 	$: if (!showForm) {
 		flatNo = flatNo.toUpperCase();
 		name = name.toUpperCase();
+		rscNo = rscNo.toUpperCase();
 		buildingName = buildingName.toUpperCase();
 		wing = wing.toUpperCase();
 		sectorName = sectorName.toUpperCase();
@@ -270,6 +275,7 @@
 		// Assuming each building has a unique buildingNo
 		const selectedBuildingDetails = voters.find((voter) => voter.buildingName === selectedBuilding);
 		selectedBuildingNo = selectedBuildingDetails?.buildingNo || '';
+		selectedSector = selectedBuildingDetails?.sectorName || '';
 	}
 
 	// Function to handle form submission
@@ -715,7 +721,11 @@
 	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
 		<div class="grid gap-3 md:grid-cols-3">
 			<P class="text-xl font-bold md:mt-2">Search for Voter</P>
-			<Input placeholder="Search by Voter Information" bind:value={voterSearchTerm} />
+			<Input
+				placeholder="Search by Voter Information"
+				bind:value={voterSearchTerm}
+				on:input={searchForVoter}
+			/>
 			<div class="grid grid-cols-2 gap-2">
 				<Button on:click={searchForVoter} color="blue" class>Search</Button>
 				<Button on:click={resetSector} color="dark">Reset</Button>
