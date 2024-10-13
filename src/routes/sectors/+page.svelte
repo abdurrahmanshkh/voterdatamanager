@@ -238,19 +238,14 @@
 	let newBuildingNo = '';
 	let newSectorName = '';
 
-	//Auto capitalise form fields
-	$: if (!showForm) {
-		flatNo = flatNo.toUpperCase();
-		name = name.toUpperCase();
-		rscNo = rscNo.toUpperCase();
-		buildingName = buildingName.toUpperCase();
-		wing = wing.toUpperCase();
-		sectorName = sectorName.toUpperCase();
-		pollingStation = pollingStation.toUpperCase();
-		caste = caste.toUpperCase();
-		note = note.toUpperCase();
-		newBuildingName = newBuildingName.toUpperCase();
-		newSectorName = newSectorName.toUpperCase();
+	function autoCapitalize(event) {
+		const { selectionStart, selectionEnd, value } = event.target;
+
+		// Convert the value to uppercase
+		event.target.value = value.toUpperCase();
+
+		// Restore the cursor position
+		event.target.setSelectionRange(selectionStart, selectionEnd);
 	}
 
 	// Function to reset form
@@ -873,14 +868,14 @@
 				<div>
 					<Label>
 						Flat No
-						<Input type="text" class="mt-2" bind:value={flatNo} />
+						<Input type="text" class="mt-2" bind:value={flatNo} on:input={autoCapitalize} />
 					</Label>
 				</div>
 
 				<div>
 					<Label>
 						Name
-						<Input type="text" class="mt-2" bind:value={name} required />
+						<Input type="text" class="mt-2" bind:value={name} on:input={autoCapitalize} required />
 					</Label>
 				</div>
 
@@ -908,7 +903,7 @@
 				<div>
 					<Label>
 						RSC No
-						<Input type="text" class="mt-2" bind:value={rscNo} />
+						<Input type="text" class="mt-2" bind:value={rscNo} on:input={autoCapitalize} />
 					</Label>
 				</div>
 
@@ -916,7 +911,13 @@
 					<div>
 						<Label>
 							Building Name
-							<Input type="text" class="mt-2" bind:value={buildingName} required />
+							<Input
+								type="text"
+								class="mt-2"
+								bind:value={buildingName}
+								required
+								on:input={autoCapitalize}
+							/>
 						</Label>
 					</div>
 
@@ -945,7 +946,7 @@
 				<div>
 					<Label>
 						Wing
-						<Input type="text" class="mt-2" bind:value={wing} />
+						<Input type="text" class="mt-2" bind:value={wing} on:input={autoCapitalize} />
 					</Label>
 				</div>
 
@@ -953,7 +954,13 @@
 					<div>
 						<Label>
 							Sector Name
-							<Input type="text" class="mt-2" bind:value={sectorName} required />
+							<Input
+								type="text"
+								class="mt-2"
+								bind:value={sectorName}
+								required
+								on:input={autoCapitalize}
+							/>
 						</Label>
 					</div>
 				{:else}
@@ -968,21 +975,21 @@
 				<div class="md:col-span-2">
 					<Label>
 						Polling Station
-						<Input type="text" class="mt-2" bind:value={pollingStation} />
+						<Input type="text" class="mt-2" bind:value={pollingStation} on:input={autoCapitalize} />
 					</Label>
 				</div>
 
 				<div>
 					<Label>
 						Caste
-						<Input type="text" class="mt-2" bind:value={caste} />
+						<Input type="text" class="mt-2" bind:value={caste} on:input={autoCapitalize} />
 					</Label>
 				</div>
 
 				<div class="md:col-span-2">
 					<Label>
 						Note
-						<Input type="text" class="mt-2" bind:value={note} />
+						<Input type="text" class="mt-2" bind:value={note} on:input={autoCapitalize} />
 					</Label>
 				</div>
 			</div>
@@ -1093,7 +1100,13 @@
 					</Label>
 					<Label>
 						New Sector Name:
-						<Input type="text" bind:value={newSectorName} class="mt-2" required />
+						<Input
+							type="text"
+							bind:value={newSectorName}
+							class="mt-2"
+							required
+							on:input={autoCapitalize}
+						/>
 					</Label>
 					<Button class="md:mt-7" type="submit" color="dark">Update Sector Name</Button>
 				</div>
@@ -1113,7 +1126,13 @@
 					</Label>
 					<Label>
 						New Building Name:
-						<Input type="text" bind:value={newBuildingName} class="mt-2" required />
+						<Input
+							type="text"
+							bind:value={newBuildingName}
+							class="mt-2"
+							required
+							on:input={autoCapitalize}
+						/>
 					</Label>
 					<Button class="md:mt-7" type="submit" color="dark">Update Building Name</Button>
 				</div>
