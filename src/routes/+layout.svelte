@@ -27,7 +27,7 @@
 <header>
 	<Navbar class="bg-gray-900 text-white">
 		<NavBrand class="text-center" href="/sectors">
-			<Avatar class="mr-4 h-12 w-12" />
+			<Avatar src="favicon.png" class="mr-4 h-12 w-12" />
 		</NavBrand>
 		<NavBrand class="flex-grow" href="/sectors">
 			<span class="mr-2 self-center whitespace-nowrap font-bold md:text-2xl">
