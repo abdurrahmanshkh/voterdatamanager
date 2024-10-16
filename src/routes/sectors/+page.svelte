@@ -462,15 +462,12 @@
 
 		// Draws the title at the top of each page
 		function drawTitle(page) {
-			page.drawText(
-				`SAJID PATEL - VOTER'S DATA - ${selectedBuilding || ''} ${selectedSector || ''}`,
-				{
-					x: margin,
-					y: pageHeight - margin - titleHeight / 2,
-					size: 16,
-					color: rgb(0, 0, 0)
-				}
-			);
+			page.drawText(`VOTER'S DATA - ${selectedBuilding || ''} ${selectedSector || ''}`, {
+				x: margin,
+				y: pageHeight - margin - titleHeight / 2,
+				size: 16,
+				color: rgb(0, 0, 0)
+			});
 		}
 
 		if (sharedResidents.length > 0) {

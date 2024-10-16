@@ -12,9 +12,9 @@
 	export let data; // The fetched data is passed as props to the page component
 	let { voters } = data; // Destructure the voters from the data prop
 
-	let username = 'Sajid Patel';
+	let username = 'Admin';
 	let verificationCode = Math.floor(1000 + Math.random() * 9000).toString();
-	let phoneNumber = '+919821686840';
+	let phoneNumber = '+919653332540';
 	var error = '';
 	var alert = '';
 	let password = '';
