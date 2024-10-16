@@ -7,7 +7,7 @@
 	let { surveyor } = data; // Destructure the sectors from the data prop
 
 	onMount(() => {
-		if (localStorage.getItem('authenticated') === '179438144299') {
+		if (localStorage.getItem('authenticated') === '123456') {
 			goto(`/surveyor/${surveyor._id}/sectors`);
 		}
 	});
@@ -20,7 +20,7 @@
 			}
 		});
 
-		localStorage.setItem('authenticated', JSON.stringify(179438144299));
+		localStorage.setItem('authenticated', JSON.stringify(123456));
 		goto(`/surveyor/${surveyor._id}/sectors`);
 	}
 </script>

@@ -4,7 +4,7 @@
 	import { onMount } from 'svelte';
 
 	onMount(() => {
-		if (localStorage.getItem('isAuthenticated') !== '776112529259') {
+		if (localStorage.getItem('isAuthenticated') !== '123456') {
 			goto('/');
 		}
 	});

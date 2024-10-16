@@ -7,7 +7,7 @@
 	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
 
 	onMount(() => {
-		if (localStorage.getItem('isAuthenticated') !== '776112529259') {
+		if (localStorage.getItem('isAuthenticated') !== '123456') {
 			goto('/');
 		}
 	});

@@ -22,7 +22,7 @@
 
 	// On mount, check authentication and fetch voter data
 	onMount(() => {
-		if (localStorage.getItem('authenticated') !== '179438144299' || !surveyor) {
+		if (localStorage.getItem('authenticated') !== '123456' || !surveyor) {
 			goto(`/surveyor`);
 		} else {
 			// Fetch voter data from the API endpoint
