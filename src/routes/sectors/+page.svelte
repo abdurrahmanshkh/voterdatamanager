@@ -184,8 +184,6 @@
 		const matchedEntry = yadiPollingArray.find((entry) => entry.yadiNo === yadiNo);
 		if (matchedEntry) {
 			pollingStation = matchedEntry.pollingStation;
-		} else {
-			pollingStation = ''; // Clear pollingStation if no match is found
 		}
 	}
 
