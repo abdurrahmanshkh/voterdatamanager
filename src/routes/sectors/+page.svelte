@@ -17,6 +17,7 @@
 	let deleteVoterModal = false;
 	let deleteBuildingModal = false;
 	let buildingAccordion = true;
+	let residentsAccordion = false;
 
 	// On mount, check authentication and fetch voter data
 	onMount(() => {
@@ -51,6 +52,32 @@
 	let voterSearchTerm = '';
 	let locationSearchTerm = '';
 
+	const sectorList = [
+		'SECTOR 23',
+		'SECTOR 27',
+		'SECTOR 30 1',
+		'SECTOR 30 2',
+		'OWA 1',
+		'OWA 2',
+		'SECTOR 35 D',
+		'SECTOR 35 E',
+		'SECTOR 35 F',
+		'SECTOR 35 G',
+		'SECTOR 35 H',
+		'SECTOR 35 I',
+		'KHUTUKBANDHAN',
+		'FARSHI PADA',
+		'SECTOR 34 A',
+		'SECTOR 34 B',
+		'SECTOR 34 C',
+		'SECTOR 20',
+		'PETH GAON',
+		'OWA CAMP',
+		'SECTOR 36',
+		'SECTOR 39',
+		'SECTOR 40'
+	];
+
 	// Get unique sectors based on location search input
 	$: filteredSectors = [
 		...new Set(
@@ -83,14 +110,7 @@
 		.filter((voter) => {
 			const matchesSector = !selectedSector || voter.sectorName === selectedSector;
 			const matchesBuilding = !selectedBuilding || voter.buildingName === selectedBuilding;
-			const matchesVoterSearchTerm =
-				voter.name.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-				voter.flatNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-				voter.phoneNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-				voter.yadiNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-				voter.srNo.toLowerCase().includes(voterSearchTerm.toLowerCase()) ||
-				voter.rscNo.toLowerCase().includes(voterSearchTerm.toLowerCase());
-			return matchesSector && matchesBuilding && matchesVoterSearchTerm;
+			return matchesSector && matchesBuilding;
 		})
 		.sort((a, b) => {
 			// First compare the wing (alphabetically)
@@ -122,6 +142,51 @@
 			return a.flatNo.localeCompare(b.flatNo);
 		});
 
+	let searchedVoters = [];
+
+	//Search voters array
+	function searchForVoter() {
+		if (voterSearchTerm.length > 4) {
+			searchedVoters = voters.filter((voter) => {
+				const nameMatch = voter.name.toLowerCase().includes(voterSearchTerm.toLowerCase());
+				const phoneNoMatch = voter.phoneNo.includes(voterSearchTerm);
+				const rscNoMatch = voter.rscNo.toLowerCase().includes(voterSearchTerm.toLowerCase());
+				return nameMatch || phoneNoMatch || rscNoMatch;
+			});
+		} else {
+			searchedVoters = [];
+		}
+	}
+
+	// Create an object that stores unique yadiNo and their corresponding pollingStation
+	$: yadiPollingStations = voters.reduce((acc, voter) => {
+		const { yadiNo, pollingStation } = voter;
+
+		// If yadiNo exists and pollingStation is not empty, process it
+		if (yadiNo && pollingStation) {
+			// If the yadiNo is not already in the accumulator, add it
+			if (!acc[yadiNo]) {
+				acc[yadiNo] = pollingStation;
+			}
+		}
+
+		return acc;
+	}, {});
+
+	// Convert the object into an array if you want a more iterable format
+	$: yadiPollingArray = Object.entries(yadiPollingStations).map(([yadiNo, pollingStation]) => ({
+		yadiNo,
+		pollingStation
+	}));
+
+	// Watch for changes in yadiNo and update pollingStation if found in yadiPollingArray
+	$: if (yadiNo) {
+		const matchedEntry = yadiPollingArray.find((entry) => entry.yadiNo === yadiNo);
+		if (matchedEntry) {
+			pollingStation = matchedEntry.pollingStation;
+		}
+	}
+
 	function selectSector(sector) {
 		buildingAccordion = true;
 		showForm = false;
@@ -142,6 +207,17 @@
 		resetForm();
 	}
 
+	function resetSector() {
+		selectedSector = '';
+		selectedBuilding = '';
+		voterSearchTerm = '';
+		locationSearchTerm = '';
+		searchedVoters = [];
+		sharedResidents = [];
+		showForm = false;
+		resetForm();
+	}
+
 	let flatNo = '';
 	let name = '';
 	let phoneNo = '';
@@ -159,6 +235,16 @@
 	let newBuildingName = '';
 	let newBuildingNo = '';
 	let newSectorName = '';
+
+	function autoCapitalize(event) {
+		const { selectionStart, selectionEnd, value } = event.target;
+
+		// Convert the value to uppercase
+		event.target.value = value.toUpperCase();
+
+		// Restore the cursor position
+		event.target.setSelectionRange(selectionStart, selectionEnd);
+	}
 
 	// Function to reset form
 	function resetForm() {
@@ -182,6 +268,7 @@
 		// Assuming each building has a unique buildingNo
 		const selectedBuildingDetails = voters.find((voter) => voter.buildingName === selectedBuilding);
 		selectedBuildingNo = selectedBuildingDetails?.buildingNo || '';
+		selectedSector = selectedBuildingDetails?.sectorName || '';
 	}
 
 	// Function to handle form submission
@@ -276,6 +363,8 @@
 		note = voter.note;
 		showForm = true;
 		alert = ''; // Clear any previous alerts
+		buildingAccordion = false;
+		residentsAccordion = false;
 
 		// Populate sharedResidents with voters who share the same flatNo, buildingName, sectorName, and wing
 		sharedResidents = voters.filter(
@@ -380,22 +469,22 @@
 				borderColor: rgb(0, 0, 0),
 				borderWidth: 1
 			});
-			page.drawText(`Name: ${name}`, {
+			page.drawText(`NAME: ${name}`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - textSize - 23,
 				size: textSize
 			});
-			page.drawText(`List No / Part No: ${yadiNo}`, {
+			page.drawText(`LIST NO / PART NO: ${yadiNo}`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - 2 * textSize - 31,
 				size: textSize
 			});
-			page.drawText(`Sr No: ${srNo}`, {
+			page.drawText(`SR NO: ${srNo}`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - 3 * textSize - 39,
 				size: textSize
 			});
-			page.drawText(`Polling Station Address:`, {
+			page.drawText(`POLLING STATION ADDRESS:`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - 4 * textSize - 47,
 				size: textSize
@@ -410,7 +499,7 @@
 		// Draws the title at the top of each page
 		function drawTitle(page) {
 			page.drawText(
-				`Sajid Patel - Voter's Data - ${selectedBuilding || ''} ${selectedSector || ''}`,
+				`SAJID PATEL - VOTER'S DATA - ${selectedBuilding || ''} ${selectedSector || ''}`,
 				{
 					x: margin,
 					y: pageHeight - margin - titleHeight / 2,
@@ -623,15 +712,19 @@
 <main class="bg-gray-300">
 	<!-- Search Bar for Voters -->
 	<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100">
-		<div class="grid md:grid-cols-3">
-			<P class="text-xl font-bold md:col-span-2 md:mt-2">Search for Voter</P>
+		<div class="grid gap-3 md:grid-cols-3">
+			<P class="text-xl font-bold md:mt-2">Search for Voter</P>
 			<Input
 				placeholder="Search by Voter Information"
 				bind:value={voterSearchTerm}
-				class="mt-2 md:mt-0"
+				on:input={searchForVoter}
 			/>
+			<div class="grid grid-cols-2 gap-2">
+				<Button on:click={searchForVoter} color="blue" class>Search</Button>
+				<Button on:click={resetSector} color="dark">Reset</Button>
+			</div>
 		</div>
-		{#if voterSearchTerm}
+		{#if searchedVoters.length > 0}
 			<div class="mt-4">
 				<Table shadow class="w-full table-auto text-left">
 					<TableHead class="border-b border-blue-900 bg-blue-100">
@@ -645,7 +738,7 @@
 						<TableHeadCell>Wing</TableHeadCell>
 					</TableHead>
 					<TableBody>
-						{#each filteredVoters as voter}
+						{#each searchedVoters as voter}
 							<TableBodyRow
 								class="border-blue-900 bg-blue-100 hover:bg-blue-200"
 								on:click={() => showVoterForm(voter)}
@@ -678,11 +771,19 @@
 		<!-- Sector Buttons (filtered by location search input) -->
 		{#if filteredSectors.length > 0}
 			<div class="mt-4 grid grid-cols-2 gap-1 md:grid-cols-6">
-				{#each filteredSectors as sector}
-					<Button on:click={() => selectSector(sector)} class="bg-blue-900">
-						{sector}
-					</Button>
-				{/each}
+				{#if locationSearchTerm}
+					{#each filteredSectors as sector}
+						<Button on:click={() => selectSector(sector)} class="bg-blue-900">
+							{sector}
+						</Button>
+					{/each}
+				{:else}
+					{#each sectorList as sector}
+						<Button on:click={() => selectSector(sector)} class="bg-blue-900">
+							{sector}
+						</Button>
+					{/each}
+				{/if}
 			</div>
 		{:else}
 			<div class="mt-4 text-center"><Spinner color="blue" /></div>
@@ -712,7 +813,7 @@
 	{#if selectedSector}
 		<Card class="mx-auto max-w-full border-2 border-gray-300 bg-gray-100 md:p-1" padding="none">
 			<Accordion>
-				<AccordionItem>
+				<AccordionItem bind:open={residentsAccordion}>
 					<span slot="header">
 						<P class="text-xl font-bold">Residents of {selectedBuilding || selectedSector}</P>
 					</span>
@@ -765,14 +866,14 @@
 				<div>
 					<Label>
 						Flat No
-						<Input type="text" class="mt-2" bind:value={flatNo} />
+						<Input type="text" class="mt-2" bind:value={flatNo} on:input={autoCapitalize} />
 					</Label>
 				</div>
 
 				<div>
 					<Label>
 						Name
-						<Input type="text" class="mt-2" bind:value={name} required />
+						<Input type="text" class="mt-2" bind:value={name} on:input={autoCapitalize} required />
 					</Label>
 				</div>
 
@@ -800,7 +901,7 @@
 				<div>
 					<Label>
 						RSC No
-						<Input type="text" class="mt-2" bind:value={rscNo} />
+						<Input type="text" class="mt-2" bind:value={rscNo} on:input={autoCapitalize} />
 					</Label>
 				</div>
 
@@ -808,7 +909,13 @@
 					<div>
 						<Label>
 							Building Name
-							<Input type="text" class="mt-2" bind:value={buildingName} required />
+							<Input
+								type="text"
+								class="mt-2"
+								bind:value={buildingName}
+								required
+								on:input={autoCapitalize}
+							/>
 						</Label>
 					</div>
 
@@ -837,7 +944,7 @@
 				<div>
 					<Label>
 						Wing
-						<Input type="text" class="mt-2" bind:value={wing} />
+						<Input type="text" class="mt-2" bind:value={wing} on:input={autoCapitalize} />
 					</Label>
 				</div>
 
@@ -845,7 +952,13 @@
 					<div>
 						<Label>
 							Sector Name
-							<Input type="text" class="mt-2" bind:value={sectorName} required />
+							<Input
+								type="text"
+								class="mt-2"
+								bind:value={sectorName}
+								required
+								on:input={autoCapitalize}
+							/>
 						</Label>
 					</div>
 				{:else}
@@ -860,21 +973,21 @@
 				<div class="md:col-span-2">
 					<Label>
 						Polling Station
-						<Input type="text" class="mt-2" bind:value={pollingStation} />
+						<Input type="text" class="mt-2" bind:value={pollingStation} on:input={autoCapitalize} />
 					</Label>
 				</div>
 
 				<div>
 					<Label>
 						Caste
-						<Input type="text" class="mt-2" bind:value={caste} />
+						<Input type="text" class="mt-2" bind:value={caste} on:input={autoCapitalize} />
 					</Label>
 				</div>
 
 				<div class="md:col-span-2">
 					<Label>
 						Note
-						<Input type="text" class="mt-2" bind:value={note} />
+						<Input type="text" class="mt-2" bind:value={note} on:input={autoCapitalize} />
 					</Label>
 				</div>
 			</div>
@@ -945,7 +1058,7 @@
 					{#each sharedResidents as resident}
 						<TableBodyRow
 							class="border-blue-900 bg-blue-100 hover:bg-blue-200"
-							on:click={() => (window.location.href = `/voters/${resident._id}`)}
+							on:click={() => showVoterForm(resident)}
 						>
 							<TableBodyCell>{resident.flatNo}</TableBodyCell>
 							<TableBodyCell>{resident.name}</TableBodyCell>
@@ -985,7 +1098,13 @@
 					</Label>
 					<Label>
 						New Sector Name:
-						<Input type="text" bind:value={newSectorName} class="mt-2" required />
+						<Input
+							type="text"
+							bind:value={newSectorName}
+							class="mt-2"
+							required
+							on:input={autoCapitalize}
+						/>
 					</Label>
 					<Button class="md:mt-7" type="submit" color="dark">Update Sector Name</Button>
 				</div>
@@ -1005,7 +1124,13 @@
 					</Label>
 					<Label>
 						New Building Name:
-						<Input type="text" bind:value={newBuildingName} class="mt-2" required />
+						<Input
+							type="text"
+							bind:value={newBuildingName}
+							class="mt-2"
+							required
+							on:input={autoCapitalize}
+						/>
 					</Label>
 					<Button class="md:mt-7" type="submit" color="dark">Update Building Name</Button>
 				</div>
