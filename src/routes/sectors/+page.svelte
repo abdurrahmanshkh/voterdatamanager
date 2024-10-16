@@ -1058,7 +1058,7 @@
 					{#each sharedResidents as resident}
 						<TableBodyRow
 							class="border-blue-900 bg-blue-100 hover:bg-blue-200"
-							on:click={() => (window.location.href = `/voters/${resident._id}`)}
+							on:click={() => showVoterForm(resident)}
 						>
 							<TableBodyCell>{resident.flatNo}</TableBodyCell>
 							<TableBodyCell>{resident.name}</TableBodyCell>
