@@ -2,12 +2,19 @@
 	//Sectors List Page
 	import { Alert, Button, Label, Card, Input, P, Modal } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
-	import { onMount } from 'svelte';
+	import { onMount, beforeUpdate } from 'svelte';
 	import { PDFDocument, rgb } from 'pdf-lib';
 	import { Table, TableBody, TableBodyCell, Spinner } from 'flowbite-svelte';
 	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
 	import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
 	import { AccordionItem, Accordion } from 'flowbite-svelte';
+
+	let scrollPosition = 0;
+
+	// Save scroll position when the app goes into the background
+	beforeUpdate(() => {
+		scrollPosition = window.pageYOffset;
+	});
 
 	let voters = [];
 	let sharedResidents = [];
@@ -21,6 +28,7 @@
 
 	// On mount, check authentication and fetch voter data
 	onMount(() => {
+		window.scrollTo(0, scrollPosition);
 		if (localStorage.getItem('isAuthenticated') !== '123456') {
 			goto('/');
 		} else {

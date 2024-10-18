@@ -1,7 +1,7 @@
 <script>
 	//Login Page
 	import { goto } from '$app/navigation';
-	import { Card, Button, Input, Label, Hr, Alert, Spinner } from 'flowbite-svelte';
+	import { Card, Button, Input, Label, Hr } from 'flowbite-svelte';
 	import { onMount } from 'svelte';
 
 	onMount(() => {
