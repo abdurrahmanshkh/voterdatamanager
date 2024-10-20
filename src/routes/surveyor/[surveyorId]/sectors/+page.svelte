@@ -237,19 +237,19 @@
 		event.preventDefault();
 
 		const formData = {
-			flatNo,
-			name,
+			flatNo: flatNo.toUpperCase(),
+			name: name.toUpperCase(),
 			phoneNo,
 			yadiNo,
 			srNo,
-			rscNo,
-			buildingName: buildingName || selectedBuilding,
-			wing,
-			sectorName: sectorName || selectedSector,
+			rscNo: rscNo.toUpperCase(),
+			buildingName: buildingName.toUpperCase() || selectedBuilding,
+			wing: wing.toUpperCase(),
+			sectorName: sectorName.toUpperCase() || selectedSector,
 			buildingNo: buildingNo || selectedBuildingNo,
-			pollingStation,
-			caste,
-			note
+			pollingStation: pollingStation.toUpperCase(),
+			caste: caste.toUpperCase(),
+			note: note.toUpperCase()
 		};
 
 		if (!showForm) {
