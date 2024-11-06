@@ -454,12 +454,17 @@
 		const slipHeight = pageHeight / 6 - 10; // Six rows
 
 		const margin = 10; // Adjusted margin
-		const slipMargin = 10; // Adjusted slip padding
-		const textSize = 10; // Adjusted text size
+		const slipMargin = 8; // Adjusted slip padding
+		const textSize = 7; // Adjusted text size
 		const titleHeight = 40; // Space for the title on top
 
+		// Load the party symbol image
+		const symbolUrl = 'symbol.png'; // Replace with the path to your symbol image
+		const symbolBytes = await fetch(symbolUrl).then((res) => res.arrayBuffer());
+		const symbolImage = await pdfDoc.embedPng(symbolBytes);
+
 		// Draws a slip
-		function drawSlip(page, x, y, name, yadiNo, srNo, pollingStation) {
+		function drawSlip(page, x, y, name, yadiNo, srNo, pollingStation, buildingName, wing, flatNo) {
 			page.drawRectangle({
 				x,
 				y,
@@ -469,29 +474,72 @@
 				borderColor: rgb(0, 0, 0),
 				borderWidth: 1
 			});
-			page.drawText(`NAME: ${name}`, {
+			page.drawText(`Candidate: Prashant Thakur | Sign: Lotus`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - textSize - 13,
+				size: textSize
+			});
+			page.drawText(`"Trusted leadership, guaranteed progress"`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - textSize - 23,
 				size: textSize
 			});
+			page.drawText(`"Your candidate, your future!"`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - textSize - 33,
+				size: textSize
+			});
+			page.drawText(`"Your vote, your right!"`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - textSize - 43,
+				size: textSize
+			});
+
+			// Position and size for the party symbol image
+			const symbolHeight = 43; // Adjust height to cover all three lines
+			const symbolWidth = symbolImage.width * (symbolHeight / symbolImage.height);
+			page.drawImage(symbolImage, {
+				x: x + slipWidth - slipMargin * 2 - symbolWidth - 3, // Align to the right side
+				y: y + slipHeight - slipMargin - textSize - 47, // Align with the text height
+				width: symbolWidth,
+				height: symbolHeight
+			});
+
+			// Add a solid line below "Your candidate, your future!"
+			page.drawLine({
+				start: { x: x, y: y + slipHeight - slipMargin - textSize - 49 },
+				end: { x: x + slipWidth - slipMargin * 2, y: y + slipHeight - slipMargin - textSize - 49 },
+				color: rgb(0, 0, 0),
+				thickness: 1
+			});
+			page.drawText(`${buildingName} - ${wing}${flatNo}`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - textSize - 59,
+				size: textSize
+			});
+			page.drawText(`NAME: ${name}`, {
+				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - textSize - 69,
+				size: textSize
+			});
 			page.drawText(`LIST NO / PART NO: ${yadiNo}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 2 * textSize - 31,
+				y: y + slipHeight - slipMargin - textSize - 79,
 				size: textSize
 			});
 			page.drawText(`SR NO: ${srNo}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 3 * textSize - 39,
+				y: y + slipHeight - slipMargin - textSize - 89,
 				size: textSize
 			});
 			page.drawText(`POLLING STATION ADDRESS:`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 4 * textSize - 47,
+				y: y + slipHeight - slipMargin - textSize - 99,
 				size: textSize
 			});
 			page.drawText(`${pollingStation}`, {
 				x: x + slipMargin,
-				y: y + slipHeight - slipMargin - 5 * textSize - 55,
+				y: y + slipHeight - slipMargin - textSize - 109,
 				size: textSize
 			});
 		}
@@ -528,7 +576,18 @@
 				const x = col * slipWidth + margin;
 				const y = pageHeight - titleHeight - (row + 1) * slipHeight + 10;
 
-				drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo, voter.pollingStation);
+				drawSlip(
+					page,
+					x,
+					y,
+					voter.name,
+					voter.yadiNo,
+					voter.srNo,
+					voter.pollingStation,
+					voter.buildingName,
+					voter.wing,
+					voter.flatNo
+				);
 			}
 		} else {
 			for (let i = 0; i < filteredVoters.length; i++) {
@@ -549,7 +608,18 @@
 				const x = col * slipWidth + margin;
 				const y = pageHeight - titleHeight - (row + 1) * slipHeight + 10;
 
-				drawSlip(page, x, y, voter.name, voter.yadiNo, voter.srNo, voter.pollingStation);
+				drawSlip(
+					page,
+					x,
+					y,
+					voter.name,
+					voter.yadiNo,
+					voter.srNo,
+					voter.pollingStation,
+					voter.buildingName,
+					voter.wing,
+					voter.flatNo
+				);
 			}
 		}
 
