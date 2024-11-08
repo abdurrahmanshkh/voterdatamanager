@@ -3,7 +3,7 @@
 	import { Alert, Button, Label, Card, Input, P, Modal } from 'flowbite-svelte';
 	import { goto } from '$app/navigation';
 	import { onMount } from 'svelte';
-	import { PDFDocument, rgb } from 'pdf-lib';
+	import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
 	import { Table, TableBody, TableBodyCell, Spinner } from 'flowbite-svelte';
 	import { TableBodyRow, TableHead, TableHeadCell } from 'flowbite-svelte';
 	import { Accordion, AccordionItem } from 'flowbite-svelte';
@@ -395,6 +395,10 @@
 		const symbolBytes = await fetch(symbolUrl).then((res) => res.arrayBuffer());
 		const symbolImage = await pdfDoc.embedPng(symbolBytes);
 
+		// Embed bold and italic fonts
+		const boldFont = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+		const italicFont = await pdfDoc.embedFont(StandardFonts.HelveticaOblique);
+
 		// Draws a slip
 		function drawSlip(page, x, y, name, yadiNo, srNo, pollingStation, buildingName, wing, flatNo) {
 			page.drawRectangle({
@@ -406,25 +410,45 @@
 				borderColor: rgb(0, 0, 0),
 				borderWidth: 1
 			});
-			page.drawText(`Candidate: Prashant Thakur | Sign: Lotus`, {
+			page.drawText(`Candidate:`, {
 				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - textSize - 13,
+				size: textSize,
+				font: boldFont
+			});
+			page.drawText(`Prashant Thakur`, {
+				x: x + slipMargin + 38,
+				y: y + slipHeight - slipMargin - textSize - 13,
+				size: textSize
+			});
+			page.drawText(`| Sign:`, {
+				x: x + slipMargin + 92,
+				y: y + slipHeight - slipMargin - textSize - 13,
+				size: textSize,
+				font: boldFont
+			});
+			page.drawText(`Lotus`, {
+				x: x + slipMargin + 115,
 				y: y + slipHeight - slipMargin - textSize - 13,
 				size: textSize
 			});
 			page.drawText(`"Trusted leadership, guaranteed progress"`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - textSize - 23,
-				size: textSize
+				size: textSize,
+				font: italicFont
 			});
 			page.drawText(`"Your candidate, your future!"`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - textSize - 33,
-				size: textSize
+				size: textSize,
+				font: italicFont
 			});
 			page.drawText(`"Your vote, your right!"`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - textSize - 43,
-				size: textSize
+				size: textSize,
+				font: italicFont
 			});
 
 			// Position and size for the party symbol image
@@ -439,35 +463,63 @@
 
 			// Add a solid line below "Your candidate, your future!"
 			page.drawLine({
-				start: { x: x, y: y + slipHeight - slipMargin - textSize - 49 },
-				end: { x: x + slipWidth - slipMargin * 2, y: y + slipHeight - slipMargin - textSize - 49 },
+				start: { x: x + 6, y: y + slipHeight - slipMargin - textSize - 49 },
+				end: {
+					x: x + slipWidth - slipMargin * 2 - 6,
+					y: y + slipHeight - slipMargin - textSize - 49
+				},
 				color: rgb(0, 0, 0),
-				thickness: 1
+				thickness: 0.6
 			});
-			page.drawText(`${buildingName} - ${wing ? wing + '/' : ''}${flatNo}`, {
+			page.drawText(`ADDRESS:`, {
 				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - textSize - 59,
+				size: textSize,
+				font: boldFont
+			});
+			page.drawText(`${wing ? wing + '/' : ''}${flatNo}, ${buildingName}`, {
+				x: x + slipMargin + 39,
 				y: y + slipHeight - slipMargin - textSize - 59,
 				size: textSize
 			});
-			page.drawText(`NAME: ${name}`, {
+			page.drawText(`NAME:`, {
 				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - textSize - 69,
+				size: textSize,
+				font: boldFont
+			});
+			page.drawText(`${name}`, {
+				x: x + slipMargin + 25,
 				y: y + slipHeight - slipMargin - textSize - 69,
 				size: textSize
 			});
-			page.drawText(`LIST NO / PART NO: ${yadiNo}`, {
+			page.drawText(`LIST NO / PART NO:`, {
 				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - textSize - 79,
+				size: textSize,
+				font: boldFont
+			});
+			page.drawText(`${yadiNo}`, {
+				x: x + slipMargin + 69,
 				y: y + slipHeight - slipMargin - textSize - 79,
 				size: textSize
 			});
-			page.drawText(`SR NO: ${srNo}`, {
+			page.drawText(`SR NO:`, {
 				x: x + slipMargin,
+				y: y + slipHeight - slipMargin - textSize - 89,
+				size: textSize,
+				font: boldFont
+			});
+			page.drawText(`${srNo}`, {
+				x: x + slipMargin + 27,
 				y: y + slipHeight - slipMargin - textSize - 89,
 				size: textSize
 			});
 			page.drawText(`POLLING STATION ADDRESS:`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - textSize - 99,
-				size: textSize
+				size: textSize,
+				font: boldFont
 			});
 			page.drawText(`${pollingStation}`, {
 				x: x + slipMargin,
@@ -484,7 +536,8 @@
 					x: margin,
 					y: pageHeight - margin - titleHeight / 2,
 					size: 16,
-					color: rgb(0, 0, 0)
+					color: rgb(0, 0, 0),
+					font: boldFont
 				}
 			);
 		}
