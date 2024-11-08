@@ -512,7 +512,7 @@
 				color: rgb(0, 0, 0),
 				thickness: 1
 			});
-			page.drawText(`${buildingName} - ${wing}${flatNo}`, {
+			page.drawText(`${buildingName} - ${wing ? wing + '/' : ''}${flatNo}`, {
 				x: x + slipMargin,
 				y: y + slipHeight - slipMargin - textSize - 59,
 				size: textSize
@@ -547,7 +547,7 @@
 		// Draws the title at the top of each page
 		function drawTitle(page) {
 			page.drawText(
-				`SAJID PATEL - VOTER'S DATA - ${selectedBuilding || ''} ${selectedSector || ''}`,
+				`SAJID PATEL - VOTER'S DATA${selectedSector ? ' - ' + selectedSector : ''}${selectedBuilding ? ' - ' + selectedBuilding : ''}`,
 				{
 					x: margin,
 					y: pageHeight - margin - titleHeight / 2,
