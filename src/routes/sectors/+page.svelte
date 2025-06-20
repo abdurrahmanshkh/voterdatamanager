@@ -260,9 +260,7 @@
 			try {
 				const response = await fetch('/api/add-voter', {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
+					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(formData)
 				});
 
@@ -283,9 +281,7 @@
 			try {
 				const response = await fetch(`/api/update-voter/${currentVoter._id}`, {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
+					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(formData)
 				});
 
@@ -344,9 +340,7 @@
 	// Function to delete voter data
 	async function handleDelete() {
 		try {
-			const response = await fetch(`/api/delete-voter/${currentVoter._id}`, {
-				method: 'POST'
-			});
+			const response = await fetch(`/api/delete-voter/${currentVoter._id}`, { method: 'POST' });
 
 			if (response.ok) {
 				alert = 'Voter information deleted successfully!';
@@ -531,9 +525,7 @@
 	// Function to delete voter data
 	async function deleteBuilding() {
 		try {
-			const response = await fetch(`/api/delete-building/${selectedBuilding}`, {
-				method: 'POST'
-			});
+			const response = await fetch(`/api/delete-building/${selectedBuilding}`, { method: 'POST' });
 
 			if (response.ok) {
 				const result = await response.json();
@@ -558,9 +550,7 @@
 				`/api/update-buildingName/${selectedSector}:${selectedBuilding}`,
 				{
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
+					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify({ buildingName: newBuildingName })
 				}
 			);
@@ -591,9 +581,7 @@
 		try {
 			const response = await fetch(`/api/update-buildingNo/${selectedSector}:${selectedBuilding}`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ buildingNo: newBuildingNo })
 			});
 
@@ -621,9 +609,7 @@
 		try {
 			const response = await fetch(`/api/update-sectorName/${selectedSector}`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
+				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({ sectorName: newSectorName })
 			});
 
