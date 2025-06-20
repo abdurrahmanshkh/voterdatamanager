@@ -12,6 +12,7 @@
 	let voters = [];
 	let sharedResidents = [];
 	let newPhoneNumber = '';
+	let error = '';
 
 	// Popup Modals
 	let deleteVoterModal = false;

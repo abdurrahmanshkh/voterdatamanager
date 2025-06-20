@@ -15,6 +15,7 @@
 	let voters = [];
 	let sharedResidents = [];
 	let newPhoneNumber = '';
+	let error = '';
 
 	// Popup Modals
 	let deleteVoterModal = false;
@@ -220,17 +221,13 @@
 			try {
 				const response = await fetch('/api/add-voter', {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
+					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(formData)
 				});
 
 				const surveyResponse = await fetch(`/api/update-formsFilled/${surveyor._id}`, {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					}
+					headers: { 'Content-Type': 'application/json' }
 				});
 
 				if (response.ok) {
@@ -250,17 +247,13 @@
 			try {
 				const response = await fetch(`/api/update-voter/${currentVoter._id}`, {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					},
+					headers: { 'Content-Type': 'application/json' },
 					body: JSON.stringify(formData)
 				});
 
 				const surveyResponse = await fetch(`/api/update-formsUpdated/${surveyor._id}`, {
 					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json'
-					}
+					headers: { 'Content-Type': 'application/json' }
 				});
 
 				if (response.ok) {
@@ -316,15 +309,11 @@
 	// Function to delete voter data
 	async function handleDelete() {
 		try {
-			const response = await fetch(`/api/delete-voter/${currentVoter._id}`, {
-				method: 'POST'
-			});
+			const response = await fetch(`/api/delete-voter/${currentVoter._id}`, { method: 'POST' });
 
 			const surveyResponse = await fetch(`/api/update-formsDeleted/${surveyor._id}`, {
 				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				}
+				headers: { 'Content-Type': 'application/json' }
 			});
 
 			if (response.ok) {
